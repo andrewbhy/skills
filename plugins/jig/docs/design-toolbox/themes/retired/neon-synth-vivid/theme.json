@@ -1,0 +1,27 @@
+{
+  "name": "neon-synth-vivid",
+  "mode": "dark",
+  "author": "jig contributors",
+  "licence": "UNLICENSED",
+  "version": "0.4.0",
+  "description": "Same deep navy palette as Neon synth; broader decorative accent bands.",
+  "harmony": {
+    "name": "Magenta split complements",
+    "scheme": "split-complementary",
+    "space": "oklch",
+    "keyHue": 340,
+    "keyColour": "#feace3",
+    "offsets": {
+      "blue": 0,
+      "cyan": 220,
+      "violet": 15,
+      "orange": 140
+    },
+    "neutralHue": 265,
+    "stateHues": {
+      "green": 145,
+      "amber": 95,
+      "red": 15
+    }
+  }
+}

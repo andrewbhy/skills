@@ -1,0 +1,6 @@
+# jig safe-close backstop. Optional Codex prefix rules; see docs/worktrees.md.
+# Prefix rules apply outside the sandbox. They cannot express a path-aware hook.
+prefix_rule(pattern = ["git", "worktree", "remove"], decision = "forbidden", justification = "Use worktree.mjs close <name> to preserve private files.", match = ["git worktree remove task", "git worktree remove --force task"], not_match = ["git worktree list"])
+prefix_rule(pattern = ["git", "branch", "-D"], decision = "forbidden", justification = "Use worktree.mjs close <name> after merge verification.", match = ["git branch -D task"], not_match = ["git branch -d task"])
+prefix_rule(pattern = ["git", "branch", "--delete", "--force"], decision = "forbidden", justification = "Use worktree.mjs close <name> after merge verification.", match = ["git branch --delete --force task"])
+prefix_rule(pattern = ["git", "branch", "--force", "--delete"], decision = "forbidden", justification = "Use worktree.mjs close <name> after merge verification.", match = ["git branch --force --delete task"])

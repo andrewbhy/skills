@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "gaps": [],
+  "nodes": [
+    {
+      "target": "#panel", "parent": null, "previous": null, "tag": "section",
+      "text": "Workspace and independent content", "rect": {"x":0,"y":0,"width":600,"height":400},
+      "background": [18,18,24,1], "surface": [18,18,24,1], "border": 1, "radius": 8,
+      "opacity": 1, "shadows": [], "gradients": []
+    },
+    {
+      "target": "#card", "parent": "#panel", "previous": null, "tag": "article",
+      "text": "A separately framed feature description", "rect": {"x":16,"y":16,"width":300,"height":240},
+      "background": [24,24,30,1], "surface": [18,18,24,1], "border": 1, "radius": 8,
+      "opacity": 1, "shadows": [], "gradients": []
+    },
+    {
+      "target": "#tile", "parent": "#card", "previous": null, "tag": "div", "text": "",
+      "rect": {"x":32,"y":32,"width":48,"height":48},
+      "background": [50,110,250,0.1], "surface": [24,24,30,1], "border": 0, "radius": 8,
+      "opacity": 1, "shadows": [], "gradients": [], "icon": true, "iconWidth": 20
+    },
+    {
+      "target": "#title", "parent": "#card", "previous": "#tile", "tag": "h2", "text": "Feature heading",
+      "rect": {"x":32,"y":92,"width":240,"height":24},
+      "background": [0,0,0,0], "surface": [24,24,30,1], "border": 0, "radius": 0,
+      "opacity": 1, "shadows": [], "gradients": []
+    },
+    {
+      "target": "#light", "parent": "#panel", "previous": "#card", "tag": "div", "text": "",
+      "rect": {"x":320,"y":20,"width":240,"height":160},
+      "background": [18,18,24,1], "surface": [18,18,24,1], "border": 0, "radius": 0,
+      "opacity": 1,
+      "shadows": [{"property":"box-shadow","x":0,"y":0,"blur":20,"spread":0,"color":[20,240,180,0.8],"inset":false}],
+      "gradients": [{"value":"radial-gradient(rgba(20,240,180,.2), transparent)","repeating":false,"stops":[{"color":[20,240,180,0.2],"px":null},{"color":[0,0,0,0],"px":null}]}]
+    },
+    {
+      "target": "#halo", "parent": "#panel", "previous": "#light", "tag": "div", "text": "",
+      "rect": {"x":20,"y":260,"width":300,"height":100},
+      "background": [0,0,0,0], "surface": [18,18,24,1], "border": 0, "radius": 0,
+      "opacity": 1, "shadows": [],
+      "gradients": [{"value":"radial-gradient(rgb(20,240,180), transparent 70%)","repeating":false,"stops":[{"color":[20,240,180,1],"px":null},{"color":[0,0,0,0],"px":null}]}]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"id":"contrast-first","date":"2026-11-07","area":"design","class":"low-contrast","what":"Person could not distinguish canvas and row surfaces after checks passed","who":"person","source":"person","layer":"integration","action":"Require rendered surface contrast checks"}

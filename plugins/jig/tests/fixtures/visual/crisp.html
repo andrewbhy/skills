@@ -1,0 +1,36 @@
+<!doctype html><meta charset="utf-8"><title>Crispness and runner calibration</title>
+<style>
+body{margin:16px;background:white;color:black;font:14px/20px sans-serif}
+#washed{color:#999}#grey{background:#fafafa;padding:8px}
+.row{padding:8px}.row[data-state=hover],.row[data-state=selected]{background:#eee}
+.row[data-state=selected]{font-weight:700}
+#pill{background:#ddd;border-radius:16px;color:#444;padding:8px}
+#truncated{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:64px}
+table{width:400px}#calibration{margin-top:16px}
+.attached{display:flex;margin:0 0 8px}.attached button{height:32px;padding:0 8px;border:1px solid black;display:flex;align-items:center}
+#fixed{height:32px;display:flex;align-items:center;padding:0 12px;border:1px solid black}
+select{height:32px;padding:0 29px 0 8px}
+[role=menu]{width:200px;padding:4px}[role=menuitem]{display:flex;align-items:center;gap:8px;padding:4px 8px;width:200px}
+[role=menuitem] span{flex:1}[role=separator]{height:1px;margin:3px 0;background:#888}
+td{padding:6px 11px}.inline-chip{display:inline-block;background:#eee}
+#alpha{opacity:.5;background:black}#alpha-text{color:white}
+</style>
+<main id="defects">
+ <p id="washed">Washed out primary text</p><div id="grey">Grey on grey</div>
+ <div class="row" data-component="row" data-state="default">release-notes.md</div>
+ <div class="row" data-component="row" data-state="hover">release-notes.md</div>
+ <div class="row" data-component="row" data-state="selected" aria-selected="true">release-notes.md</div>
+ <div data-component="table" aria-selected="true" id="pill">Selected table pill</div>
+ <table><tbody><tr><td><span id="truncated">release-notes.md</span></td></tr></tbody></table>
+</main>
+<section id="calibration">
+ <div class="attached" role="group"><button>Open</button><button>More</button></div>
+ <div class="attached split-control"><button>Open</button><button>More</button></div>
+ <div class="attached segmented-control"><button>One</button><button>Two</button></div>
+ <div class="attached" data-attached><button>Left</button><button>Right</button></div>
+ <button id="fixed"><span>Fixed height</span></button><select aria-label="Owner"><option>Maya</option></select>
+ <div role="menu"><button role="menuitem">Open<span></span>Enter</button><div role="separator"></div><button role="menuitem">Rename<span></span>F2</button></div>
+ <table><colgroup><col><col></colgroup><tbody><tr><td>A</td><td>B</td></tr></tbody></table>
+ Text before <span class="inline-chip">a fractional unbordered chip</span>
+</section>
+<div id="alpha"><span id="alpha-text">Group opacity</span></div>

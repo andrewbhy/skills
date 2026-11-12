@@ -1,0 +1,26 @@
+{
+  "rules": ["README.md"],
+  "app": {
+    "start": "npm start",
+    "ready": "http://127.0.0.1:4173/list returns HTTP 200; stdout prints Ready with that URL",
+    "stop": "Press Ctrl+C in the terminal that started npm start; if launched programmatically, terminate only the server process you started and await its exit."
+  },
+  "behaviour": [
+    {
+      "name": "Add a reading-list title",
+      "paths": ["items.mjs", "app.mjs", "index.html"],
+      "reach": [
+        "Open /list; reload to begin with an empty in-memory list.",
+        "Enter Dune in Title and click Add title once; expect exactly one Dune row.",
+        "Submit an empty title; expect Enter a title. and no list change.",
+        "Enter spaces only and submit; expect the same validation and no list change.",
+        "Enter another valid title after the error; expect one additional row and cleared validation."
+      ]
+    }
+  ],
+  "tests": {
+    "targeted": "npm run test:targeted",
+    "full": "npm test"
+  },
+  "screens": [{ "width": 390, "height": 844 }, { "width": 1440, "height": 900 }]
+}

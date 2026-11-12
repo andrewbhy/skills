@@ -1,0 +1,26 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Spacing detection control</title>
+<style>
+ * { box-sizing:border-box; } body { margin:0; }
+ #screen { padding:16px; display:grid; gap:16px; }
+ .box { padding:8px; border:1px solid; display:grid; gap:8px; }
+ .item { padding:4px; height:28px; }
+ #inset { padding:8px 20px 12px 8px; }
+ #uneven > :nth-child(2) { margin-bottom:4px; }
+ #zero { gap:0; } #off-grid { padding:13px; }
+ #fixed { width:31px; height:28px; }
+</style>
+<main id="screen">
+ <div class="box" id="inset"><div class="item">Unequal insets</div></div>
+ <div class="box" id="uneven"><div class="item">First</div><div class="item">Second</div><div class="item">Third</div></div>
+ <div class="box" id="zero"><div class="item">First</div><div class="item">Second</div></div>
+ <div class="box" id="off-grid">Off grid</div>
+ <div id="fixed" data-spacing-size="width height"></div>
+</main>
+<script>
+ if (location.search === '?clean') {
+  for (const el of document.querySelectorAll('#screen > *')) el.removeAttribute('id');
+  document.querySelector('[data-spacing-size]').style.width='32px';
+ }
+</script>

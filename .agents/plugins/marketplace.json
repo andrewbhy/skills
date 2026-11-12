@@ -1,0 +1,20 @@
+{
+  "name": "andrewbhy",
+  "interface": {
+    "displayName": "andrewbhy"
+  },
+  "plugins": [
+    {
+      "name": "jig",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jig"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

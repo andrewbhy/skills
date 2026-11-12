@@ -1,0 +1,27 @@
+{
+  "name": "night-warm",
+  "mode": "dark",
+  "author": "jig contributors",
+  "licence": "UNLICENSED",
+  "version": "0.4.0",
+  "description": "Night with warm neutral layers and off-white text; identical chromatic accents and states.",
+  "harmony": {
+    "name": "Dusk and brass",
+    "scheme": "accented-analogous",
+    "space": "oklch",
+    "keyHue": 260,
+    "keyColour": "#adccff",
+    "offsets": {
+      "blue": 0,
+      "cyan": -30,
+      "violet": 30,
+      "orange": 180
+    },
+    "neutralHue": 70,
+    "stateHues": {
+      "green": 140,
+      "amber": 85,
+      "red": 25
+    }
+  }
+}

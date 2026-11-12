@@ -1,0 +1,17 @@
+{
+  "name": "jig",
+  "version": "0.1.0",
+  "description": "jig: a provider-neutral agent harness of planning, review, verification and coordination skills. State lives in ~/.jig; nothing is written into the project by default.",
+  "author": {
+    "name": "andrewbhy"
+  },
+  "homepage": "https://github.com/andrewbhy/skills/tree/main/plugins/jig",
+  "repository": "https://github.com/andrewbhy/skills",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "planning",
+    "review",
+    "verification"
+  ]
+}

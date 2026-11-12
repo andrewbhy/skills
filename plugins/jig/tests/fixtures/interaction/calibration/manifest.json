@@ -1,0 +1,172 @@
+{
+ "passMark": 11,
+ "note": "Anonymised transcriptions of two rejected UI artifacts (an early tactics game grey-box and an image-review workspace mock). Transcribed with hindsight; the game spec also carries one feedback event added in v2 (outcomes only in the log). L3 (contradicting hover and focus rules) lives in prose and is a known script gap.",
+ "specs": [
+  {
+   "id": "game",
+   "file": "game-greybox.json",
+   "reasons": [
+    {
+     "id": "G1",
+     "label": "modes chosen before acting",
+     "rule": "8",
+     "match": "visibleAs",
+     "required": true
+    },
+    {
+     "id": "G2",
+     "label": "friction per action",
+     "rule": "4",
+     "match": "inputs estimate",
+     "required": true
+    },
+    {
+     "id": "G3",
+     "label": "outcomes learned from the log",
+     "rule": "9",
+     "match": "log or hidden panel",
+     "required": true
+    }
+   ]
+  },
+  {
+   "id": "image-workspace",
+   "file": "image-workspace.json",
+   "reasons": [
+    {
+     "id": "L1",
+     "label": "one verb in many places",
+     "rule": "3b",
+     "match": "appears on",
+     "required": true
+    },
+    {
+     "id": "L2",
+     "label": "controls too small",
+     "rule": "5",
+     "match": "minimum",
+     "required": true
+    },
+    {
+     "id": "L3",
+     "label": "contradicting hover and focus rules",
+     "rule": null,
+     "match": null,
+     "required": false
+    }
+   ]
+  },
+  {
+   "id": "round-three-natural-click",
+   "file": "round-three-natural-click.json",
+   "control": "round-three-control.json",
+   "reasons": [
+    {
+     "id": "R3-natural-click",
+     "label": "natural-click",
+     "rule": "12",
+     "match": "redirects to another input",
+     "required": true
+    }
+   ]
+  },
+  {
+   "id": "round-three-reserved-letters",
+   "file": "round-three-reserved-letters.json",
+   "control": "round-three-control.json",
+   "reasons": [
+    {
+     "id": "R3-reserved-letters",
+     "label": "reserved-letters",
+     "rule": "6",
+     "match": "reserved key",
+     "required": true
+    }
+   ]
+  },
+  {
+   "id": "round-three-hidden-verb",
+   "file": "round-three-hidden-verb.json",
+   "control": "round-three-control.json",
+   "reasons": [
+    {
+     "id": "R3-hidden-verb",
+     "label": "hidden-verb",
+     "rule": "13",
+     "match": "absent when disabled",
+     "required": true
+    }
+   ]
+  },
+  {
+   "id": "round-three-hidden-menu",
+   "file": "round-three-hidden-menu.json",
+   "control": "round-three-control.json",
+   "reasons": [
+    {
+     "id": "R3-hidden-menu",
+     "label": "hidden-menu",
+     "rule": "13",
+     "match": "opens no menu",
+     "required": true
+    }
+   ]
+  },
+  {
+   "id": "round-three-target-frames",
+   "file": "round-three-target-frames.json",
+   "control": "round-three-control.json",
+   "reasons": [
+    {
+     "id": "R3-target-frames",
+     "label": "target-frames",
+     "rule": "14",
+     "match": "has no .* frame",
+     "required": true
+    }
+   ]
+  },
+  {
+   "id": "round-three-gating-state",
+   "file": "round-three-gating-state.json",
+   "control": "round-three-control.json",
+   "reasons": [
+    {
+     "id": "R3-gating-state",
+     "label": "gating-state",
+     "rule": "9",
+     "match": "gating state .* needs",
+     "required": true
+    }
+   ]
+  },
+  {
+   "id": "round-three-primary-target",
+   "file": "round-three-primary-target.json",
+   "control": "round-three-control.json",
+   "reasons": [
+    {
+     "id": "R3-primary-target",
+     "label": "primary-target",
+     "rule": "12",
+     "match": "needs a left-click binding",
+     "required": true
+    }
+   ]
+  },
+  {
+   "id": "round-three-disabled-gate",
+   "file": "round-three-disabled-gate.json",
+   "control": "round-three-control.json",
+   "reasons": [
+    {
+     "id": "R3-disabled-gate",
+     "label": "disabled-gate",
+     "rule": "9",
+     "match": "disabledReason needs",
+     "required": true
+    }
+   ]
+  }
+ ]
+}

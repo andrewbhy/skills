@@ -1,0 +1,63 @@
+{
+  "include": [
+    ".agents/",
+    ".claude/",
+    ".gitattributes",
+    ".gitignore",
+    ".jig/testing.json",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "VERSION",
+    "package.json",
+    "package-lock.json",
+    "export-public.json",
+    "commands/",
+    "scripts/",
+    "tests/",
+    "docs/*.md",
+    "docs/*.json",
+    "docs/adr/",
+    "docs/design-toolbox/",
+    "docs/licenses/",
+    "docs/public/",
+    ".github/workflows/"
+  ],
+  "exclude": [
+    "docs/ideas.md",
+    "docs/value-proposition.md",
+    "docs/direction.md",
+    "packs/",
+    "tests/godot-pack.test.mjs",
+    "scripts/borrowed-check.mjs",
+    "tests/borrowed-check.test.mjs",
+    "README.md",
+    "docs/public/skills-readme.md"
+  ],
+  "binary": [],
+  "rename": {
+    "docs/public/ci.yml": ".github/workflows/ci.yml",
+    "docs/jig-at-work.md": "README.md"
+  },
+  "pluginName": "jig",
+  "pluginDescription": "jig: a provider-neutral agent harness of planning, review, verification and coordination skills. State lives in ~/.jig; nothing is written into the project by default.",
+  "licenseHolder": "andrewbhy",
+  "marketplaceName": "andrewbhy",
+  "marketplaceOwner": "andrewbhy",
+  "marketplaceRepo": "andrewbhy/skills",
+  "releaseAuthor": "jig release <jig-release@users.noreply.github.com>",
+  "linkExempt": [
+    ".agents/skills/",
+    "tests/fixtures/"
+  ],
+  "linkDrop": [
+    "AGENTS.md",
+    "docs/borrowed.md",
+    "docs/suite.md"
+  ],
+  "pluginDir": "plugins/jig",
+  "codexCategory": "Productivity",
+  "rootTemplates": {
+    "docs/public/skills-readme.md": "README.md"
+  }
+}

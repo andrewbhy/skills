@@ -1,0 +1,4 @@
+{
+  "timeBudgetMs": 3000,
+  "testGlobs": ["test/**/*.test.mjs"]
+}

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Design toolbox · jig</title><link rel="stylesheet" href="jig-pages.css"><link rel="stylesheet" href="grid/tokens.css">
+</head>
+<body data-grid>
+<header class="page-header">
+  <nav class="breadcrumb" aria-label="Breadcrumb" data-jig-shell="1" data-ledger="site-shell"><a class="brand" href="../../README.md" aria-label="jig"><img class="brand-mark" src="logo/final/ji-red-23.svg" width="23" height="23" alt=""><img class="brand-wordmark" src="logo/final/jig-wordmark-charcoal.svg" alt="" height="23"></a><span aria-hidden="true">/</span><a href="index.html" aria-current="page">Design toolbox</a></nav>
+  <h1>Design toolbox<span class="title-dot">.</span></h1>
+  <p class="intro">Look at working samples. Choose how your interface should look and feel.</p>
+</header>
+<main class="toolbox-main home-sections">
+  <section aria-labelledby="look-title">
+    <h2 class="section-heading" id="look-title">Look and choose</h2>
+    <p class="section-intro">Your judgement by eye: compare directions, try the controls, and keep what fits.</p>
+    <div class="tool-grid">
+      <article class="tool-card"><h3><a href="themes/gallery/">Colour palettes</a></h3><p>Compare colour groups on a board fragment and shortlist a direction.</p></article>
+      <article class="tool-card"><h3><a href="themes/preview.html">Themes and board</a></h3><p>Try complete themes on a map, queue and interface samples.</p></article>
+      <article class="tool-card"><h3><a href="typography/">Typography</a></h3><p>Compare sizes and weights on real interface text.</p></article>
+      <article class="tool-card"><h3><a href="logo/logo.html">Logo</a></h3><p>Compare four workshop marks at favicon and header sizes.</p></article>
+      <article class="tool-card"><h3><a href="motion-lab/">Motion lab</a></h3><p>Watch and tune motion timing. Find effect names in the <a href="guides/motion-vocabulary.html">motion vocabulary</a> and use the <a href="guides/motion-recipes.html">control recipes</a>.</p></article>
+      <article class="tool-card"><h3><a href="components/">Golden components</a></h3><p>Try the shared controls in every state, theme and worst-case data mode. These are the primitives mockups copy.</p></article>
+      <article class="tool-card"><h3><a href="grid/index.html">Grid system</a></h3><p>Try fixed spacing, layout primitives and responsive regions at five container widths. Read the rules and their sources offline.</p></article>
+    </div>
+  </section>
+  <section class="agent-tools" aria-labelledby="agents-title">
+    <p class="eyebrow">Agent tooling</p>
+    <h2 class="section-heading" id="agents-title">Rules and checks agents run</h2>
+    <p class="section-intro">These help agents catch problems before you see a mockup. Open a guide to see a real finding and the rule behind it.</p>
+    <ul class="agent-tool-list">
+      <li><h3><a href="guides/theme-builder.html">Theme builder</a></h3><p>Builds a complete theme and avoids missing colour roles. Runs when preparing a theme for a build or mockup · <strong>jig-build, jig-mockup</strong>.</p></li>
+      <li><h3><a href="guides/theme-checker.html">Theme checker</a></h3><p>Catches unreadable text and layers that blend together. Runs after theme edits and during interface review · <strong>jig-verify, jig-review</strong>.</p></li>
+      <li><h3><a href="guides/spacing-craft.html">Spacing and craft checks</a></h3><p>Catches margin errors, stray values and missing control states before you see a mock. Runs before mockup feedback and during interface checks · <strong>jig-mockup, jig-verify, jig-review</strong>.</p></li>
+      <li><h3><a href="guides/craft-basics.html">Craft basics</a></h3><p>Catches uneven grouping, misplaced controls and confusing labels. Runs during building and screenshot review · <strong>jig-mockup, jig-verify, jig-review</strong>.</p></li>
+      <li><h3><a href="guides/motion-vocabulary.html">Motion vocabulary</a></h3><p>Puts an exact name to the effect you have in mind. Runs when describing an effect, before a brief or motion ledger is built · <strong>jig-mockup</strong>.</p></li>
+      <li><h3><a href="guides/motion-recipes.html">Motion recipes</a></h3><p>Gives ordinary controls a consistent response. Runs when building menu, popover, tooltip, dialog, toast, disclosure, tab or press feedback · <strong>jig-mockup</strong>.</p></li>
+      <li><h3><a href="guides/motion-basics.html">Motion basics</a></h3><p>Catches unexplained changes, distracting repetition and broken replay. Runs when choosing motion and reviewing it in frames · <strong>jig-mockup, jig-verify, jig-review</strong>.</p></li>
+      <li><h3><a href="guides/component-checklist.html">Component checklist</a></h3><p>Catches missing states, lost focus and long-text failures. Runs before a component becomes a reference others copy · <strong>jig-mockup, jig-verify, jig-review</strong>.</p></li>
+    </ul>
+  </section>
+</main>
+</body></html>

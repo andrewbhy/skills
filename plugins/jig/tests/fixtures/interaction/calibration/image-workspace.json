@@ -1,0 +1,466 @@
+{
+ "version": 1,
+ "config": {
+  "minTarget": 32
+ },
+ "layers": [
+  {
+   "id": "explore",
+   "entry": true
+  }
+ ],
+ "verbs": [
+  {
+   "id": "back",
+   "name": "Back",
+   "layer": "global",
+   "noSurface": true
+  },
+  {
+   "id": "keep",
+   "name": "keep",
+   "layer": "explore"
+  },
+  {
+   "id": "refine",
+   "name": "refine",
+   "layer": "explore",
+   "noPath": {
+    "keyboard": "refine has no key in the mock"
+   }
+  },
+  {
+   "id": "open",
+   "name": "open",
+   "layer": "explore"
+  },
+  {
+   "id": "generate",
+   "name": "generate",
+   "layer": "explore",
+   "noPath": {
+    "keyboard": "generate has no key in the mock"
+   }
+  }
+ ],
+ "inputs": [
+  {
+   "input": "esc",
+   "state": "any",
+   "layer": "global",
+   "verb": "back"
+  },
+  {
+   "input": [
+    "k",
+    "click keep"
+   ],
+   "state": "grid",
+   "layer": "explore",
+   "verb": "keep"
+  },
+  {
+   "input": [
+    "click refine"
+   ],
+   "state": "grid",
+   "layer": "explore",
+   "verb": "refine"
+  },
+  {
+   "input": [
+    "double-click tile",
+    "enter"
+   ],
+   "state": "grid",
+   "layer": "explore",
+   "verb": "open"
+  },
+  {
+   "input": [
+    "click generate"
+   ],
+   "state": "grid",
+   "layer": "explore",
+   "verb": "generate"
+  }
+ ],
+ "flows": [
+  {
+   "id": "back-flow",
+   "layer": "global",
+   "verb": "back",
+   "start": "open",
+   "states": [
+    {
+     "id": "open"
+    },
+    {
+     "id": "closed",
+     "terminal": true,
+     "back": "open"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "open",
+     "input": "esc",
+     "to": "closed",
+     "device": "keyboard",
+     "ops": "K"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "open",
+     "input": "esc with nothing open",
+     "result": "nothing"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "closed"
+   }
+  },
+  {
+   "id": "keep-flow",
+   "layer": "explore",
+   "verb": "keep",
+   "start": "grid",
+   "states": [
+    {
+     "id": "grid"
+    },
+    {
+     "id": "done",
+     "terminal": true,
+     "back": "grid"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "grid",
+     "input": "k",
+     "to": "done",
+     "device": "keyboard",
+     "ops": "K"
+    },
+    {
+     "from": "grid",
+     "input": "click keep",
+     "to": "done",
+     "device": "mouse",
+     "ops": "MPB"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "grid",
+     "input": "click on nothing",
+     "result": "mock action text only"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "grid"
+   }
+  },
+  {
+   "id": "refine-flow",
+   "layer": "explore",
+   "verb": "refine",
+   "start": "grid",
+   "states": [
+    {
+     "id": "grid"
+    },
+    {
+     "id": "done",
+     "terminal": true,
+     "back": "grid"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "grid",
+     "input": "click refine",
+     "to": "done",
+     "device": "mouse",
+     "ops": "MPB"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "grid",
+     "input": "click on nothing",
+     "result": "mock action text only"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "grid"
+   }
+  },
+  {
+   "id": "open-flow",
+   "layer": "explore",
+   "verb": "open",
+   "start": "grid",
+   "states": [
+    {
+     "id": "grid"
+    },
+    {
+     "id": "done",
+     "terminal": true,
+     "back": "grid"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "grid",
+     "input": "double-click tile",
+     "to": "done",
+     "device": "mouse",
+     "ops": "MPBB"
+    },
+    {
+     "from": "grid",
+     "input": "enter",
+     "to": "done",
+     "device": "keyboard",
+     "ops": "K"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "grid",
+     "input": "click on nothing",
+     "result": "mock action text only"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "grid"
+   }
+  },
+  {
+   "id": "generate-flow",
+   "layer": "explore",
+   "verb": "generate",
+   "start": "grid",
+   "states": [
+    {
+     "id": "grid"
+    },
+    {
+     "id": "done",
+     "terminal": true,
+     "back": "grid"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "grid",
+     "input": "click generate",
+     "to": "done",
+     "device": "mouse",
+     "ops": "MPB"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "grid",
+     "input": "click on nothing",
+     "result": "mock action text only"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "grid"
+   }
+  }
+ ],
+ "screens": [
+  {
+   "id": "batch-review",
+   "layer": "explore",
+   "kind": "full-screen",
+   "entry": [
+    "start"
+   ],
+   "returnsTo": "none",
+   "closedBy": "nav",
+   "edges": [],
+   "hierarchy": [
+    {
+     "id": "grid",
+     "parent": "root",
+     "level": "region",
+     "priority": "primary",
+     "shown": "always",
+     "owns": [],
+     "placement": "non-diegetic"
+    },
+    {
+     "id": "tile-quick",
+     "parent": "grid",
+     "level": "component",
+     "priority": "primary",
+     "shown": "always",
+     "owns": [
+      "keep",
+      "refine",
+      "open"
+     ],
+     "placement": "non-diegetic",
+     "size": {
+      "w": 24,
+      "h": 24
+     }
+    },
+    {
+     "id": "generate-bar",
+     "parent": "root",
+     "level": "region",
+     "priority": "secondary",
+     "shown": "always",
+     "owns": [
+      "generate"
+     ],
+     "placement": "non-diegetic"
+    },
+    {
+     "id": "batch-actions",
+     "parent": "generate-bar",
+     "level": "component",
+     "priority": "secondary",
+     "shown": "always",
+     "owns": [
+      "refine"
+     ],
+     "placement": "non-diegetic"
+    },
+    {
+     "id": "inspector",
+     "parent": "root",
+     "level": "region",
+     "priority": "secondary",
+     "shown": "always",
+     "owns": [
+      "keep",
+      "refine",
+      "open"
+     ],
+     "placement": "non-diegetic"
+    },
+    {
+     "id": "refine-form",
+     "parent": "inspector",
+     "level": "component",
+     "priority": "secondary",
+     "shown": "always",
+     "owns": [
+      "refine",
+      "generate"
+     ],
+     "placement": "non-diegetic"
+    },
+    {
+     "id": "refine-requests",
+     "parent": "inspector",
+     "level": "component",
+     "priority": "secondary",
+     "shown": "always",
+     "owns": [
+      "refine"
+     ],
+     "placement": "non-diegetic"
+    },
+    {
+     "id": "rail-refine-page",
+     "parent": "root",
+     "level": "component",
+     "priority": "secondary",
+     "shown": "always",
+     "owns": [
+      "refine"
+     ],
+     "placement": "non-diegetic"
+    },
+    {
+     "id": "assistant-proposal",
+     "parent": "inspector",
+     "level": "component",
+     "priority": "secondary",
+     "shown": "always",
+     "owns": [
+      "refine",
+      "generate"
+     ],
+     "placement": "non-diegetic"
+    },
+    {
+     "id": "quick-prompt-page",
+     "parent": "root",
+     "level": "component",
+     "priority": "secondary",
+     "shown": "always",
+     "owns": [
+      "generate"
+     ],
+     "placement": "non-diegetic"
+    }
+   ]
+  }
+ ],
+ "tasks": [
+  {
+   "id": "triage-48",
+   "layer": "explore",
+   "primary": true,
+   "device": "any",
+   "steps": [
+    "open",
+    "keep"
+   ],
+   "repeat": 48,
+   "maxTime": 300,
+   "maxInputs": 150,
+   "maxMental": 48
+  }
+ ],
+ "layout": [
+  {
+   "layer": "explore",
+   "state": "grid",
+   "monitor": "3440x1440 ultrawide",
+   "targets": [
+    {
+     "id": "control-28",
+     "x": 100,
+     "y": 100,
+     "w": 28,
+     "h": 28,
+     "verb": "keep"
+    },
+    {
+     "id": "control-sm-24",
+     "x": 140,
+     "y": 100,
+     "w": 24,
+     "h": 24,
+     "verb": "refine"
+    },
+    {
+     "id": "chip-24",
+     "x": 180,
+     "y": 100,
+     "w": 24,
+     "h": 24,
+     "verb": "open"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Checkout</title>
+<style>
+  body { font: 20px system-ui; margin: 32px; }
+  main { max-width: 640px; padding: 24px; background: #f1f4f8; }
+  .summary { transform: translateX(0); }
+  button { padding: 12px 24px; font: inherit; }
+</style>
+<main>
+  <h1>Your order</h1>
+  <p>Workshop notebook</p>
+  <section class="summary" aria-label="Order total">
+    <p id="total">Total: $20.00</p>
+    <button id="pay" type="button">Pay</button>
+  </section>
+  <p id="result" role="status"></p>
+</main>
+<script type="module">
+  import { checkDOM } from './dom-check.mjs';
+  document.getElementById('result').textContent = checkDOM(document) ? 'DOM checks passed' : 'DOM checks FAILED';
+  document.getElementById('pay').onclick = () => { document.getElementById('result').textContent = 'Order paid'; };
+</script>
+</html>

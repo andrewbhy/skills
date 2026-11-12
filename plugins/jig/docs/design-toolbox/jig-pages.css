@@ -1,0 +1,77 @@
+@import url("typography/type.css");
+:root { color-scheme:light; font-family:var(--jig-font-sans); color:#222831; background:#f5f4f0; font-synthesis:none; font-size:var(--type-body); font-weight:var(--weight-regular);  line-height:var(--line-body); letter-spacing:var(--track-body); }
+* { box-sizing:border-box; }
+body { margin:0; }
+a { color:inherit; text-underline-offset:3px; }
+button,select { font:inherit; }
+button,a,select,summary { -webkit-tap-highlight-color:transparent; }
+:focus-visible { outline:3px solid #2063bc; outline-offset:4px; }
+[hidden] { display:none!important; }
+.page-header,.toolbox-main,body>footer { margin:0 auto; max-width:2200px; padding:36px clamp(20px,4vw,72px); }
+.page-header { padding-top:35px; padding-bottom:28px; }
+
+.instruction { font-size:var(--type-section); font-weight:var(--weight-strong); color:#4d5758; margin:0 0 16px;  line-height:var(--line-section); letter-spacing:var(--track-section); }
+h1 { font-size:var(--type-display); margin:0 0 18px; font-weight:var(--weight-strong);  line-height:var(--line-display); letter-spacing:var(--track-display); }
+.title-dot { color:#a4522c; }
+.intro { font-size:var(--type-title); color:#59616a; max-width:760px; margin:0 0 24px;  line-height:var(--line-title); letter-spacing:var(--track-title); }
+.header-meta { display:flex; flex-wrap:wrap; gap:12px 30px; font-size:var(--type-sm); color:#62666d;  line-height:var(--line-sm); letter-spacing:var(--track-sm); }
+.toolbox-main { padding-top:0; }
+
+.page-header { color:#222831; background:#f5f4f0; font-family:var(--jig-font-sans); font-size:var(--type-body); font-weight:var(--weight-regular);  line-height:var(--line-body); letter-spacing:var(--track-body); }
+.breadcrumb { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:0 0 42px; font-size:var(--type-sm); color:#62666d;  line-height:var(--line-sm); letter-spacing:var(--track-sm); }
+.breadcrumb a { color:inherit; text-decoration:none; }
+.breadcrumb a:hover { text-decoration:underline; }
+.breadcrumb .brand { display:inline-flex; align-items:center; gap:8px; font-family:var(--jig-font-sans); font-size:20px; font-weight:800; letter-spacing:-.7px; color:#222831; }
+.brand svg { width:32px; height:32px; flex:none; }
+.breadcrumb [aria-current] { color:#222831; }
+.page-header h1 { font-size:var(--type-display); font-weight:var(--weight-strong); margin:0 0 18px;  line-height:var(--line-display); letter-spacing:var(--track-display); }
+.page-header .intro { font-size:var(--type-title); margin:0 0 24px; color:#59616a;  line-height:var(--line-title); letter-spacing:var(--track-title); }
+.tool-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:24px; }
+.tool-card { background:#fff; border:1px solid #d9dcd6; border-radius:12px; padding:24px; min-width:0; }
+.tool-card h2,.tool-card h3 { font-size:var(--type-title); font-weight:var(--weight-strong); margin:0 0 12px;  line-height:var(--line-title); letter-spacing:var(--track-title); }
+.tool-card p { font-size:var(--type-body); color:#59616a; margin:0 0 16px;  line-height:var(--line-body); letter-spacing:var(--track-body); }
+.eyebrow { font-size:var(--type-xs); text-transform:uppercase; color:#62666d;  line-height:var(--line-xs); letter-spacing:var(--track-xs); }
+.toolbox-main { font-size:var(--type-body);  line-height:var(--line-body); letter-spacing:var(--track-body); }
+@media(max-width:540px) { .breadcrumb { gap:8px; margin-bottom:30px; } .page-header h1 { letter-spacing:-1px; } }
+.home-sections { display:grid; gap:56px; }
+.section-heading { margin:0 0 12px; font-size:var(--type-title); line-height:var(--line-title); font-weight:var(--weight-strong); }
+.section-intro { margin:0 0 24px; color:#59616a; max-width:80ch; }
+.agent-tools { border-top:1px solid #d9dcd6; padding-top:24px; }
+.agent-tools .eyebrow { margin:0 0 8px; }
+.agent-tool-list { list-style:none; margin:0; padding:0; }
+.agent-tool-list li { display:grid; grid-template-columns:minmax(160px,1fr) minmax(0,3fr); gap:12px 24px; padding:16px 0; border-top:1px solid #d9dcd6; }
+.agent-tool-list h3,.agent-tool-list p { margin:0; font-size:var(--type-body); line-height:var(--line-body); }
+.agent-tool-list p { color:#59616a; }
+.guide-main { max-width:1200px; }
+.guide-nav { display:flex; flex-wrap:wrap; gap:12px 24px; margin-bottom:32px; }
+.guide-main section { margin-block:32px; min-width:0; }
+.guide-main h2 { font-size:var(--type-title); line-height:var(--line-title); margin:28px 0 12px; }
+.guide-main h3 { font-size:var(--type-section); line-height:var(--line-section); }
+.guide-main p,.guide-main li { max-width:85ch; overflow-wrap:anywhere; }
+.guide-main pre { overflow:auto; padding:16px; background:#fff; border:1px solid #d9dcd6; border-radius:12px; }
+.guide-main code { font-family:var(--jig-font-mono); overflow-wrap:anywhere; }
+.guide-main .table-scroll { overflow:auto; max-width:100%; }
+.guide-main table { border-collapse:collapse; width:100%; background:#fff; }
+.guide-main th,.guide-main td { padding:12px; border:1px solid #d9dcd6; text-align:left; vertical-align:top; min-width:160px; overflow-wrap:anywhere; }
+.finding { padding:24px; border:1px solid #d9dcd6; border-inline-start:4px solid #a4522c; border-radius:12px; background:#fff; }
+.finding h2 { margin-top:0; }
+@media(max-width:640px) { .agent-tool-list li { grid-template-columns:minmax(0,1fr); gap:8px; } }
+
+/* Shared shell. The 23 px tile and outlined wordmark are supplied artwork;
+   their dimensions are brand geometry, independent of the spacing scale. */
+:root { --jig-brand-size:23px; --jig-shell-ground:#f5f4f0; --jig-column-guide:1200px; --jig-column-wide:2200px; --jig-gutter:clamp(20px,4vw,72px); }
+.page-header:has(> [data-jig-shell]) { padding-block:var(--grid-space-8); }
+/* Shell header followed by a title header: one 32 px gap between breadcrumb and h1, not three stacked. */
+.page-header:has(> [data-jig-shell]):has(+ .page-header) { padding-bottom:var(--grid-space-0); }
+.page-header:has(> [data-jig-shell]) + .page-header { padding-top:var(--grid-space-0); }
+/* Headers follow the content column of the page they sit above. */
+.page-header:has(~ .guide-main) { max-width:var(--jig-column-guide); }
+body > .page-header ~ main:not(.toolbox-main) { margin:0 auto; max-width:var(--jig-column-wide); padding-inline:var(--jig-gutter); }
+/* Full-bleed demo app: breadcrumb lines up with the app title bar brand (8 px in). */
+.gc > .page-header:has(> [data-jig-shell]) { padding-inline:var(--grid-space-2); }
+[data-jig-shell] { gap:var(--grid-space-2); margin-bottom:var(--grid-space-8); }
+[data-jig-shell] .brand { display:inline-flex; align-items:center; gap:var(--grid-space-2); min-block-size:var(--grid-target-touch); padding:var(--grid-space-2); background:var(--jig-shell-ground); }
+[data-jig-shell] .brand-mark { inline-size:var(--jig-brand-size); block-size:var(--jig-brand-size); flex:none; }
+[data-jig-shell] .brand-wordmark { inline-size:auto; block-size:var(--jig-brand-size); max-inline-size:none; flex:none; }
+.app-brand { display:inline-flex; align-items:center; gap:var(--grid-space-2); padding:var(--grid-space-2); background:var(--jig-shell-ground); }
+.app-brand img { block-size:var(--jig-brand-size); inline-size:auto; }

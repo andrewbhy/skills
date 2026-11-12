@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Queue design sample</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="themes/studio/theme.css">
+  <style>
+    body { background: var(--surface); color: var(--text); font-size: var(--text-body); }
+    .card { width: var(--card-width); padding: var(--space-inset); border: 1px solid var(--boundary); margin-block: var(--space-group); }
+    button { min-height: var(--control-size); color: var(--text); background: var(--surface); }
+    .play:hover { background: var(--hover); }
+    .play:focus-visible { outline: 2px solid var(--focus); }
+    .bad { color: #ff0000; }
+    .arrival { animation: arrive var(--motion-arrival) var(--ease-arrival); }
+    @keyframes arrive { from { opacity: 0; transform: translateX(var(--arrival-travel)); } to { opacity: 1; transform: translateX(0); } }
+    @media (prefers-reduced-motion: reduce) { .arrival { animation: none; } }
+  </style>
+</head>
+<body>
+  <main data-ledger="queue-screen">
+    <header data-ledger="queue-heading"><h1>What needs you</h1></header>
+    <section data-ledger="queue-list" aria-label="Work queue">
+      <div class="card"><strong>Correct the boundary condition</strong><span>Unknown</span></div>
+      <div class="card" data-ledger="work-card"><strong>경계 조건을 확인하고 아주 긴 이름을 읽어 보세요</strong><span>Waiting</span></div>
+      <div class="card" data-ledger="work-card" id="arrival" hidden><strong>Review the new sample</strong><span>Needs you</span></div>
+    </section>
+    <form data-ledger="draft-composer"><label for="draft">Direction</label><input id="draft" value="Keep this draft"></form>
+    <section data-ledger="sample-controls" aria-label="Sample controls">
+      <button class="play" id="play">Play sample</button>
+      <button id="fold" aria-label="Fold sample">⌄</button>
+    </section>
+  </main>
+  <script>
+    const arrival = document.getElementById('arrival');
+    document.getElementById('play').addEventListener('click', () => {
+      arrival.hidden = false;
+      arrival.classList.add('arrival');
+    });
+    document.getElementById('fold').addEventListener('click', () => { arrival.hidden = true; });
+  </script>
+</body>
+</html>

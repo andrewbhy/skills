@@ -1,0 +1,6 @@
+{
+  "name": "branch-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test value.test.mjs" }
+}

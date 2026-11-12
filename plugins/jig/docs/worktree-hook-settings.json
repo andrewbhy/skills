@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell|CMD",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"<jig-checkout>/scripts/hooks/block-raw-worktree-remove.mjs\""
+          }
+        ]
+      }
+    ]
+  }
+}

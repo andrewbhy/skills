@@ -1,0 +1,3 @@
+{
+  "paths": [{ "pattern": "test/**", "class": "behaviour", "seats": ["architecture", "qa"] }]
+}

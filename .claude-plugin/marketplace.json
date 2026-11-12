@@ -1,0 +1,17 @@
+{
+  "name": "andrewbhy",
+  "owner": {
+    "name": "andrewbhy"
+  },
+  "plugins": [
+    {
+      "name": "jig",
+      "description": "jig: a provider-neutral agent harness of planning, review, verification and coordination skills. State lives in ~/.jig; nothing is written into the project by default.",
+      "version": "0.1.0",
+      "license": "MIT",
+      "homepage": "https://github.com/andrewbhy/skills/tree/main/plugins/jig",
+      "source": "./plugins/jig"
+    }
+  ],
+  "description": "Marketplace for jig and related tools."
+}

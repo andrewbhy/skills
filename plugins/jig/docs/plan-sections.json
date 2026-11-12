@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "sections": ["Intent", "Acceptance", "Requirements", "Scope", "Out of scope", "Contracts", "Slices", "Verification plan", "Missed problems", "Plan-check outcome"],
+  "verificationColumns": ["Risk", "Check", "Layer", "Expected time", "Acceptor"],
+  "briefSections": ["Intent", "Acceptance", "Scope", "Plan"],
+  "conditionalSections": {
+    "Success measures": {
+      "kinds": ["build", "ui", "product", "module"],
+      "columns": ["Goal", "Outcome", "Metric", "Tier", "Baseline", "Target", "When", "Source"],
+      "maxRows": 4
+    }
+  }
+}

@@ -1,0 +1,29 @@
+<!doctype html><meta charset="utf-8"><title>Clipping risks</title>
+<style>
+body { margin: 20px; font: 16px/24px Arial; }
+ul { margin: 0; padding: 0; list-style: none; }
+.list { width: 180px; overflow: hidden; height: 18px; }
+.list li { width: 500px; white-space: nowrap; }
+.nowrap { width: 180px; white-space: nowrap; overflow: clip; }
+button { font: inherit; }
+#label { width: 55px; height: 18px; padding: 0; overflow: hidden; white-space: nowrap; }
+#pay { position: absolute; left: calc(100vw + 20px); }
+#input { width: 40px; }
+.clean .list { width: 520px; height: auto; }
+.clean .nowrap { width: 520px; }
+.clean #label { width: auto; height: auto; padding: 4px; }
+.clean #pay { position: static; }
+.clean #input { width: 240px; }
+</style>
+<main id="screen">
+<ul class="list"><li id="list-item">A planted list item with a long final word: clipped</li></ul>
+<div id="nowrap" class="nowrap">Nowrap text in a correctly sized box still loses its final words</div>
+<button id="label">Confirm purchase</button>
+<input id="input" aria-label="Reference" value="Reference number 12345">
+<button id="pay" data-visual-must-visible>Pay</button>
+<a href="#">Clean inline link</a>
+<div style="overflow:hidden;width:240px;height:24px">
+  <div id="history" style="overflow:auto;height:24px"><div style="height:100px">History scrolled out</div><div>Visible history</div></div>
+</div>
+</main>
+<script>if (location.search.includes('clean')) document.body.classList.add('clean'); document.getElementById('history').scrollTop = 100;</script>

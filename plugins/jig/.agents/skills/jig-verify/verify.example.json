@@ -1,0 +1,25 @@
+{
+  "rules": ["AGENTS.md", "docs/adr/"],
+  "app": {
+    "start": "npm run dev -- --host 127.0.0.1",
+    "ready": "http://127.0.0.1:5173 returns HTTP 200",
+    "stop": "Stop the dev process started for this check with Ctrl+C."
+  },
+  "behaviour": [
+    {
+      "name": "Add a reading-list item",
+      "paths": ["src/items/", "src/screens/list/"],
+      "reach": ["Open /list with an empty local list.", "Add a title; expect it to appear once.", "Submit an empty title; expect validation and no new item."]
+    },
+    {
+      "name": "Parse an item import without a screen",
+      "paths": ["src/import/"],
+      "reach": ["Call the exported parseItems(text) function.", "Pass one valid record, then malformed input; inspect the returned records or validation error."]
+    }
+  ],
+  "tests": {
+    "targeted": "npm test -- <test-file> (replace <test-file> with a relevant existing test path)",
+    "full": "npm run check && npm test"
+  },
+  "screens": [{ "width": 390, "height": 844 }, { "width": 1440, "height": 900 }]
+}

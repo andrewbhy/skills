@@ -1,0 +1,652 @@
+{
+ "version": 1,
+ "config": {
+  "minTarget": 32
+ },
+ "layers": [
+  {
+   "id": "combat",
+   "entry": true
+  }
+ ],
+ "verbs": [
+  {
+   "id": "back",
+   "name": "Cancel",
+   "layer": "global",
+   "noSurface": true
+  },
+  {
+   "id": "mode-move",
+   "name": "Mode move",
+   "layer": "combat",
+   "noPath": {
+    "mouse": "mode is chosen by key only"
+   }
+  },
+  {
+   "id": "mode-attack",
+   "name": "Mode attack",
+   "layer": "combat",
+   "noPath": {
+    "mouse": "mode is chosen by key only"
+   }
+  },
+  {
+   "id": "mode-bandage",
+   "name": "Mode bandage",
+   "layer": "combat",
+   "noPath": {
+    "mouse": "mode is chosen by key only"
+   }
+  },
+  {
+   "id": "mode-drag",
+   "name": "Mode drag",
+   "layer": "combat",
+   "noPath": {
+    "mouse": "mode is chosen by key only"
+   }
+  },
+  {
+   "id": "focus",
+   "name": "Pick target",
+   "layer": "combat"
+  },
+  {
+   "id": "confirm",
+   "name": "Confirm",
+   "layer": "combat"
+  },
+  {
+   "id": "wait",
+   "name": "Wait",
+   "layer": "combat",
+   "noPath": {
+    "mouse": "key only"
+   }
+  },
+  {
+   "id": "log",
+   "name": "Hide log",
+   "layer": "combat",
+   "noPath": {
+    "mouse": "key only"
+   }
+  }
+ ],
+ "inputs": [
+  {
+   "input": [
+    "esc"
+   ],
+   "state": "any",
+   "layer": "global",
+   "verb": "back"
+  },
+  {
+   "input": "m",
+   "state": "any",
+   "layer": "combat",
+   "verb": "mode-move"
+  },
+  {
+   "input": "a",
+   "state": "any",
+   "layer": "combat",
+   "verb": "mode-attack"
+  },
+  {
+   "input": "b",
+   "state": "any",
+   "layer": "combat",
+   "verb": "mode-bandage"
+  },
+  {
+   "input": "d",
+   "state": "any",
+   "layer": "combat",
+   "verb": "mode-drag"
+  },
+  {
+   "input": [
+    "tab",
+    "arrows"
+   ],
+   "state": "move",
+   "layer": "combat",
+   "verb": "focus"
+  },
+  {
+   "input": "hover target",
+   "state": "move",
+   "layer": "combat",
+   "verb": "focus"
+  },
+  {
+   "input": [
+    "enter",
+    "left-click target"
+   ],
+   "state": "move",
+   "layer": "combat",
+   "verb": "confirm"
+  },
+  {
+   "input": [
+    "tab",
+    "arrows"
+   ],
+   "state": "attack",
+   "layer": "combat",
+   "verb": "focus"
+  },
+  {
+   "input": "hover target",
+   "state": "attack",
+   "layer": "combat",
+   "verb": "focus"
+  },
+  {
+   "input": [
+    "enter",
+    "left-click target"
+   ],
+   "state": "attack",
+   "layer": "combat",
+   "verb": "confirm"
+  },
+  {
+   "input": [
+    "tab",
+    "arrows"
+   ],
+   "state": "bandage",
+   "layer": "combat",
+   "verb": "focus"
+  },
+  {
+   "input": "hover target",
+   "state": "bandage",
+   "layer": "combat",
+   "verb": "focus"
+  },
+  {
+   "input": [
+    "enter",
+    "left-click target"
+   ],
+   "state": "bandage",
+   "layer": "combat",
+   "verb": "confirm"
+  },
+  {
+   "input": [
+    "tab",
+    "arrows"
+   ],
+   "state": "drag",
+   "layer": "combat",
+   "verb": "focus"
+  },
+  {
+   "input": "hover target",
+   "state": "drag",
+   "layer": "combat",
+   "verb": "focus"
+  },
+  {
+   "input": [
+    "enter",
+    "left-click target"
+   ],
+   "state": "drag",
+   "layer": "combat",
+   "verb": "confirm"
+  },
+  {
+   "input": "w",
+   "state": "any",
+   "layer": "combat",
+   "verb": "wait"
+  },
+  {
+   "input": "l",
+   "state": "any",
+   "layer": "combat",
+   "verb": "log"
+  }
+ ],
+ "flows": [
+  {
+   "id": "back-flow",
+   "layer": "global",
+   "verb": "back",
+   "start": "any-mode",
+   "states": [
+    {
+     "id": "any-mode"
+    },
+    {
+     "id": "attack",
+     "terminal": true,
+     "back": "any-mode"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "any-mode",
+     "input": "esc",
+     "to": "attack",
+     "device": "keyboard",
+     "ops": "K"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "any-mode",
+     "input": "esc in attack mode with nothing focused",
+     "result": "nothing"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "attack"
+   }
+  },
+  {
+   "id": "mode-move-flow",
+   "layer": "combat",
+   "verb": "mode-move",
+   "start": "attack",
+   "states": [
+    {
+     "id": "attack"
+    },
+    {
+     "id": "move",
+     "terminal": true,
+     "back": "attack"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "attack",
+     "input": "m",
+     "to": "move",
+     "device": "keyboard",
+     "ops": "MK"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "attack",
+     "input": "key during enemy phase",
+     "result": "ignored"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "attack"
+   }
+  },
+  {
+   "id": "mode-attack-flow",
+   "layer": "combat",
+   "verb": "mode-attack",
+   "start": "attack",
+   "states": [
+    {
+     "id": "attack"
+    },
+    {
+     "id": "attack-set",
+     "terminal": true,
+     "back": "attack"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "attack",
+     "input": "a",
+     "to": "attack-set",
+     "device": "keyboard",
+     "ops": "MK"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "attack",
+     "input": "key during enemy phase",
+     "result": "ignored"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "attack"
+   }
+  },
+  {
+   "id": "mode-bandage-flow",
+   "layer": "combat",
+   "verb": "mode-bandage",
+   "start": "attack",
+   "states": [
+    {
+     "id": "attack"
+    },
+    {
+     "id": "bandage",
+     "terminal": true,
+     "back": "attack"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "attack",
+     "input": "b",
+     "to": "bandage",
+     "device": "keyboard",
+     "ops": "MK"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "attack",
+     "input": "key during enemy phase",
+     "result": "ignored"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "attack"
+   }
+  },
+  {
+   "id": "mode-drag-flow",
+   "layer": "combat",
+   "verb": "mode-drag",
+   "start": "attack",
+   "states": [
+    {
+     "id": "attack"
+    },
+    {
+     "id": "drag",
+     "terminal": true,
+     "back": "attack"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "attack",
+     "input": "d",
+     "to": "drag",
+     "device": "keyboard",
+     "ops": "MK"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "attack",
+     "input": "key during enemy phase",
+     "result": "ignored"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "attack"
+   }
+  },
+  {
+   "id": "focus-flow",
+   "layer": "combat",
+   "verb": "focus",
+   "start": "attack",
+   "states": [
+    {
+     "id": "attack"
+    },
+    {
+     "id": "focused",
+     "terminal": true,
+     "back": "attack"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "attack",
+     "input": "tab",
+     "to": "focused",
+     "device": "keyboard",
+     "ops": "K"
+    },
+    {
+     "from": "attack",
+     "input": "hover target",
+     "to": "focused",
+     "device": "mouse",
+     "ops": "P"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "attack",
+     "input": "hover empty tile",
+     "result": "nothing changes, no reason shown"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "attack"
+   }
+  },
+  {
+   "id": "confirm-flow",
+   "layer": "combat",
+   "verb": "confirm",
+   "start": "attack",
+   "states": [
+    {
+     "id": "attack"
+    },
+    {
+     "id": "acted",
+     "terminal": true,
+     "back": "attack"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "attack",
+     "input": "left-click target",
+     "to": "acted",
+     "device": "mouse",
+     "ops": "MPB"
+    },
+    {
+     "from": "attack",
+     "input": "enter",
+     "to": "acted",
+     "device": "keyboard",
+     "ops": "K"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "attack",
+     "input": "click an illegal tile",
+     "result": "silently ignored"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "attack"
+   }
+  },
+  {
+   "id": "wait-flow",
+   "layer": "combat",
+   "verb": "wait",
+   "start": "attack",
+   "states": [
+    {
+     "id": "attack"
+    },
+    {
+     "id": "done",
+     "terminal": true,
+     "back": "attack"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "attack",
+     "input": "w",
+     "to": "done",
+     "device": "keyboard",
+     "ops": "K"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "attack",
+     "input": "w in enemy phase",
+     "result": "ignored"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "attack"
+   }
+  },
+  {
+   "id": "log-flow",
+   "layer": "combat",
+   "verb": "log",
+   "start": "attack",
+   "states": [
+    {
+     "id": "attack"
+    },
+    {
+     "id": "done",
+     "terminal": true,
+     "back": "attack"
+    }
+   ],
+   "transitions": [
+    {
+     "from": "attack",
+     "input": "l",
+     "to": "done",
+     "device": "keyboard",
+     "ops": "K"
+    }
+   ],
+   "invalid": [
+    {
+     "from": "attack",
+     "input": "l in enemy phase",
+     "result": "ignored"
+    }
+   ],
+   "back": {
+    "input": "esc",
+    "to": "attack"
+   }
+  }
+ ],
+ "screens": [
+  {
+   "id": "play",
+   "layer": "combat",
+   "kind": "full-screen",
+   "entry": [
+    "start"
+   ],
+   "returnsTo": "none",
+   "closedBy": "q on end screen",
+   "edges": [
+    {
+     "input": "encounter over",
+     "to": "end"
+    }
+   ],
+   "hierarchy": [
+    {
+     "id": "board",
+     "parent": "root",
+     "level": "region",
+     "priority": "primary",
+     "shown": "always",
+     "owns": [
+      "focus",
+      "confirm"
+     ],
+     "placement": "spatial",
+     "eye": 1
+    },
+    {
+     "id": "log",
+     "parent": "root",
+     "level": "region",
+     "priority": "secondary",
+     "shown": "always",
+     "owns": [
+      "log"
+     ],
+     "placement": "non-diegetic"
+    }
+   ]
+  },
+  {
+   "id": "end",
+   "layer": "combat",
+   "kind": "full-screen",
+   "returnsTo": "play",
+   "closedBy": "r or n",
+   "hierarchy": [
+    {
+     "id": "end-text",
+     "parent": "root",
+     "level": "region",
+     "priority": "primary",
+     "shown": "always",
+     "owns": [],
+     "placement": "non-diegetic"
+    }
+   ]
+  }
+ ],
+ "tasks": [
+  {
+   "id": "play-one-turn",
+   "layer": "combat",
+   "primary": true,
+   "device": "any",
+   "steps": [
+    "mode-move",
+    "confirm",
+    "mode-attack",
+    "confirm"
+   ],
+   "maxTime": 8,
+   "maxInputs": 3,
+   "maxMental": 3
+  }
+ ],
+ "feedback": [
+  {
+   "id": "attack-result",
+   "event": "attack resolves",
+   "verb": "confirm",
+   "layer": "combat",
+   "object": "",
+   "space": "",
+   "text": "a line in the log panel",
+   "logOnly": true,
+   "reducedMotion": "none"
+  }
+ ]
+}

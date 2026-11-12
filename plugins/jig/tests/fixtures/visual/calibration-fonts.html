@@ -1,0 +1,7 @@
+<!doctype html><meta charset="utf-8"><title>Font matrix calibration</title>
+<style>body{font:14px Arial;color:#000;background:#fff} #label{display:block;width:80px;white-space:nowrap;overflow:hidden} body[data-font=wide] #label{font-size:24px}</style>
+<button id="control" data-component="control"><span id="label">Customize</span></button>
+<script>
+window.jigFonts={ids:['default','wide'],set(id){document.body.dataset.font=id;}};
+window.jigStates=[{name:'default',scope:'#control',setup(){document.querySelector('#control').dataset.state='default';},reset(){}},{name:'selected',scope:'#control',setup(){document.querySelector('#control').dataset.state='selected';},reset(){}}];
+</script>

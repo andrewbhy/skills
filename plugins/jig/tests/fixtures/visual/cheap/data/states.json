@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "tokenFiles": ["tokens.css"],
+  "selectionRadiusToken": "--radius-selection",
+  "presets": [{"name":"default","selector":":root"},{"name":"violet","selector":":root[data-accent=violet]"}],
+  "roles": {"body":{"sizeToken":"--body","weightToken":"--weight"}},
+  "accentPairs": [{"textToken":"--on-accent","fillToken":"--selected"}],
+  "states": [
+    {"name":"row-default","component":"row","state":"default","scope":"#row-default","role":"body","textToken":"--ink","fillToken":"--paper","borderToken":"--border","sizeToken":"--body","weightToken":"--weight","static":true,"files":["sheet.css"]},
+    {"name":"row-hover","component":"row","state":"hover","scope":"#row-hover","role":"body","textToken":"--ink","fillToken":"--hover","borderToken":"--border","sizeToken":"--body","weightToken":"--weight","static":true,"files":["sheet.css"]},
+    {"name":"row-selected","component":"row","state":"selected","scope":"#row-selected","role":"body","textToken":"--on-accent","fillToken":"--selected","borderToken":"--border","sizeToken":"--body","weightToken":"--weight","static":true,"filledControl":true,"files":["sheet.css"]}
+  ]
+}

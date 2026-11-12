@@ -1,0 +1,11 @@
+<!doctype html><meta charset="utf-8"><title>Cheap static states</title>
+<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="sheet.css">
+<main id="sheet"></main>
+<script src="data/states.js"></script>
+<script>
+const rows=window.jigStateTable.states;
+function rowTemplate(row){const el=document.createElement('div');el.id=row.name;el.dataset.component=row.component;el.dataset.state=row.state;el.dataset.role=row.role;el.setAttribute('aria-selected',String(row.state==='selected'));el.textContent='release-notes.md';return el;}
+window.jigStates=rows.map(row=>({...row}));
+document.querySelector('main').append(...rows.map(rowTemplate));
+window.jigFonts=['default','wide'];window.jigFonts.set=id=>document.documentElement.dataset.font=id;
+</script>

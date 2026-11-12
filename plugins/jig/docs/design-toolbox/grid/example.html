@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Grid worked example · jig</title>
+  <link rel="stylesheet" href="../jig-pages.css">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="guide.css">
+  <link rel="stylesheet" href="example.css">
+</head>
+<body data-grid data-grid-type="vast">
+<header class="page-header"><nav class="breadcrumb" aria-label="Breadcrumb" data-jig-shell="1" data-ledger="site-shell"><a class="brand" href="../../../README.md" aria-label="jig"><img class="brand-mark" src="../logo/final/ji-red-23.svg" width="23" height="23" alt=""><img class="brand-wordmark" src="../logo/final/jig-wordmark-charcoal.svg" alt="" height="23"></a><span aria-hidden="true">/</span><a href="../index.html">Design toolbox</a><span aria-hidden="true">/</span><span aria-current="page">Grid worked example</span></nav></header>
+<header class="page-header">
+  <h1>One board, five widths<span class="title-dot">.</span></h1>
+  <p class="intro">Keep the text size. Give each region the room it needs.</p>
+  <p class="grid-reading">A working layout prototype: Needs you, a board with mixed spans, and chat. Choose an exact container width or let it fit your window. Wide previews scroll inside their labelled frame. <a href="index.html">Read the grid guide</a>.</p>
+</header>
+<main class="toolbox-main grid-stack example-lab">
+  <div class="grid-cluster">
+    <label for="preview-width">Preview width</label>
+    <select id="preview-width"><option value="auto">Fit window</option><option value="420">420 px</option><option value="760">760 px</option><option value="1100">1100 px</option><option value="1440">1440 px</option><option value="1920">1920 px</option></select>
+    <span id="preview-status" role="status">Fit window · widths are container sizes</span>
+  </div>
+  <div class="example-scroll" role="region" aria-label="Board preview; wide sizes scroll horizontally" tabindex="0">
+    <div id="example-viewport" class="grid-region-container">
+      <div class="grid-shell">
+        <nav class="grid-rail grid-panel" aria-label="Workspace"><div class="grid-stack grid-stack--inner"><a href="#board-title">Board</a><a href="#needs-title">Needs you</a></div></nav>
+        <section class="grid-main grid-region grid-stack" aria-labelledby="board-title">
+          <header class="grid-panel grid-stack grid-stack--inner">
+            <div class="grid-cluster"><h2 id="board-title">Release board</h2><span class="example-meta">Today · 6 items</span></div>
+            <div class="grid-cluster"><button type="button" class="grid-open-rail" data-open="workspace">Workspace</button><button type="button" class="grid-open-side" data-open="chat">Open chat</button><button type="button" class="grid-open-second" data-open="notes">Release notes</button></div>
+          </header>
+          <section class="grid-panel grid-stack grid-stack--inner needs-row" aria-labelledby="needs-title">
+            <h3 id="needs-title">Needs you</h3>
+            <div class="grid-cluster"><p>Choose the release summary before Friday.</p><a class="example-action" href="#summary">Review summary</a><span class="example-meta">1 decision</span></div>
+          </section>
+          <div class="grid-columns example-board">
+            <article class="grid-span-two-thirds region-card grid-stack grid-stack--inner" id="summary"><span class="example-meta">Decision · ready for review</span><h3>Make the next step clear</h3><p>The summary puts the decision first, then the supporting work. Related details stay close; the next group gets a full outer gap.</p><p><strong>Next:</strong> agree the wording with the release owner.</p></article>
+            <article class="grid-span-third region-card grid-stack grid-stack--inner"><span class="example-meta">Progress</span><h3>Checks complete</h3><p class="grid-numeral">12 / 14</p><p>Two checks await a person.</p></article>
+            <article class="grid-span-half region-card grid-stack grid-stack--inner"><span class="example-meta">Action · in progress</span><h3>Publish the guide</h3><p>Check local links and include a useful first example.</p></article>
+            <article class="grid-span-half region-card grid-stack grid-stack--inner"><span class="example-meta">Note</span><h3>Keep the long filename readable</h3><p>release-summary-with-accessibility-and-localisation-notes.md</p></article>
+            <article class="grid-span-two-thirds region-card grid-stack grid-stack--inner"><span class="example-meta">Question</span><h3>What changes on a narrow screen?</h3><p>Cards span the available tracks. Chat moves to an accessible sheet; its opener stays in the board header. Font sizes and the gutter stay fixed.</p></article>
+            <article class="grid-span-third region-card grid-stack grid-stack--inner"><span class="example-meta">Done</span><h3>Record the decision</h3><p>One place for the chosen wording and its reason.</p></article>
+          </div>
+        </section>
+        <aside class="grid-side grid-panel example-chat" aria-label="Release chat" id="chat-region">
+          <div class="grid-stack grid-stack--inner" id="chat-content"><h2>Release chat</h2><div class="grid-stack grid-stack--inner example-messages" role="log" aria-label="Messages"><p><strong>Sam</strong><br>The summary is ready. Can you check the first paragraph?</p><p><strong>You</strong><br>I’ll review it with the board.</p></div><form class="grid-stack grid-stack--inner example-composer"><label for="chat-message">Message</label><textarea id="chat-message" name="message" rows="3" required placeholder="Add a release note"></textarea><button type="submit">Send message</button></form></div>
+        </aside>
+        <aside class="grid-second grid-panel grid-stack grid-stack--inner" aria-label="Release notes"><h2>Release notes</h2><p>Extra context has its own pane when the shell has room. It is available from the header at smaller sizes.</p><a href="#summary">Return to the decision</a></aside>
+      </div>
+    </div>
+  </div>
+  <p class="grid-reading">The board owns a nested region container, so its columns respond to its own available width. The outer shell reveals rail / chat / notes at 840 / 1200 / 1600 px. These are prototype fit choices; browser checks and personal review are pending.</p>
+</main>
+<dialog id="example-dialog" aria-labelledby="sheet-title"><div class="grid-stack"><div class="grid-cluster"><h2 id="sheet-title">Workspace</h2><button type="button" id="sheet-close">Close</button></div><div id="sheet-content"></div></div></dialog>
+<script src="example.js"></script>
+</body>
+</html>

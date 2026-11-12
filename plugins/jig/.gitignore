@@ -1,0 +1,12 @@
+/.jig/telemetry.jsonl
+/.jig/*
+!/.jig/testing.json
+/docs/design-toolbox/components/evidence/
+/node_modules/
+/.npm-cache/
+/visual-evidence/
+/.jig/worktrees.json
+/.jig/worktrees.json.tmp
+/.jig/worktrees.lock/
+/.jig/signals.jsonl
+/.jig/retros/

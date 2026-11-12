@@ -1,0 +1,6 @@
+:root {
+  --ink: #111111; --secondary: #444444; --paper: #ffffff;
+  --hover: #dddddd; --selected: #174b91; --on-accent: #ffffff;
+  --border: #888888; --body: 14px; --weight: 400; --radius-selection: 0px;
+}
+:root[data-accent=violet] { --selected: #662299; }

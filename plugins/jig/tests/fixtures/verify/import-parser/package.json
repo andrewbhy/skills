@@ -1,0 +1,10 @@
+{
+  "name": "import-parser-fixture",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test:targeted": "node --test test/parse-items.test.mjs",
+    "test": "node --test test/*.test.mjs"
+  }
+}

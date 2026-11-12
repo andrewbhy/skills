@@ -1,0 +1,22 @@
+<!doctype html><meta charset="utf-8"><title>Real page runner regressions</title>
+<style>
+body{margin:0;font:16px/24px sans-serif;min-height:20000px}
+#component{position:relative;margin:40px;width:400px;height:300px;background:white}
+#provider{position:absolute;left:10px;top:10px;width:24px;height:24px;background:blue}
+#inset{position:absolute;left:20px;top:30px;width:80px;height:16px;background:green}
+#controls{position:absolute;top:80px;left:16px}#authored{margin-top:3px}
+#scaled{position:absolute;top:140px;left:16px;width:137.5px;height:71.5px}
+#hairline{position:absolute;left:16.5px;top:240px;width:100px;height:1px;background:black}
+#outside{position:absolute;top:10000px}
+</style>
+<main id="component">
+  <span id="provider" aria-label="Provider">P</span><span id="inset">Live</span>
+  <div id="controls"><input id="ua" type="range" aria-label="Native default"><input id="authored" aria-label="Authored margin" value="Text"></div>
+  <svg id="scaled" viewBox="0 0 100 50"><rect x=".5" y=".5" width="99" height="49" fill="black"/><text x="4" y="25" fill="white">Scaled</text></svg>
+  <div id="hairline"></div>
+  <fieldset id="ua-fieldset" style="position:absolute;left:180px;top:180px"><legend>UA insets</legend>Default padding</fieldset>
+</main>
+<div id="outside">Far below the component</div>
+<script>
+window.jigStates = ['first','repeated'].map(name => ({ name, scope:'#component', setup(){}, reset(){} }));
+</script>

@@ -1,0 +1,15 @@
+<!doctype html><meta charset="utf-8"><title>Motion risks</title>
+<style>#dot, #caret { position: absolute; width: 8px; height: 8px; background: blue; top: 30px; left: 30px; } #caret { top: 60px; }</style>
+<main id="screen"><div id="dot"></div><div id="caret" data-visual-caret></div></main>
+<script>
+let frame = 0;
+function step() {
+  frame++;
+  if (!location.search.includes('clean')) {
+    dot.style.transform = frame % 12 === 0 ? 'translate(100px,70px)' : '';
+    caret.style.transform = frame % 24 < 12 ? '' : 'translateX(50px)';
+  }
+  requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+</script>

@@ -1,0 +1,18 @@
+/* All fixtures use production tokens; geometry has separate token names. */
+@import '../../../docs/design-toolbox/grid/tokens.css';
+[data-grid] {
+  --fixture-card-width: 120px;
+  --fixture-card-height: 96px;
+  --fixture-text-width: 640px;
+  --fixture-clip-width: 48px;
+  --fixture-shift: 12px;
+  font-size: var(--grid-type-content);
+  font-family: sans-serif;
+  margin: var(--grid-space-0);
+  padding: var(--grid-space-4);
+}
+* { box-sizing: border-box; }
+p { margin: var(--grid-space-0); }
+.cards { display: flex; gap: var(--grid-space-4); }
+.card { flex: 0 0 var(--fixture-card-width); min-height: var(--fixture-card-height); padding: var(--grid-space-2); }
+.reading { overflow-wrap: anywhere; }
