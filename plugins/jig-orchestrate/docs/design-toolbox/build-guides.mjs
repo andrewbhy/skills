@@ -98,7 +98,12 @@ function inline(source, file) {
 }
 
 export function renderMarkdown(markdown, file) {
-  const lines=markdown.replace(/<!--[\s\S]*?-->/g,'').trim().split('\n'), out=[];
+  let previous;
+  do {
+    previous=markdown;
+    markdown=markdown.replace(/<!--[\s\S]*?-->/g,'');
+  } while (markdown!==previous);
+  const lines=markdown.trim().split('\n'), out=[];
   const fmt=text=>inline(text,file);
   let i=0;
   const boundary=line=>!line?.trim() || /^(?:#{1,6} |```|\||[-*] |\d+\. )/.test(line);

@@ -8,9 +8,10 @@ import { createHash } from 'node:crypto';
 import { neutralScale } from './wada.mjs';
 import { generate, root, appContext } from './build.mjs';
 import { palettes, oklch } from './palettes.mjs';
+import { stripNonMarkup } from '../../check-page-shell.mjs';
 
 function verifyCoverage(html, docs, sources) {
-  const markup=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,'');
+  const markup=stripNonMarkup(html, { comments: false });
   const tiles=[...markup.matchAll(/<article class="tile" id="([^"]+)"[^>]*data-source="([^"]+)"/g)];
   assert.equal(tiles.length,72,'Expected 72 static tiles');
   assert.equal(new Set(tiles.map(t=>t[1])).size,72,'Duplicate tile IDs');
@@ -34,7 +35,7 @@ const anchors=[...docs.matchAll(/<a id="([^"]+)"><\/a>/g)].map(m=>m[1]);
 assert.equal(new Set(anchors).size,anchors.length,'Duplicate source/tile anchors');
 
 let scripts=0;
-for (const [,attributes,body] of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)) {
+for (const [,attributes,body] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\b[^>]*>/gi)) {
   if (attributes.includes('application/json')) JSON.parse(body);
   else { new vm.Script(body,{filename:'index.html:inline'}); scripts++; }
 }
@@ -45,7 +46,7 @@ const galleryOnly=html.replace(/<nav class="breadcrumb"[^>]*>[\s\S]*?<\/nav>/, '
   .replace(/<link rel="stylesheet" href="\.\.\/\.\.\/(?:jig-pages\.css|grid\/tokens\.css)">/g, '');
 assert(!/<script[^>]+src=|<link[^>]+href=|<img[^>]+src=/i.test(galleryOnly),'Only shared shell assets may be external to the gallery');
 assert(html.includes('Pick the groups you like. We build themes from your picks.'));
-const markup=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,'');
+const markup=stripNonMarkup(html, { comments: false });
 assert.equal((markup.match(/data-node=/g)||[]).length,72*3,'Each tile needs three nodes');
 assert.equal((markup.match(/data-edge=/g)||[]).length,72*2,'Each tile needs two edges');
 assert.equal((markup.match(/<details class="contrast /g)||[]).length,72);

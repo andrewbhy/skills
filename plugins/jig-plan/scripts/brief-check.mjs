@@ -10,9 +10,18 @@ import { confirmedLink, loadGlossaries } from './goal-translate.mjs';
 const localSchema = new URL('./plan-sections.json', import.meta.url);
 export const schema = JSON.parse(readFileSync(existsSync(localSchema) ? localSchema : new URL('../docs/plan-sections.json', import.meta.url), 'utf8'));
 
+function stripComments(text) {
+  let previous;
+  do {
+    previous = text;
+    text = text.replace(/<!--[\s\S]*?-->/g, '');
+  } while (text !== previous);
+  return text;
+}
+
 // Only top-level plan sections count; headings in examples/fences cannot satisfy them.
 export function sections(text) {
-  const clean = text.replace(/<!--[\s\S]*?-->/g, '').replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, '');
+  const clean = stripComments(text).replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, '');
   const found = new Map();
   const matches = [...clean.matchAll(/^## ([^\n]+)\n/gm)];
   for (let i = 0; i < matches.length; i++) {
@@ -64,7 +73,7 @@ export function checkPlan(text, config = {}, options) {
 // Each round brief must name its inputs and executable checks itself. A link
 // to a complete plan cannot silently supply a missing round contract.
 export function mockupGridReasons(text) {
-  const clean = text.replaceAll('\r\n', '\n').replace(/<!--[\s\S]*?-->/g, '')
+  const clean = stripComments(text.replaceAll('\r\n', '\n'))
     .replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, '');
   const identity = (clean.match(/^# (.*)$/m)?.[1] ?? '') + '\n' + (sections(clean).get('intent') ?? '');
   if (!/\b(?:mockups?|jig-mockup)\b/i.test(identity)) return [];
@@ -144,7 +153,7 @@ export function inspectFile(path, read = p => readFileSync(p, 'utf8'), { workspa
 }
 
 export function briefReasons(text, { root = process.cwd(), home } = {}) {
-  const clean = text.replaceAll('\r\n', '\n').replace(/<!--[\s\S]*?-->/g, '').replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, '');
+  const clean = stripComments(text.replaceAll('\r\n', '\n')).replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, '');
   const reasons = [];
   if (layers(root, { home }).orchestration && !/^jig-reservation:[ \t]*[a-zA-Z0-9][a-zA-Z0-9_-]*[ \t]*$/m.test(clean)) reasons.push('Missing or invalid jig-reservation: line');
   for (const label of ['Workspace', 'Data', 'Report']) {

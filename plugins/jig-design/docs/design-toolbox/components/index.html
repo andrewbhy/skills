@@ -2191,7 +2191,8 @@
  applyData('Demo');
  const theme=q('#theme'), themeLink=q('#theme-pack'); let pendingTheme;
  theme.addEventListener('change',()=>{
-  const next='../themes/'+theme.value+'/theme.css';
+  if(!/^[a-z0-9-]+$/.test(theme.value)) { q('#mode-receipt').textContent='Theme could not load. Choose another pack.'; return; }
+  const next='../themes/'+encodeURIComponent(theme.value)+'/theme.css';
   if(pendingTheme) { themeLink.removeEventListener('load',pendingTheme); }
   pendingTheme=()=>{q('#mode-receipt').textContent='Theme loaded: '+theme.value; pendingTheme=null;};
   themeLink.addEventListener('load',pendingTheme,{once:true});

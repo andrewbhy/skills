@@ -5,9 +5,31 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { breadcrumb, brand, pageName, localPath, htmlFiles, toolboxRoot } from './page-shell.mjs';
 
+export function stripNonMarkup(html, { comments = true } = {}) {
+  const out = [];
+  const tagBoundary = char => char !== undefined && /[\s>/]/.test(char);
+  let at = 0;
+  while (at < html.length) {
+    if (comments && html.startsWith('<!--', at)) {
+      const end = html.indexOf('-->', at + 4);
+      at = end < 0 ? html.length : end + 3;
+    } else if (html.slice(at, at + 7).toLowerCase() === '<script' && tagBoundary(html[at + 7])) {
+      let end = html.indexOf('<', at + 7);
+      while (end >= 0 && !(html.slice(end, end + 8).toLowerCase() === '</script' && tagBoundary(html[end + 8]))) {
+        end = html.indexOf('<', end + 1);
+      }
+      const close = end < 0 ? -1 : html.indexOf('>', end + 8);
+      at = close < 0 ? html.length : close + 1;
+    } else {
+      out.push(html[at++]);
+    }
+  }
+  return out.join('');
+}
+
 // Runtime pages serve the same files at /brand rather than toolbox-relative URLs.
 export function inspectBrandArtwork(html) {
-  const source = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+  const source = stripNonMarkup(html);
   const findings = [];
   const brands = [...source.matchAll(/<a\b[^>]*class="[^"]*\b(?:brand|app-brand)\b[^"]*"[^>]*>[\s\S]*?<\/a>/g)].map(m => m[0]);
   if (brands.length !== 1) findings.push('page must have exactly one shared brand');
@@ -19,7 +41,7 @@ export function inspectBrandArtwork(html) {
 }
 
 export function inspectShell(html, file) {
-  const source = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+  const source = stripNonMarkup(html);
   const findings = [];
   if (!source.includes(breadcrumb(file, pageName(source)))) findings.push('missing or drifted shared breadcrumb/brand shell');
   if (!/<body\b[^>]*\sdata-grid(?:[\s=>])/.test(source)) findings.push('body must opt in to grid tokens with data-grid');

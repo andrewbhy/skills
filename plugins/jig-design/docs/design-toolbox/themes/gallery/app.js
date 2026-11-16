@@ -140,7 +140,7 @@ function init() {
     list.replaceChildren();
     for (const p of PALETTES.filter(p=>favourites.has(p.id))) {
       const li=document.createElement('li'), a=document.createElement('a');
-      a.href=`#${p.id}`; a.textContent=`${p.name} · ${p.mode}`;
+      a.href='#'+encodeURIComponent(p.id); a.textContent=`${p.name} · ${p.mode}`;
       a.addEventListener('click', () => {
         mode.value='all'; scheme.value='all'; refreshFilter();
       });

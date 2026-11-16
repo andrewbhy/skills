@@ -65,8 +65,8 @@ const waitLabel = { person: 'you', coordinator: 'coordinator', agent: 'agent', d
 function waitEl(r) {
   if (!r.waitWho) return null;
   const w = el('div', 'w');
-  if (r.waitWho === 'person') { const b = document.createElement('b'); b.textContent = 'you'; w.append((({ answer: 'Answer', try: 'Try', approve: 'Approve', read: 'Read' })[r.action] || 'Open') + ' · waits on ', b); } else w.append('waits on ' + (waitLabel[r.waitWho] || r.waitWho));
-  if (r.waitNote) w.append(' · ' + r.waitNote);
+  if (r.waitWho === 'person') { const b = document.createElement('b'); b.textContent = 'you'; w.append(document.createTextNode((({ answer: 'Answer', try: 'Try', approve: 'Approve', read: 'Read' })[r.action] || 'Open') + ' · waits on '), b); } else w.append(document.createTextNode('waits on ' + (waitLabel[r.waitWho] || r.waitWho)));
+  if (r.waitNote) w.append(document.createTextNode(' · ' + r.waitNote));
   w.title = r.wait; return w;
 }
 
@@ -227,14 +227,14 @@ function qThread(c) {
 }
 function qCard(c) {
   const card = el('div', 'qcard'); card.id = 'q-' + c.n;
-  const head = el('div', 'qt'); head.append(el('span', 'qn', c.n + '.'), c.title);
+  const head = el('div', 'qt'); head.append(el('span', 'qn', c.n + '.'), document.createTextNode(c.title));
   const href = c.link ? safeHref(c.link.href) : '#';
   if (href !== '#') { const a = el('a', 'qsrc', 'source: ' + (c.link.label || 'document')); a.href = safeHref(href); if (/^https?:/.test(href)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; } head.append(a); } else if (c.link) head.append(el('span', 'qsrc meta', c.link.label || ''));
   if (unread('oq-' + c.n)) { const u = el('span', 'udot'); u.title = 'New since you last looked'; u.style.marginLeft = '8px'; head.append(u); }
   card.append(head);
   card.append(qThread(c));
   if (c.why) card.append(el('div', 'qwhy', c.why));
-  if (c.recommended) { const r = el('div', 'qrec'); r.append(el('b', null, 'Recommended: '), c.recommended); card.append(r); }
+  if (c.recommended) { const r = el('div', 'qrec'); r.append(el('b', null, 'Recommended: '), document.createTextNode(c.recommended)); card.append(r); }
   if (!c.subs.length) {
     card.append(qButtons(c.id, c.recommended, { answer: () => answerForm(c.id, card, 'question ' + c.n) }));
     return card;
@@ -253,10 +253,10 @@ function qCard(c) {
     row.append(el('span', 'qsn', s.n));
     const body = document.createElement('div');
     if (s.state === 'open') {
-      body.append(s.text);
-      if (s.recommended) { const r = el('div', 'qrec'); r.append(el('b', null, 'Recommended: '), s.recommended); body.append(r); }
+      body.append(document.createTextNode(s.text));
+      if (s.recommended) { const r = el('div', 'qrec'); r.append(el('b', null, 'Recommended: '), document.createTextNode(s.recommended)); body.append(r); }
       body.append(qButtons(s.id, s.recommended, { answer: () => answerForm(s.id, row, 'question ' + s.n) }));
-    } else body.append(s.text + ' — ' + (s.state === 'deferred' ? 'deferred' : s.state === 'accepted' ? 'default accepted' : s.state === 'replied' ? 'replied, awaiting coordinator' + (s.answer && s.answer.text ? ': ' + s.answer.text : '') : 'answered' + (s.answer && s.answer.text ? ': ' + s.answer.text : '')));
+    } else body.append(document.createTextNode(s.text + ' — ' + (s.state === 'deferred' ? 'deferred' : s.state === 'accepted' ? 'default accepted' : s.state === 'replied' ? 'replied, awaiting coordinator' + (s.answer && s.answer.text ? ': ' + s.answer.text : '') : 'answered' + (s.answer && s.answer.text ? ': ' + s.answer.text : ''))));
     row.append(body); card.append(row);
   }
   return card;
@@ -278,7 +278,7 @@ function renderQuestions() {
   const n = q.given.length + q.fileAnswered.length; $('oqans').hidden = !n; $('oqanscnt').textContent = '(' + n + ')';
   for (const g of q.given) {
     const line = el('div', 'meta'); line.style.margin = '4px 0';
-    line.append((g.status === 'deferred' ? 'Deferred ' : g.status === 'accepted' ? 'Accepted default for ' : g.status === 'replied' ? 'Replied (awaiting coordinator) on ' : 'Answered ') + g.n + ' (' + (g.title || '').slice(0, 60) + ')' + ((g.status === 'answered' || g.status === 'replied') && g.text ? ': ' + g.text : '') + ' · ' + when(g.at) + ' ');
+    line.append(document.createTextNode((g.status === 'deferred' ? 'Deferred ' : g.status === 'accepted' ? 'Accepted default for ' : g.status === 'replied' ? 'Replied (awaiting coordinator) on ' : 'Answered ') + g.n + ' (' + (g.title || '').slice(0, 60) + ')' + ((g.status === 'answered' || g.status === 'replied') && g.text ? ': ' + g.text : '') + ' · ' + when(g.at) + ' '));
     const b = el('button', 'sbtn', g.status === 'deferred' || g.status === 'replied' ? 'Ask again' : 'Reopen'); b.addEventListener('click', () => act('/api/questions/' + g.id + '/reopen', {}, 'Reopened ' + g.n)); line.append(b);
     ans.append(line);
   }
@@ -306,8 +306,8 @@ function renderIssues() {
   panel.append(el('h3', null, 'Board issues (' + bi.length + ')'));
   for (const b of bi) {
     const row = el('div', 'iss');
-    if (/^[A-Za-z0-9][\w.-]*$/.test(b.id)) { const a = el('a', null, b.id); a.href = safeHref('/t/' + encodeURIComponent(b.id)); row.append(a, ' \u2014 '); } else row.append(b.id + ' \u2014 ');
-    row.append(b.problem);
+    if (/^[A-Za-z0-9][\w.-]*$/.test(b.id)) { const a = el('a', null, b.id); a.href = safeHref('/t/' + encodeURIComponent(b.id)); row.append(a, document.createTextNode(' \u2014 ')); } else row.append(document.createTextNode(b.id + ' \u2014 '));
+    row.append(document.createTextNode(b.problem));
     const hit = explain.find((e) => e[0].test(b.problem));
     if (hit) row.append(el('div', 'why', hit[1]));
     panel.append(row);
@@ -322,7 +322,7 @@ function renderGpu() {
   const level = g ? g.chip.level : 'unknown';
   chip.className = 'gpuchip ' + level;
   chip.textContent = '';
-  chip.append(el('span', 'gg', gpuGlyph[level] || '?'), g ? g.chip.text : 'GPU: unknown');
+  chip.append(el('span', 'gg', gpuGlyph[level] || '?'), document.createTextNode(g ? g.chip.text : 'GPU: unknown'));
   chip.title = 'GPU and ComfyUI use. Click for details.';
   if (panel.hidden) return;
   panel.textContent = '';
@@ -451,7 +451,7 @@ function renderParked() {
     main.append(el('div', 'w', 'Why: ' + (r.parkedReason || 'no reason recorded')));
     main.append(el('div', 'w', 'Parked ' + day(r.parkedAt) + ' · last touched ' + day(r.touchedAt)));
     const rv = el('div', 'w');
-    if (r.revisit) { const due = r.revisitOn && r.revisitOn <= today; rv.append('Revisit: ' + r.revisit + (due ? ' (due)' : '')); if (due) rv.style.color = '#c2410c'; } else rv.append('No revisit set');
+    if (r.revisit) { const due = r.revisitOn && r.revisitOn <= today; rv.append(document.createTextNode('Revisit: ' + r.revisit + (due ? ' (due)' : ''))); if (due) rv.style.color = '#c2410c'; } else rv.append(document.createTextNode('No revisit set'));
     main.append(rv);
     const acts = el('div', 'racts');
     acts.append(actBtn(r.revisit ? 'Change revisit' : 'Set revisit', { ok: true }, 'A date (2026-12-01) or a trigger (when item-31 closes); only a reminder', () => revisitForm(d, r)));

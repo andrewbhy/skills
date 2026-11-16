@@ -38,7 +38,7 @@ function checkBreadcrumb(file,html,name){
 let parsed=0;
 for(const [file,name] of pages){
  const html=read(file);checkBreadcrumb(file,html,name);
- for(const [,attrs,body] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)){
+ for(const [,attrs,body] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\b[^>]*>/gi)){
   if(attrs.includes('application/json')){if(!body.includes('/* PALETTE_DATA */')&&!body.includes('/* SOURCE_DATA */'))JSON.parse(body);continue;}
   if(body.includes('/* GALLERY_APP */'))continue; // build input placeholder
   const src=attrs.match(/src="([^"]+)"/)?.[1];

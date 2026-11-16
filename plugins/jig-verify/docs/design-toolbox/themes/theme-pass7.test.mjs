@@ -101,7 +101,7 @@ test('[risk: card fill stops below content or chrome is overwritten] preview pai
   for (const selector of ['.board-queue','.board-chat']) assert.equal(backgrounds(selector).at(-1),'var(--surface-chrome)');
   assert.equal(backgrounds('.badge.attention').at(-1),'var(--state-attention-surface)');
   assert.match(style,/\.badge\.attention \{ color: var\(--state-attention\);/);
-  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+  const script = html.match(/<script\s*>([\s\S]*?)<\/script\s*>/i)[1];
   const geometry = new Function(`${script}; return boardGeometryTest;`)();
   geometry.checkBoardGeometry(style);
 });
