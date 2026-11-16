@@ -5,10 +5,106 @@
   },
   "plugins": [
     {
-      "name": "jig",
+      "name": "jig-plan",
       "source": {
         "source": "local",
-        "path": "./plugins/jig"
+        "path": "./plugins/jig-plan"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "jig-verify",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jig-verify"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "jig-review",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jig-review"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "jig-design",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jig-design"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "jig-git",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jig-git"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "jig-learn",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jig-learn"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "jig-spike",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jig-spike"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "jig-typescript",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jig-typescript"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "jig-orchestrate",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jig-orchestrate"
       },
       "policy": {
         "installation": "AVAILABLE",

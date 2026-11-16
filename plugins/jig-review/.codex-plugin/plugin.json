@@ -1,0 +1,28 @@
+{
+  "name": "jig-review",
+  "version": "0.2.0",
+  "description": "Review changes with proportionate seats.",
+  "author": {
+    "name": "andrewbhy"
+  },
+  "homepage": "https://github.com/andrewbhy/skills/tree/main/plugins/jig-review",
+  "repository": "https://github.com/andrewbhy/skills",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "planning",
+    "review",
+    "verification"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "jig-review",
+    "shortDescription": "Review changes with proportionate seats.",
+    "developerName": "andrewbhy",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ]
+  }
+}

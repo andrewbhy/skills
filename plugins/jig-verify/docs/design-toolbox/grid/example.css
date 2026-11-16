@@ -1,0 +1,22 @@
+/* Example geometry is separate from the spacing scale (G03, G14–G18).
+   Region behavior and local choices: regions.md and notes.md. */
+body[data-grid] { --example-height:640px; --example-dialog-width:640px; }
+body[data-grid] .example-lab, body[data-grid]:has(.example-lab) .page-header { max-inline-size:none; }
+.example-scroll { overflow:auto; border:var(--guide-border) solid var(--guide-line); }
+#example-viewport { inline-size:var(--example-width,100%); background:var(--guide-paper); }
+.example-board { padding-block-end:var(--grid-panel-inset); }
+.example-meta { font-size:var(--grid-type-meta); line-height:var(--grid-leading-meta); color:var(--guide-muted); }
+.example-board h3 { font-size:var(--grid-type-content); line-height:var(--grid-leading-content); }
+.needs-row { background:var(--guide-wash); margin-inline:var(--grid-panel-inset); }
+.example-action { display:inline-flex; align-items:center; min-block-size:var(--grid-target-touch); padding:var(--grid-space-2) var(--grid-space-3); border:var(--guide-border) solid var(--guide-line); }
+.example-chat { background:var(--guide-wash); min-inline-size:0; }
+#chat-content { position:sticky; inset-block-start:var(--grid-space-0); }
+.example-messages { max-block-size:var(--example-height); overflow:auto; }
+.example-composer { position:sticky; inset-block-end:var(--grid-space-0); padding-block:var(--grid-space-2); background:var(--guide-wash); }
+.example-composer textarea { inline-size:100%; resize:vertical; }
+#example-dialog { color:var(--guide-ink); background:var(--guide-paper); padding:var(--grid-panel-inset); border:var(--guide-border) solid var(--guide-line); inline-size:min(100%,var(--example-dialog-width)); max-block-size:100%; overflow:auto; margin:auto; }
+#example-dialog::backdrop { background:var(--guide-ink); opacity:.5; }
+/* The native modal is outside the queried region. JS copies its compact class
+   from the selected container width; no viewport-based sizing of text. */
+#example-dialog[data-compact] { margin-block-start:auto; margin-block-end:var(--grid-space-0); }
+@container grid-shell (min-width:1600px) { .example-board .grid-span-two-thirds { grid-column:span 8; } }

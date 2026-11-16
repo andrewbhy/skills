@@ -1,0 +1,28 @@
+{
+  "name": "jig-plan",
+  "version": "0.2.0",
+  "description": "Plan a build and check its contract.",
+  "author": {
+    "name": "andrewbhy"
+  },
+  "homepage": "https://github.com/andrewbhy/skills/tree/main/plugins/jig-plan",
+  "repository": "https://github.com/andrewbhy/skills",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "planning",
+    "review",
+    "verification"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "jig-plan",
+    "shortDescription": "Plan a build and check its contract.",
+    "developerName": "andrewbhy",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ]
+  }
+}

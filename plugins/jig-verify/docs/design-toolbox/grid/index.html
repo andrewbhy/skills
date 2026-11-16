@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Grid system · jig</title>
+  <link rel="stylesheet" href="../jig-pages.css">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="primitives.css">
+  <link rel="stylesheet" href="guide.css">
+</head>
+<body data-grid data-grid-type="vast">
+<header class="page-header">
+  <nav class="breadcrumb" aria-label="Breadcrumb" data-jig-shell="1" data-ledger="site-shell"><a class="brand" href="../../../README.md" aria-label="jig"><img class="brand-mark" src="../logo/final/ji-red-23.svg" width="23" height="23" alt=""><img class="brand-wordmark" src="../logo/final/jig-wordmark-charcoal.svg" alt="" height="23"></a><span aria-hidden="true">/</span><a href="../index.html">Design toolbox</a><span aria-hidden="true">/</span><span aria-current="page">Grid system</span></nav>
+  <h1>Grid system<span class="title-dot">.</span></h1>
+  <p class="intro grid-reading">Keep the rhythm. Change the arrangement.</p>
+  <p class="grid-reading">A fixed spacing scale, plain CSS layouts and regions that respond to their container. This guide and its controls work offline. Source links need a connection; published claims still await a fresh source review.</p>
+</header>
+<main class="toolbox-main grid-stack grid-guide">
+  <nav class="grid-cluster" aria-label="Guide sections"><a href="example.html">Worked example</a><a href="#scale">Tokens</a><a href="#primitives">Primitives</a><a href="#regions">Regions</a><a href="#proximity">Proximity</a><a href="#rules">Rules and sources</a></nav>
+  <section id="scale" class="grid-stack" aria-labelledby="scale-title">
+    <h2 id="scale-title">One scale, eight steps</h2>
+    <p class="grid-reading">The bars are actual CSS pixel lengths. Use the named token for padding, margin and gap. Zero space uses <code>--grid-space-0</code>. The inner gap is 8 px; choose 24 or 32 px between groups. A container uses one inset token.</p>
+    <ul class="token-list" aria-label="Spacing scale">
+      <li class="token-item"><code>--grid-space-1</code><span>4 px</span><span class="token-bar" style="--token-size:var(--grid-space-1)" aria-hidden="true"></span></li>
+      <li class="token-item"><code>--grid-space-2</code><span>8 px · inner gap</span><span class="token-bar" style="--token-size:var(--grid-space-2)" aria-hidden="true"></span></li>
+      <li class="token-item"><code>--grid-space-3</code><span>12 px</span><span class="token-bar" style="--token-size:var(--grid-space-3)" aria-hidden="true"></span></li>
+      <li class="token-item"><code>--grid-space-4</code><span>16 px · default inset</span><span class="token-bar" style="--token-size:var(--grid-space-4)" aria-hidden="true"></span></li>
+      <li class="token-item"><code>--grid-space-6</code><span>24 px · gutter / outer gap</span><span class="token-bar" style="--token-size:var(--grid-space-6)" aria-hidden="true"></span></li>
+      <li class="token-item"><code>--grid-space-8</code><span>32 px · roomy outer gap</span><span class="token-bar" style="--token-size:var(--grid-space-8)" aria-hidden="true"></span></li>
+      <li class="token-item"><code>--grid-space-12</code><span>48 px</span><span class="token-bar" style="--token-size:var(--grid-space-12)" aria-hidden="true"></span></li>
+      <li class="token-item"><code>--grid-space-16</code><span>64 px</span><span class="token-bar" style="--token-size:var(--grid-space-16)" aria-hidden="true"></span></li>
+    </ul>
+    <p class="grid-reading">This guide opts into the Vast example type roles: meta 12/16, code 14/20, content 15/24, title 18/24 and numeral 24/32 px. The page heading is a separate fixed 32/32 guide role. Other projects declare their own scale. Neither type nor spacing scales with viewport width.</p>
+  </section>
+  <section id="primitives" class="grid-stack" aria-labelledby="primitives-title">
+    <h2 id="primitives-title">Compose small layouts</h2>
+    <p class="grid-reading">Load <a href="tokens.css">tokens.css</a>, then <a href="primitives.css">primitives.css</a>. Put <code>data-grid</code> on an ancestor. The classes choose layout only; your project supplies typography, colour and controls. These examples use the real primitives.</p>
+    <pre><code>&lt;div data-grid class="grid-stack"&gt;
+  &lt;div class="grid-cluster"&gt;…&lt;/div&gt;
+  &lt;article class="grid-panel grid-reading"&gt;…&lt;/article&gt;
+&lt;/div&gt;</code></pre>
+    <article class="grid-stack"><h3>Stack · vertical rhythm</h3><p><code>.grid-stack</code> uses the outer gap. Add <code>.grid-stack--inner</code> for related items.</p><div class="specimen grid-stack"><div class="sample-item">First group</div><div class="sample-item">Second group · 24 px apart</div></div></article>
+    <article class="grid-stack"><h3>Cluster · wrap related controls</h3><p><code>.grid-cluster</code> wraps naturally with the inner gap.</p><div class="specimen grid-cluster"><button type="button">All tasks</button><button type="button">Assigned to me</button><button type="button">Recently updated</button><span>Sample controls</span></div></article>
+    <article class="grid-stack"><h3>Sidebar · reserve context</h3><p><code>.grid-sidebar</code> gives the first child a 16 rem basis and lets the main child grow. They stack when the main child cannot retain half the row.</p><div class="specimen grid-sidebar"><aside class="sample-item">Filters and context</aside><div class="sample-item">Main task fills the remaining space, then wraps below the sidebar when space runs out.</div></div></article>
+    <article class="grid-stack"><h3>Switcher · equal peers</h3><p><code>.grid-switcher</code> switches equal children from a row to a stack at its own 36 rem available width. It does not query the viewport.</p><div class="specimen grid-switcher"><div class="sample-item">Plan</div><div class="sample-item">Build</div><div class="sample-item">Review</div></div></article>
+    <article class="grid-stack"><h3>Grid · fixed gutters</h3><p><code>.grid-auto</code> fits as many 16 rem cards as space permits, always with a 24 px gutter. <code>.grid-columns</code> provides 4/8/12 tracks and mixed spans; it belongs inside a <code>.grid-region</code> query owner. Its children become full-width reading flow in compact regions.</p><div class="specimen grid-auto"><div class="sample-item">One card</div><div class="sample-item">Another card</div><div class="sample-item">A third card</div></div></article>
+    <article class="grid-stack"><h3>Reading column · stop at 72ch</h3><div class="specimen"><div class="grid-reading grid-stack grid-stack--inner"><p><code>.grid-reading</code> fills its available space and stops at 72ch. This approximates a readable measure; the actual number of characters depends on the font.</p><p>Long prose stays comfortable while the surrounding board can keep growing. Narrow regions wrap text instead of reducing its size. User text-spacing settings must remain free to expand the content.</p></div></div></article>
+  </section>
+  <section id="regions" class="grid-stack" aria-labelledby="regions-title">
+    <h2 id="regions-title">Region shell · resize the container</h2>
+    <p class="grid-reading">The width buttons resize only the specimen. The surrounding guide stays put. At wide settings, scroll the labelled specimen horizontally to inspect it at its actual width. This deliberate preview canvas is separate from ordinary page reflow.</p>
+    <div class="grid-cluster" role="group" aria-label="Demo container width">
+      <button type="button" data-width="320" aria-pressed="false">320 px</button>
+      <button type="button" data-width="420" aria-pressed="false">420 px</button>
+      <button type="button" data-width="760" aria-pressed="true">760 px</button>
+      <button type="button" data-width="1100" aria-pressed="false">1100 px</button>
+      <button type="button" data-width="1440" aria-pressed="false">1440 px</button>
+      <button type="button" data-width="1920" aria-pressed="false">1920 px</button>
+      <label for="demo-width">Custom width (CSS px)</label><input id="demo-width" type="range" min="320" max="1920" value="760" step="1">
+      <output id="demo-width-output" for="demo-width" aria-live="polite">760 px</output>
+    </div>
+    <label for="collapse-choice">Content fit override</label>
+    <select id="collapse-choice"><option value="">Width-class defaults</option><option value="second">Collapse second pane first</option><option value="side">Then inspector</option><option value="rail">Then navigation rail</option></select>
+    <div class="demo-scroll" data-reflow-canvas role="region" aria-label="Region shell specimen, scroll horizontally at wide settings" tabindex="0">
+      <div id="region-demo" class="grid-region-container">
+        <div class="region-toolbar grid-stack grid-stack--inner">
+          <p>Shell class: <strong><span class="region-class region-class--compact">Compact</span><span class="region-class region-class--medium">Medium</span><span class="region-class region-class--expanded">Expanded</span><span class="region-class region-class--large">Large</span><span class="region-class region-class--extra">Extra-wide</span></strong></p>
+          <p>Main owns a separate container; its columns follow its own available width.</p>
+        </div>
+        <div class="grid-shell" id="demo-shell">
+          <nav class="grid-rail region-pane" id="demo-rail" aria-label="Specimen navigation"><div class="grid-stack"><strong>Rail</strong><a href="#region-demo">Tasks</a><a href="#region-demo">Board</a></div></nav>
+          <div class="grid-main grid-region">
+            <div class="region-board grid-columns">
+              <div class="grid-cluster"><button type="button" class="grid-open-rail" data-open="rail">Open navigation</button><button type="button" class="grid-open-side" data-open="side">Open inspector</button><button type="button" class="grid-open-second" data-open="second">Open second pane</button></div>
+              <article class="region-card grid-stack grid-stack--inner"><h3>Main task</h3><p>One reading flow at compact width; mixed spans when this region has room.</p></article>
+              <article class="region-card grid-span-two-thirds grid-stack grid-stack--inner"><h3>Needs you</h3><p>Review the grid draft and leave one clear next action.</p></article>
+              <article class="region-card grid-span-third grid-stack grid-stack--inner"><h3>Ready</h3><p class="grid-numeral">12</p><p>Tasks for review</p></article>
+              <article class="region-card grid-span-half"><p>Build · layout primitives</p></article><article class="region-card grid-span-half"><p>Review · source accuracy</p></article>
+            </div>
+          </div>
+          <aside class="grid-side region-pane" id="demo-side" aria-label="Specimen inspector"><div class="grid-stack"><h3>Inspector</h3><label for="inspector-note">Draft note (preserved in a sheet)</label><textarea id="inspector-note" rows="4">Keep the gutter fixed.</textarea></div></aside>
+          <aside class="grid-second region-pane" id="demo-second" aria-label="Specimen second pane"><div class="grid-stack"><h3>Second pane</h3><p>Supporting task context. This pane collapses first when content needs more room.</p><label for="second-note">Task draft</label><textarea id="second-note" rows="4">Check the narrow main region.</textarea></div></aside>
+        </div>
+        <dialog id="region-dialog" aria-labelledby="dialog-title"><div class="grid-stack"><div class="grid-cluster"><h3 id="dialog-title">Region</h3><button type="button" id="close-region">Close region</button></div><div id="dialog-content"></div></div></dialog>
+      </div>
+    </div>
+    <noscript><p>JavaScript enables width controls and on-demand sheets. With scripting disabled this specimen remains at 760 px; all rules, tables and primitive examples remain readable.</p></noscript>
+    <p class="grid-reading">Use <code>.grid-region-container &gt; .grid-shell</code> for rail, main, side and second pane. Place <code>.grid-region</code> on main and <code>.grid-columns</code> inside it. The grid owns inline margins once; do not add another inset around it. Drawers and sheets require behaviour: this demo moves the same panel into one native modal dialog, preserving its inputs and restoring it on close.</p>
+    <p class="grid-reading">The width class is a maximum visible set. For content needing more room, set <code>data-grid-collapse="second"</code>, then <code>"side"</code>, then <code>"rail"</code> on the shell. This is a project content decision. The demo uses rail 64, main minimum 320, inspector 280 and second pane 320 px; these are prototype geometry defaults, not published rules.</p>
+    <div class="table-scroll" role="region" aria-label="Responsive region table" tabindex="0">
+      <!-- Snapshot of regions.md width classes. -->
+<table>
+<thead><tr><th scope="col">Class / available inline size</th><th scope="col">Columns / gutter / inline margin each side</th><th scope="col">Navigation rail</th><th scope="col">Main task</th><th scope="col">Inspector / side</th><th scope="col">Second task pane</th><th scope="col">Rule and source</th></tr></thead>
+<tbody>
+<tr><th scope="row">Compact: 0–&lt;600</th><td>4 / 24 / 16</td><td>Drawer via labelled navigation control</td><td>Visible, single reading flow</td><td>Bottom sheet on demand</td><td>Bottom sheet on demand</td><td><a href="rules.md">G20</a>, <a href="https://m3.material.io/foundations/layout/applying-layout/window-size-classes">Material 3, Compact width</a>; mapping is local.</td></tr>
+<tr><th scope="row">Medium: 600–&lt;840</th><td>8 / 24 / 24</td><td>Drawer</td><td>Visible</td><td>Task sheet on demand</td><td>Task sheet on demand</td><td><a href="rules.md">G21</a>, <a href="https://m3.material.io/foundations/layout/applying-layout/window-size-classes">Material 3, Medium width</a>; mapping is local.</td></tr>
+<tr><th scope="row">Expanded: 840–&lt;1200</th><td>12 / 24 / 32</td><td>Visible</td><td>Visible</td><td>Task sheet on demand</td><td>Task sheet on demand</td><td><a href="rules.md">G22</a>, <a href="https://m3.material.io/foundations/layout/applying-layout/window-size-classes">Material 3, Expanded width</a>; mapping is local.</td></tr>
+<tr><th scope="row">Large: 1200–&lt;1600</th><td>12 / 24 / 32</td><td>Visible</td><td>Visible</td><td>Visible if content fits</td><td>Task sheet on demand</td><td><a href="rules.md">G23</a>, <a href="https://m3.material.io/foundations/layout/applying-layout/window-size-classes">Material 3, Large width</a>; mapping is local.</td></tr>
+<tr><th scope="row">Extra-wide: &gt;=1600</th><td>12 / 24 / 48</td><td>Visible</td><td>Visible</td><td>Visible if content fits</td><td>Visible if content fits</td><td><a href="rules.md">G24</a>, <a href="https://m3.material.io/foundations/layout/applying-layout/window-size-classes">Material 3, Extra-large width</a>; mapping is local.</td></tr>
+</tbody></table>
+    </div>
+    <p class="grid-reading">At 320 px, ordinary content must reflow vertically. Compact layouts use 44 px touch targets, a composer outside scrolling history and dismissible bottom sheets. This slice demonstrates sheets and preserved drafts; the full pinned-composer and keyboard example belongs to slice 4. Browser, focus and text-spacing acceptance remain pending.</p>
+  </section>
+  <section id="proximity" class="grid-stack" aria-labelledby="proximity-title">
+    <h2 id="proximity-title">Proximity · the relationship matters</h2>
+    <p class="grid-reading">Both examples use valid tokens. Only the good example makes the gap within a group smaller than the gap between groups. A token check alone cannot establish correct grouping.</p>
+    <div class="grid-switcher">
+      <article class="specimen grid-stack"><h3>Good · inner 8 / outer 24 px</h3><div class="grid-stack proximity-good"><div class="grid-stack"><strong>Build</strong><span>Primitives and guide</span></div><div class="grid-stack"><strong>Review</strong><span>Sources and rendered fit</span></div></div></article>
+      <article class="specimen grid-stack"><h3>Bad · inner 24 / outer 8 px</h3><div class="grid-stack proximity-bad"><div class="grid-stack"><strong>Build</strong><span>Primitives and guide</span></div><div class="grid-stack"><strong>Review</strong><span>Sources and rendered fit</span></div></div></article>
+    </div>
+  </section>
+  <section id="rules" class="grid-stack" aria-labelledby="rules-title">
+    <h2 id="rules-title">Rules and sources</h2>
+    <p class="grid-reading">This table mirrors the 31 rows in <a href="rules.md">the rule register</a>. “Adaptation” means the source supports the method; exact local values are project choices. Project decisions D1–D8 are recorded in <a href="notes.md#project-decisions">the slice notes</a>. No sources were fetched during this offline build. Section labels and at least ten rule claims need a fresh reviewer with web access.</p>
+    <div class="table-scroll" role="region" aria-label="Grid rules and sources" tabindex="0">
+      <!-- Snapshot of rules.md; keep all 31 rule rows and sources in sync. -->
+<table>
+<thead><tr><th scope="col">Rule</th><th scope="col">Value</th><th scope="col">Source with URL and section</th><th scope="col">Why</th></tr></thead>
+<tbody>
+<tr><th scope="row">G01 Base</th><td>4 CSS px; retain the existing base.</td><td>Project decision D1 in <a href="notes.md#project-decisions">notes, Project decisions</a>; existing <a href="../README.md#craft-basics-the-reviewer-checks-before-the-person-sees-anything-person-7-nov-2026">toolbox, Craft basics / Alignment and insets</a>; <a href="https://atlassian.design/foundations/spacing">Atlassian spacing</a>, Spacing scale (method only).</td><td>Preserve the existing rhythm.</td></tr>
+<tr><th scope="row">G02 Spacing scale</th><td>4, 8, 12, 16, 24, 32, 48, 64 px; zero means no space, not a ninth positive step.</td><td>Project decision D2, <a href="notes.md#project-decisions">notes, Project decisions</a>; <a href="https://atlassian.design/foundations/spacing">Atlassian spacing</a>, Spacing scale (adapted subset).</td><td>Stop arbitrary padding, margin and gap values proliferating.</td></tr>
+<tr><th scope="row">G03 Token use</th><td>New padding, margins and gaps use G02 tokens; geometry such as columns, touch targets and safe-area insets is separately named. Existing debt is not silently migrated.</td><td>Project decisions D2 and D8, <a href="notes.md#project-decisions">notes, Project decisions</a>; <a href="https://atlassian.design/foundations/spacing">Atlassian spacing</a>, Applying spacing (section label to verify).</td><td>Make a future checker distinguish spacing from unrelated lengths.</td></tr>
+<tr><th scope="row">G04 Proximity</th><td>Inner gap 8 px; outer gap 24 px by default or 32 px for a declared group context; use one outer choice per context, with no third group gap.</td><td>Project decision D3, <a href="notes.md#project-decisions">notes, Project decisions</a>; <a href="../README.md#craft-basics-the-reviewer-checks-before-the-person-sees-anything-person-7-nov-2026">toolbox, Craft basics / Grouping</a>; <a href="https://atlassian.design/foundations/spacing">Atlassian spacing</a>, Applying spacing (method).</td><td>Related items read as a group.</td></tr>
+<tr><th scope="row">G05 Container inset</th><td>One inset token per container, default 16 px; a named context may select another G02 token. Width-class page margins are separate.</td><td>Project decision D3, <a href="notes.md#project-decisions">notes, Project decisions</a>; <a href="../README.md#craft-basics-the-reviewer-checks-before-the-person-sees-anything-person-7-nov-2026">toolbox, Craft basics / Alignment and insets</a>. Default 16 px is an adaptation.</td><td>Keep sibling edges on one line.</td></tr>
+<tr><th scope="row">G06 Line boxes</th><td>Available line heights 16, 20, 24, 28, 32 px; multiples of G01. These are defaults, never text clipping limits.</td><td>Project decision D2, <a href="notes.md#project-decisions">notes, Project decisions</a>; <a href="https://atlassian.design/foundations/spacing">Atlassian spacing</a>, Spacing scale (adaptation to line rhythm).</td><td>Align adjacent controls and text without rounding font sizes to 4 px.</td></tr>
+<tr><th scope="row">G07 Project type contract</th><td>A project declares one role scale; no new text under 12 px and no undeclared sizes. Font size is independent of spacing steps.</td><td>Project decisions D2 and D4, <a href="notes.md#project-decisions">notes, Project decisions</a>. The 12 px floor is local policy, not a WCAG minimum font size.</td><td>Bound drift while allowing readable 14 and 15 px text.</td></tr>
+<tr><th scope="row">G08 Vast meta</th><td>12 px font / 16 px line.</td><td>Project decision D4, <a href="notes.md#project-decisions">notes, Project decisions</a>, specifies font; G06 supplies draft line height.</td><td>Quiet metadata stays within the declared scale.</td></tr>
+<tr><th scope="row">G09 Vast code</th><td>14 px font / 20 px line.</td><td>Project decision D4, <a href="notes.md#project-decisions">notes, Project decisions</a>, specifies font; G06 supplies draft line height.</td><td>Give code a distinct, stable role.</td></tr>
+<tr><th scope="row">G10 Vast content</th><td>15 px font / 24 px line, including chat body.</td><td>Project decision D4, <a href="notes.md#project-decisions">notes, Project decisions</a>, specifies font; G06 supplies draft line height.</td><td>Resolve the plan's 15–16 px chat range to 15 px.</td></tr>
+<tr><th scope="row">G11 Vast view title</th><td>One view title role, 18 px font / 24 px line.</td><td>Project decision D4, <a href="notes.md#project-decisions">notes, Project decisions</a>, specifies font; G06 supplies draft line height.</td><td>Establish hierarchy without many heading sizes.</td></tr>
+<tr><th scope="row">G12 Vast card numeral</th><td>Draft fifth role: 24 px font / 32 px line, only for a card's principal number.</td><td>Project decision D4, <a href="notes.md#project-decisions">notes, Project decisions</a>, requests one numeral size but leaves its value open; 24/32 is a local adaptation of G01/G06.</td><td>Make the worked example complete; confirm its fit in slice 2.</td></tr>
+<tr><th scope="row">G13 Stable sizes</th><td>No viewport-proportional scaling of type or spacing; change region arrangement at width thresholds instead.</td><td>Project decision D5, <a href="notes.md#project-decisions">notes, Project decisions</a>; <a href="https://every-layout.dev/layouts/">Every Layout</a>, Sidebar and Switcher (intrinsic layout method).</td><td>Narrow layouts retain readable text.</td></tr>
+<tr><th scope="row">G14 Width classes</th><td>Named container inline sizes in CSS px: compact &lt;600; medium 600–&lt;840; expanded 840–&lt;1200; large 1200–&lt;1600; extra-wide &gt;=1600. Boundaries belong to the next class.</td><td><a href="https://m3.material.io/foundations/layout/applying-layout/window-size-classes">Material 3 window size classes</a>, Width-based window size classes (remembered thresholds; live verification pending); project decision D5 requires container-based adaptation.</td><td>Give slices a consistent vocabulary. These are not device detections.</td></tr>
+<tr><th scope="row">G15 Query ownership</th><td>Shell queries its available inline size; nested layouts query their own region. Use named inline-size containers on ancestors, not self queries. Tokens store thresholds as documentation; native query conditions use literal sizes because var() cannot supply them.</td><td><a href="https://every-layout.dev/layouts/">Every Layout</a>, Sidebar, Switcher and Grid (intrinsic method); <a href="https://m3.material.io/foundations/layout/understanding-layout/overview">Material 3 layout overview</a>, Responsive layout (section label to verify); container mechanism is local implementation choice.</td><td>A narrow embedded pane must not inherit a wide viewport layout.</td></tr>
+<tr><th scope="row">G16 Columns</th><td>Compact 4, medium 8, expanded/large/extra-wide 12 equal tracks inside a region. Collapse to normal single-column reading flow when columns cannot fit content.</td><td><a href="https://m3.material.io/foundations/layout/understanding-layout/overview">Material 3 layout overview</a>, Columns, margins and gutters (section label to verify); project decision D6 fixes 12 wide columns; 4/8 are adaptations.</td><td>Support mixed spans without squeezing phone text into narrow tracks.</td></tr>
+<tr><th scope="row">G17 Gutter</th><td>Fixed 24 px between column tracks, all classes; do not shrink with viewport.</td><td>Project decision D6, <a href="notes.md#project-decisions">notes, Project decisions</a>; <a href="https://m3.material.io/foundations/layout/understanding-layout/overview">Material 3 layout overview</a>, Gutters (method).</td><td>Preserve alignment between rows of cards.</td></tr>
+<tr><th scope="row">G18 Margins</th><td>Compact 16, medium 24, expanded 32, large 32, extra-wide 48 px on each inline edge of the grid region. Apply once per region, not again on every child.</td><td><a href="https://m3.material.io/foundations/layout/understanding-layout/overview">Material 3 layout overview</a>, Margins (method); values are local adaptations using G02, not claimed Material defaults.</td><td>Add breathing room while retaining useful width.</td></tr>
+<tr><th scope="row">G19 Span and width</th><td>Span by importance; fill the available region rather than cap the entire workbench. Cap reading text at 72ch, shrinking to available width.</td><td>Project decisions D6 and D7, <a href="notes.md#project-decisions">notes, Project decisions</a>; <a href="https://every-layout.dev/layouts/">Every Layout</a>, Measure (in the layout foundations; section location to verify) and Grid. 72ch is a local approximation, not a WCAG AA requirement.</td><td>Let wide boards use width while keeping prose readable.</td></tr>
+<tr><th scope="row">G20 Compact regions</th><td>One main region; navigation in a drawer; inspector and second pane in task sheets, one modal surface at a time.</td><td>Project decision D5, <a href="notes.md#project-decisions">notes, Project decisions</a>; <a href="https://m3.material.io/foundations/layout/applying-layout/window-size-classes">Material 3 window size classes</a>, Compact width (adaptation; exact region mapping is local).</td><td>Preserve the primary task on a phone.</td></tr>
+<tr><th scope="row">G21 Medium regions</th><td>Main visible; navigation drawer; inspector/second pane in task sheets.</td><td><a href="https://m3.material.io/foundations/layout/applying-layout/window-size-classes">Material 3 window size classes</a>, Medium width (adaptation to local region model); D5 in <a href="notes.md#project-decisions">notes</a>.</td><td>Avoid premature permanent panes.</td></tr>
+<tr><th scope="row">G22 Expanded regions</th><td>Navigation rail plus main; inspector and second pane remain on demand.</td><td><a href="https://m3.material.io/foundations/layout/applying-layout/window-size-classes">Material 3 window size classes</a>, Expanded width (adaptation); D5 in <a href="notes.md#project-decisions">notes</a>.</td><td>Reclaim navigation access once width permits.</td></tr>
+<tr><th scope="row">G23 Large regions</th><td>Rail, main and inspector visible; second pane on demand.</td><td><a href="https://m3.material.io/foundations/layout/applying-layout/window-size-classes">Material 3 window size classes</a>, Large width (adaptation); D5 in <a href="notes.md#project-decisions">notes</a>.</td><td>Keep supporting context beside the main task.</td></tr>
+<tr><th scope="row">G24 Extra-wide regions</th><td>Rail, main, inspector and second pane may coexist if content fits; otherwise collapse second pane first, inspector next, rail last. No fixed pane widths are settled in slice 1.</td><td><a href="https://m3.material.io/foundations/layout/applying-layout/window-size-classes">Material 3 window size classes</a>, Extra-large width (adaptation); <a href="https://every-layout.dev/layouts/">Every Layout</a>, Sidebar; D5 in <a href="notes.md#project-decisions">notes</a>.</td><td>Width class is an upper bound on complexity, not permission to overflow.</td></tr>
+<tr><th scope="row">G25 Region continuity</th><td>A collapse preserves selection, drafts and scroll state; every hidden region remains reachable by a labelled control. Modal drawers/sheets restore focus on close, support Escape and contain focus while open.</td><td><a href="../README.md#craft-basics-the-reviewer-checks-before-the-person-sees-anything-person-7-nov-2026">toolbox, Craft basics / Every overlay can be left; component checklist / Keyboard</a>; <a href="https://m3.material.io/foundations/layout/understanding-layout/overview">Material 3 layout overview</a>, Adaptive layout (continuity is a local adaptation).</td><td>Reflow must not discard work or strand keyboard users.</td></tr>
+<tr><th scope="row">G26 Reflow</th><td>At 320 CSS px inline width, text and ordinary controls need only vertical scrolling, without losing information or functionality. Intrinsically two-dimensional content may have its own scroll region, not force the whole shell sideways.</td><td><a href="https://www.w3.org/TR/WCAG22/#reflow">WCAG 2.2, 1.4.10 Reflow</a>, including the exception for content requiring two-dimensional layout.</td><td>Define the narrow acceptance boundary.</td></tr>
+<tr><th scope="row">G27 Text spacing override</th><td>No loss of content/function at line height 1.5 times font size, paragraph spacing 2 times, letter spacing .12 times and word spacing .16 times. Defaults need not equal these overrides.</td><td><a href="https://www.w3.org/TR/WCAG22/#text-spacing">WCAG 2.2, 1.4.12 Text Spacing</a>.</td><td>Fixed grid rhythm must yield to user text settings.</td></tr>
+<tr><th scope="row">G28 Minimum targets</th><td>Local default: interactive target at least 24 by 24 CSS px on all layouts. WCAG permits spacing and other exceptions; any use of those needs explicit review rather than silently shrinking this default.</td><td><a href="https://www.w3.org/TR/WCAG22/#target-size-minimum">WCAG 2.2, 2.5.8 Target Size (Minimum)</a>, Size and exceptions; project decision D5 in <a href="notes.md#project-decisions">notes</a>.</td><td>Separate the minimum target from its visible icon size.</td></tr>
+<tr><th scope="row">G29 Touch targets</th><td>Touch layout target 44 by 44 CSS px; reserve full hit area, even with a smaller icon. A compact class uses this default; touch on a wider layout also uses it.</td><td><a href="https://developer.apple.com/design/human-interface-guidelines/layout">Apple HIG layout</a>, Best practices / minimum control size (section and value to verify); D5 in <a href="notes.md#project-decisions">notes</a>. Apple guidance uses points; 44 CSS px here is a local web adaptation, not unit equivalence.</td><td>Make touch actions easier to acquire.</td></tr>
+<tr><th scope="row">G30 Phone composer</th><td>Composer stays at the bottom of the visible task region, outside scrolling history; allow it to grow and scroll for long input. Respect safe-area insets and the software keyboard; never cover the last message, focus or actions.</td><td>Project decision D5 in <a href="notes.md#project-decisions">notes</a>; <a href="https://developer.apple.com/design/human-interface-guidelines/layout">Apple HIG layout</a>, Safe areas (section label to verify; composer behavior is local); <a href="https://www.w3.org/TR/WCAG22/#reflow">WCAG 1.4.10</a>, no loss of functionality.</td><td>Keep the main action reachable without losing reading space.</td></tr>
+<tr><th scope="row">G31 Phone sheets</th><td>Auxiliary tasks use dismissible bottom sheets with an accessible title and close control; allow a full-height scrolling surface for long content, not an arbitrary height cap. Apply G25.</td><td>Project decision D5 in <a href="notes.md#project-decisions">notes</a>; <a href="https://developer.apple.com/design/human-interface-guidelines/layout">Apple HIG layout</a>, Adapt to changes in context (section label to verify; sheet choice is local).</td><td>Provide optional context without permanently occupying the main column.</td></tr>
+</tbody></table>
+    </div>
+    <p class="grid-muted grid-reading">Prototype guide, slice 2. Static checks establish internal consistency only. The coordinator’s rendered pass at the five widths, 320 px reflow, boundary widths and nested regions remains required. See <a href="notes.md">notes</a> and the <a href="regions.md">responsive region contract</a>.</p>
+  </section>
+</main>
+<script>
+(() => {
+  const demo = document.getElementById('region-demo');
+  const shell = document.getElementById('demo-shell');
+  const slider = document.getElementById('demo-width');
+  const output = document.getElementById('demo-width-output');
+  const buttons = [...document.querySelectorAll('[data-width]')];
+  const dialog = document.getElementById('region-dialog');
+  const content = document.getElementById('dialog-content');
+  let active = null;
+  const panels = new Map(['rail', 'side', 'second'].map(name => {
+    const panel = document.getElementById('demo-' + name);
+    const marker = document.createComment(name + ' home');
+    panel.before(marker);
+    return [name, {panel, marker}];
+  }));
+  function restore() {
+    if (!active) return;
+    const {panel, marker, opener} = active;
+    marker.after(panel);
+    active = null;
+    opener.focus();
+  }
+  function close() { if (dialog.open) dialog.close(); restore(); }
+  function resize(value) {
+    const width = Math.max(320, Math.min(1920, Number(value)));
+    if (!Number.isFinite(width)) return;
+    close();
+    demo.style.setProperty('--guide-demo-width', width + 'px');
+    slider.value = String(width);
+    output.value = width + ' px';
+    buttons.forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.width) === width)));
+  }
+  slider.addEventListener('input', () => resize(slider.value));
+  buttons.forEach(button => button.addEventListener('click', () => resize(button.dataset.width)));
+  document.getElementById('collapse-choice').addEventListener('change', event => {
+    close();
+    if (event.target.value) shell.dataset.gridCollapse = event.target.value;
+    else delete shell.dataset.gridCollapse;
+  });
+  document.querySelectorAll('[data-open]').forEach(opener => opener.addEventListener('click', () => {
+    close();
+    const entry = panels.get(opener.dataset.open);
+    active = {...entry, opener};
+    dialog.dataset.region = opener.dataset.open;
+    document.getElementById('dialog-title').textContent = opener.textContent.replace('Open ', '');
+    content.append(entry.panel);
+    dialog.showModal();
+    document.getElementById('close-region').focus();
+  }));
+  document.getElementById('close-region').addEventListener('click', close);
+  dialog.addEventListener('close', () => { if (!dialog.open) restore(); });
+})();
+</script>
+</body>
+</html>

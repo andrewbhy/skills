@@ -1,0 +1,57 @@
+{
+  "name": "studio",
+  "mode": "light",
+  "author": "jig contributors",
+  "licence": "UNLICENSED",
+  "version": "0.6.0",
+  "description": "Desktop study: light working canvas and nodes, with a dark toolbar, sidebar and bottom dock.",
+  "source": {
+    "id": "mixed-desktop-chrome",
+    "group": "Studio / dark chrome",
+    "scheme": "mixed-contrast",
+    "file": "gallery/contrast-palettes.mjs"
+  },
+  "presentation": {
+    "typeStyle": "tinted-headers",
+    "layers": "stepped",
+    "darkChrome": true,
+    "chromeTone": "neutral",
+    "contrastTarget": 4.5
+  },
+  "harmony": {
+    "name": "Studio / dark chrome",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 258.9593688166106,
+    "keyColour": "#2865c2",
+    "offsets": {
+      "blue": 0,
+      "cyan": 284.03247949670833,
+      "violet": 52.45221538679391,
+      "orange": 97.93841157188808
+    },
+    "neutralHue": 255,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 236.45936881661055,
+    "sourceColours": [
+      "#2865c2",
+      "#247b70",
+      "#864ca8",
+      "#a6406b"
+    ],
+    "typeAngles": {
+      "ticket": 258.95936881661055,
+      "task": 213.95936881661055,
+      "session": 303.95936881661055,
+      "artifact": 348.95936881661055,
+      "check": 33.959368816610606,
+      "question": 78.9593688166106,
+      "decision": 123.9593688166106,
+      "note": 168.95936881661055
+    }
+  }
+}

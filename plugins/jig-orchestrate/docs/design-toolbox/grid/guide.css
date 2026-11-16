@@ -1,0 +1,88 @@
+/* Guide presentation only. Geometry tokens do not add spacing-scale steps. */
+body[data-grid] {
+  --guide-ink: #222831;
+  --guide-muted: #4d5758;
+  --guide-paper: #fff;
+  --guide-ground: #f5f4f0;
+  --guide-line: #747b77;
+  --guide-accent: #934321;
+  --guide-wash: #e9ede8;
+  --guide-border: 1px;
+  --guide-focus: 3px;
+  --guide-max: 1200px;
+  --guide-demo-width: 760px;
+  --guide-sheet-max: 640px;
+  --guide-token-min: 16rem;
+  --guide-title: 32px;
+  /* Fixed guide scale replaces inherited viewport-scaled display type. */
+  --type-display: var(--guide-title);
+  --type-xs: var(--grid-type-meta);
+  --type-sm: var(--grid-type-meta);
+  --type-body: var(--grid-type-content);
+  --type-section: var(--grid-type-title);
+  --type-title: var(--grid-type-title);
+  color: var(--guide-ink);
+  font-size: var(--grid-type-content);
+  line-height: var(--grid-leading-content);
+  margin: var(--grid-space-0);
+}
+body[data-grid] :where(h1,h2,h3,p,ul,ol,pre,figure) { margin: var(--grid-space-0); }
+body[data-grid] :where(ul,ol) { padding-inline-start: var(--grid-space-6); }
+body[data-grid] :where(p,li,td,th,code,label) { overflow-wrap: anywhere; }
+body[data-grid] :where(h2,h3) { font-size: var(--grid-type-title); line-height: var(--grid-leading-title); }
+body[data-grid] :where(button,select,input,textarea) { font: inherit; color: inherit; max-inline-size: 100%; }
+body[data-grid] :where(button,select,textarea) { background: var(--guide-paper); border: var(--guide-border) solid var(--guide-line); padding: var(--grid-space-2) var(--grid-space-3); }
+body[data-grid] :where(button,select,input) { min-block-size: var(--grid-target-touch); min-inline-size: var(--grid-target-touch); }
+body[data-grid] button { cursor: pointer; }
+body[data-grid] button[aria-pressed="true"] { background: var(--guide-ink); color: var(--guide-paper); }
+body[data-grid] :focus-visible { outline: var(--guide-focus) solid var(--guide-accent); outline-offset: var(--grid-space-1); }
+body[data-grid] .page-header, body[data-grid] .toolbox-main {
+  max-width: var(--guide-max); padding: var(--grid-space-8) var(--grid-space-4);
+  margin-inline: auto;
+}
+body[data-grid] .page-header { padding-bottom: var(--grid-space-0); }
+body[data-grid] .breadcrumb { gap: var(--grid-space-2); margin-bottom: var(--grid-space-8); }
+body[data-grid] .breadcrumb .brand { font-size: var(--grid-type-title); gap: var(--grid-space-2); }
+body[data-grid] .page-header h1 { font-size: var(--guide-title); line-height: var(--grid-line-8); margin-bottom: var(--grid-space-4); letter-spacing: normal; }
+body[data-grid] .page-header .intro { font-size: var(--grid-type-title); line-height: var(--grid-line-7); margin-bottom: var(--grid-space-4); }
+.grid-guide { gap: var(--grid-space-12); }
+.grid-guide section { min-inline-size: 0; }
+.grid-guide code { font-size: var(--grid-type-code); line-height: var(--grid-leading-code); }
+.grid-guide pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: var(--grid-panel-inset); background: var(--guide-paper); border: var(--guide-border) solid var(--guide-line); }
+.grid-muted { color: var(--guide-muted); }
+.specimen, .token-item { background: var(--guide-paper); border: var(--guide-border) solid var(--guide-line); padding: var(--grid-panel-inset); }
+.specimen .sample-item { background: var(--guide-wash); padding: var(--grid-panel-inset); }
+.token-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,var(--guide-token-min)),1fr)); gap: var(--grid-space-4); list-style: none; padding: var(--grid-space-0); }
+.token-bar { display: block; inline-size: var(--token-size); block-size: var(--grid-space-4); background: var(--guide-accent); }
+.token-item { display: flex; flex-direction: column; gap: var(--grid-gap-inner); }
+.table-scroll, .demo-scroll { overflow: auto; max-inline-size: 100%; }
+.grid-guide table { border-collapse: collapse; inline-size: 100%; background: var(--guide-paper); }
+.grid-guide :is(th,td) { border: var(--guide-border) solid var(--guide-line); padding: var(--grid-space-3); text-align: start; vertical-align: top; }
+.grid-guide th { font-weight: var(--weight-strong); }
+.demo-scroll { border: var(--guide-border) solid var(--guide-line); }
+#region-demo { inline-size: var(--guide-demo-width); }
+.region-toolbar { padding: var(--grid-panel-inset); background: var(--guide-wash); }
+.region-board { padding-block: var(--grid-panel-inset); }
+.region-pane { padding: var(--grid-panel-inset); background: var(--guide-wash); overflow-wrap: anywhere; }
+.region-pane textarea { inline-size: 100%; resize: vertical; }
+.region-pane .grid-stack { gap: var(--grid-gap-inner); }
+.region-card { border: var(--guide-border) solid var(--guide-line); padding: var(--grid-panel-inset); background: var(--guide-paper); }
+.grid-numeral { font-size: var(--grid-type-numeral); line-height: var(--grid-leading-numeral); }
+.region-class { display: none; }
+.region-class--compact { display: inline; }
+@container grid-shell (min-width: 600px) { .region-class--compact { display: none; } .region-class--medium { display: inline; } }
+@container grid-shell (min-width: 840px) { .region-class--medium { display: none; } .region-class--expanded { display: inline; } }
+@container grid-shell (min-width: 1200px) { .region-class--expanded { display: none; } .region-class--large { display: inline; } }
+@container grid-shell (min-width: 1600px) { .region-class--large { display: none; } .region-class--extra { display: inline; } }
+#region-dialog { color: var(--guide-ink); background: var(--guide-paper); border: var(--guide-border) solid var(--guide-line); padding: var(--grid-panel-inset); inline-size: min(100%,var(--guide-sheet-max)); max-block-size: 100%; overflow: auto; margin: auto; }
+#region-dialog::backdrop { background: var(--guide-ink); opacity: .5; }
+@container grid-shell (width < 600px) {
+  #region-dialog { margin-block-start: auto; margin-block-end: var(--grid-space-0); }
+}
+#region-dialog[data-region="rail"] { inset: 0; margin: var(--grid-space-0); block-size: 100%; max-inline-size: min(100%, var(--grid-second-size)); }
+/* The bad specimen deliberately swaps the two valid gaps. No new spacing
+   debt is needed to demonstrate the wrong relationship. */
+.proximity-bad { gap: var(--grid-gap-inner); }
+.proximity-bad .grid-stack { gap: var(--grid-gap-outer); }
+.proximity-good { gap: var(--grid-gap-outer); }
+.proximity-good .grid-stack { gap: var(--grid-gap-inner); }

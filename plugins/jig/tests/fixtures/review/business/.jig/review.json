@@ -1,7 +1,0 @@
-{
-  "rules": ["README.md"],
-  "vision": ["VISION.md"],
-  "paths": [
-    { "pattern": "pricing.mjs", "class": "risky", "seats": ["product", "qa"] }
-  ]
-}

@@ -1,0 +1,17 @@
+{
+  "name": "jig-orchestrate",
+  "version": "0.2.0",
+  "description": "Coordinate jobs with an optional dashboard.",
+  "author": {
+    "name": "andrewbhy"
+  },
+  "homepage": "https://github.com/andrewbhy/skills/tree/main/plugins/jig-orchestrate",
+  "repository": "https://github.com/andrewbhy/skills",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "planning",
+    "review",
+    "verification"
+  ]
+}

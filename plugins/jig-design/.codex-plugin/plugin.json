@@ -1,0 +1,28 @@
+{
+  "name": "jig-design",
+  "version": "0.2.0",
+  "description": "Design interactions and explore interface mockups.",
+  "author": {
+    "name": "andrewbhy"
+  },
+  "homepage": "https://github.com/andrewbhy/skills/tree/main/plugins/jig-design",
+  "repository": "https://github.com/andrewbhy/skills",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "planning",
+    "review",
+    "verification"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "jig-design",
+    "shortDescription": "Design interactions and explore interface mockups.",
+    "developerName": "andrewbhy",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ]
+  }
+}

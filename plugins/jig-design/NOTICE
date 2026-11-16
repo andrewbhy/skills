@@ -1,0 +1,4 @@
+jig 0.2.0 is MIT licensed (see LICENSE). It adapts material from the sources below.
+
+- Impeccable (pbakaus/impeccable, pin 924bbd194d02e5e15a227e75b5901fb0d7a4ecad, Apache-2.0): Design toolbox; [notice](design-toolbox/IMPECCABLE-LICENSE.txt)
+- Motion skills (emilkowalski/skills, pin c8a79627b59d72d764d6ab6f2c87c09a48169833, MIT): Motion basics; [attribution](design-toolbox/README.md#borrowed-practices-and-attribution)

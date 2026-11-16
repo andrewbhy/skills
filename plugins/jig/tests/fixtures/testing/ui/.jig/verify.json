@@ -1,6 +1,0 @@
-{
-  "app": { "start": "node server.mjs", "ready": "stdout URL returns HTTP 200", "stop": "stop only the process started for this run" },
-  "tests": { "targeted": "node --test test/*.test.mjs", "full": "node --test test/*.test.mjs" },
-  "screens": [{ "width": 800, "height": 600 }, { "width": 1280, "height": 800 }],
-  "behaviour": [{ "name": "Pay for order", "paths": ["index.html"], "reach": "Open /, read Total, then select Pay" }]
-}

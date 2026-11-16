@@ -1,8 +1,0 @@
-{
-  "timeBudgetMs": 10000,
-  "tokenBudgetMs": 2000,
-  "gateBudgetMs": 20000,
-  "fontPassBudgetMs": 20000,
-  "allFontsBudgetMs": 40000,
-  "testGlobs": ["tests/*.test.mjs"]
-}

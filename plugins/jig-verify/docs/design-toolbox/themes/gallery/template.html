@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Compare colour groups in use and shortlist palettes for the jig design toolbox.">
+  <title>Palette gallery · jig</title>
+  <style>/* GALLERY_CSS */</style>
+<link rel="stylesheet" href="../../jig-pages.css">
+<link rel="stylesheet" href="../../grid/tokens.css">
+</head>
+<body data-grid>
+  <header class="page-header">
+    <nav class="breadcrumb" aria-label="Breadcrumb" data-jig-shell="1" data-ledger="site-shell"><a class="brand" href="../../../../README.md" aria-label="jig"><img class="brand-mark" src="../../logo/final/ji-red-23.svg" width="23" height="23" alt=""><img class="brand-wordmark" src="../../logo/final/jig-wordmark-charcoal.svg" alt="" height="23"></a><span aria-hidden="true">/</span><a href="../../index.html">Design toolbox</a><span aria-hidden="true">/</span><span aria-current="page">Colour palettes</span></nav>
+    <p class="instruction">Pick the groups you like. We build themes from your picks.</p>
+    <h1>Colours that work together<span class="title-dot">.</span></h1>
+    <p class="intro">Compare whole groups on the same small board. Start with a familiar palette, explore a harmony built around blue, teal or warm orange, try one of 24 Sanzo Wada combinations, or explore mixed contrast and neon.</p>
+    <div class="header-meta"><span>39 groups · 6 palette families · 5 harmonies</span><a href="SOURCES.md">Sources, licences &amp; colour values ↗</a></div>
+  </header>
+  <main>
+    <section class="picks" aria-labelledby="picks-title">
+      <div class="section-label"><h2 id="picks-title">Your shortlist</h2><span id="pick-count">0 picked</span></div>
+      <p id="shortlist-empty">Use ☆ on a group to keep it here. Pick as many as you like.</p>
+      <ul id="shortlist" aria-label="Favourite palette groups"></ul>
+      <p class="small" id="storage-status" role="status">Enable JavaScript to save picks in this browser.</p>
+    </section>
+    <div class="filters" aria-label="Filter palette groups">
+      <label>Appearance<select id="mode"><option value="all">Dark &amp; light</option><option value="dark">Dark</option><option value="light">Light</option></select></label>
+      <label>Scheme<select id="scheme"><option value="all">All schemes</option><option value="editor">Editor / terminal</option><option value="wada">Wada</option><option value="mixed-contrast">Mixed contrast</option><option value="neon-synthwave">Neon and synthwave</option><option value="analogous">Analogous</option><option value="complementary">Complementary</option><option value="split-complementary">Split-complementary</option><option value="triadic">Triadic</option><option value="monochrome-accent">Monochrome + accent</option></select></label>
+      <button id="reset-filters" type="button">Reset filters</button>
+      <p id="status" role="status" aria-live="polite">72 of 72 groups</p>
+    </div>
+    <p class="legend">Wada adds an upper strip of original combination colours; its lower strip shows adapted roles. Strip: canvas / frame / node · text / secondary · 4 accents · success / warning / error / info. Hover or focus a swatch for its value. Mixed contrast separates light canvas from darker components and chrome. Neon stays on accents, edges and chips; body text is neutral. Expand a contrast mark for every surface and its text pairs.</p>
+    <noscript><p>All groups are shown below. Filters and favourites need JavaScript; sources and contrast reports are still available.</p></noscript>
+    <p id="no-results" hidden>No groups match these filters. Try another scheme or reset the filters.</p>
+    <div class="gallery" id="gallery"><!-- GALLERY_TILES --></div>
+  </main>
+  <footer>Palette studies, not finished themes. Header tints and state roles are gallery mappings. <a href="SOURCES.md">See how the colours were chosen ↗</a></footer>
+  <script type="application/json" id="palette-data">/* PALETTE_DATA */</script>
+  <script type="application/json" id="source-data">/* SOURCE_DATA */</script>
+  <script>/* GALLERY_APP */</script>
+</body>
+</html>

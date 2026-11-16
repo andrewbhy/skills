@@ -1,0 +1,98 @@
+/* Load tokens.css first; opt in on an ancestor with data-grid.
+   G03: spacing consumes tokens, geometry has separate names.
+   No primitive chooses fonts, colours or a theme. See index.html for usage. */
+[data-grid] {
+  --grid-sidebar-size: 16rem;
+  --grid-switch-at: 36rem;
+  --grid-card-min: 16rem;
+  /* Prototype content-fit contract, CSS px; see notes.md, Slice 2.
+     Expanded: 64 + 24 + 320 = 408.
+     Large: 64 + 280 + 320 + 2*24 = 712.
+     Extra-wide: 64 + 280 + 320 + 320 + 3*24 = 1056.
+     Class thresholds leave room above these minima; never shrink type. */
+  --grid-rail-size: 64px;
+  --grid-main-min: 320px;
+  --grid-side-size: 280px;
+  --grid-second-size: 320px;
+}
+[data-grid] :where(.grid-stack, .grid-cluster, .grid-sidebar, .grid-switcher,
+  .grid-auto, .grid-columns, .grid-shell) > * { min-inline-size: 0; }
+.grid-stack { display: flex; flex-direction: column; gap: var(--grid-gap-outer); }
+.grid-stack > * { margin-block: var(--grid-space-0); }
+.grid-stack--inner { gap: var(--grid-gap-inner); }
+.grid-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--grid-gap-inner); }
+.grid-sidebar { display: flex; flex-wrap: wrap; gap: var(--grid-gutter); }
+.grid-sidebar > :first-child { flex: 1 1 var(--grid-sidebar-size); }
+.grid-sidebar > :last-child { flex: 999 1 50%; }
+.grid-switcher { display: flex; flex-wrap: wrap; gap: var(--grid-gutter); }
+.grid-switcher > * { flex-grow: 1; flex-basis: calc((var(--grid-switch-at) - 100%) * 999); }
+/* Intrinsic grid: the gutter remains fixed when the card count changes. */
+.grid-auto { display: grid; gap: var(--grid-gutter); grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--grid-card-min)), 1fr)); }
+.grid-reading { inline-size: 100%; max-inline-size: var(--grid-reading-max); overflow-wrap: anywhere; }
+.grid-panel { padding: var(--grid-panel-inset); }
+/* Query an ancestor, never the element being changed. Shell and each nested
+   region have different owners; a wide shell can have a medium main region. */
+.grid-region-container { container: grid-shell / inline-size; }
+.grid-region { container: grid-region / inline-size; min-inline-size: 0; }
+.grid-columns {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns-compact), minmax(0, 1fr));
+  gap: var(--grid-gutter);
+  padding-inline: var(--grid-margin-compact);
+}
+.grid-columns > * { grid-column: 1 / -1; }
+@container grid-region (min-width: 600px) {
+  .grid-columns { grid-template-columns: repeat(var(--grid-columns-medium), minmax(0, 1fr)); padding-inline: var(--grid-margin-medium); }
+  .grid-columns > .grid-span-half { grid-column: span 4; }
+}
+@container grid-region (min-width: 840px) {
+  .grid-columns { grid-template-columns: repeat(var(--grid-columns-expanded), minmax(0, 1fr)); padding-inline: var(--grid-margin-expanded); }
+  .grid-columns > .grid-span-half { grid-column: span 6; }
+  .grid-columns > .grid-span-third { grid-column: span 4; }
+  .grid-columns > .grid-span-two-thirds { grid-column: span 8; }
+}
+@container grid-region (min-width: 1200px) {
+  .grid-columns { grid-template-columns: repeat(var(--grid-columns-large), minmax(0, 1fr)); padding-inline: var(--grid-margin-large); }
+}
+@container grid-region (min-width: 1600px) {
+  .grid-columns { grid-template-columns: repeat(var(--grid-columns-extra-wide), minmax(0, 1fr)); padding-inline: var(--grid-margin-extra-wide); }
+}
+.grid-shell { display: grid; gap: var(--grid-gutter); grid-template-columns: minmax(0, 1fr); }
+.grid-shell > .grid-main { grid-column: 1; grid-row: 1; }
+.grid-shell > :is(.grid-rail, .grid-side, .grid-second) { display: none; }
+@container grid-shell (min-width: 840px) {
+  .grid-shell { grid-template-columns: var(--grid-rail-size) minmax(var(--grid-main-min), 1fr); }
+  .grid-shell > .grid-rail { display: block; grid-column: 1; grid-row: 1; }
+  .grid-shell > .grid-main { grid-column: 2; }
+  .grid-open-rail { display: none; }
+}
+@container grid-shell (min-width: 1200px) {
+  .grid-shell { grid-template-columns: var(--grid-rail-size) minmax(var(--grid-main-min), 1fr) var(--grid-side-size); }
+  .grid-shell > .grid-side { display: block; grid-column: 3; grid-row: 1; }
+  .grid-open-side { display: none; }
+}
+@container grid-shell (min-width: 1600px) {
+  .grid-shell { grid-template-columns: var(--grid-rail-size) minmax(var(--grid-main-min), 1fr) var(--grid-side-size) var(--grid-second-size); }
+  .grid-shell > .grid-second { display: block; grid-column: 4; grid-row: 1; }
+  .grid-open-second { display: none; }
+}
+/* Content-fit overrides are explicit author decisions, not width guesses.
+   Ordered sets: second first, then side, then rail. Keep labelled openers.
+   A project with larger content minima must select the appropriate set. */
+.grid-shell[data-grid-collapse="second"] { grid-template-columns: var(--grid-rail-size) minmax(0, 1fr) var(--grid-side-size); }
+.grid-shell[data-grid-collapse="side"] { grid-template-columns: var(--grid-rail-size) minmax(0, 1fr); }
+.grid-shell[data-grid-collapse="rail"] { grid-template-columns: minmax(0, 1fr); }
+.grid-shell[data-grid-collapse] > .grid-second,
+.grid-shell:is([data-grid-collapse="side"], [data-grid-collapse="rail"]) > .grid-side,
+.grid-shell[data-grid-collapse="rail"] > .grid-rail { display: none; }
+.grid-shell[data-grid-collapse="rail"] > .grid-main { grid-column: 1; }
+.grid-shell[data-grid-collapse] .grid-open-second,
+.grid-shell:is([data-grid-collapse="side"], [data-grid-collapse="rail"]) .grid-open-side,
+.grid-shell[data-grid-collapse="rail"] .grid-open-rail { display: inline-flex; }
+/* At narrower classes the override must not introduce unavailable columns. */
+@container grid-shell (width < 840px) {
+  .grid-shell[data-grid-collapse] { grid-template-columns: minmax(0, 1fr); }
+}
+@container grid-shell (840px <= width < 1200px) {
+  .grid-shell[data-grid-collapse="second"] { grid-template-columns: var(--grid-rail-size) minmax(0, 1fr); }
+}
