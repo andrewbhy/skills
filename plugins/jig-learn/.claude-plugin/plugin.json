@@ -1,0 +1,17 @@
+{
+  "name": "jig-learn",
+  "version": "0.2.0",
+  "description": "Record missed problems and improve checks.",
+  "author": {
+    "name": "andrewbhy"
+  },
+  "homepage": "https://github.com/andrewbhy/skills/tree/main/plugins/jig-learn",
+  "repository": "https://github.com/andrewbhy/skills",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "planning",
+    "review",
+    "verification"
+  ]
+}

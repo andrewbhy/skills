@@ -1,0 +1,27 @@
+{
+  "name": "calm-workbench",
+  "mode": "light",
+  "author": "jig contributors",
+  "licence": "UNLICENSED",
+  "version": "0.4.0",
+  "description": "Cool light grounds with analogous blues and teals, one sand complement and quiet type header tints.",
+  "harmony": {
+    "name": "Lagoon and sand",
+    "scheme": "accented-analogous",
+    "space": "oklch",
+    "keyHue": 235,
+    "keyColour": "#02577a",
+    "offsets": {
+      "blue": 0,
+      "cyan": -30,
+      "violet": 30,
+      "orange": 180
+    },
+    "neutralHue": 235,
+    "stateHues": {
+      "green": 140,
+      "amber": 85,
+      "red": 25
+    }
+  }
+}

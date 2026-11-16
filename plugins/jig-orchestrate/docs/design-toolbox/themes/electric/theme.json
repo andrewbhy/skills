@@ -1,0 +1,57 @@
+{
+  "name": "electric",
+  "mode": "dark",
+  "author": "jig contributors",
+  "licence": "UNLICENSED",
+  "version": "0.6.0",
+  "description": "Original neon study: neon accents, edges and chip; neutral body and secondary text. No glow on text.",
+  "source": {
+    "id": "neon-navy",
+    "group": "Electric / deep navy",
+    "scheme": "neon-synthwave",
+    "file": "gallery/contrast-palettes.mjs"
+  },
+  "presentation": {
+    "typeStyle": "tinted-headers",
+    "layers": "stepped",
+    "darkChrome": false,
+    "chromeTone": "navy",
+    "contrastTarget": 4.5
+  },
+  "harmony": {
+    "name": "Electric / deep navy",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 209.2850787377381,
+    "keyColour": "#00e5ff",
+    "offsets": {
+      "blue": 0,
+      "cyan": 133.1510582247422,
+      "violet": 276.5067588754737,
+      "orange": 88.36473030828279
+    },
+    "neutralHue": 265,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 231.7850787377381,
+    "sourceColours": [
+      "#00e5ff",
+      "#ff39c7",
+      "#c3ff38",
+      "#ae83ff"
+    ],
+    "typeAngles": {
+      "ticket": 209.2850787377381,
+      "task": 164.2850787377381,
+      "session": 254.2850787377381,
+      "artifact": 299.2850787377381,
+      "check": 344.2850787377381,
+      "question": 29.285078737738104,
+      "decision": 74.2850787377381,
+      "note": 119.2850787377381
+    }
+  }
+}

@@ -1,5 +1,0 @@
-{
-  "version": 1,
-  "typeScale": [12, 14, 15, 18, 24],
-  "tokenFiles": ["../../../docs/design-toolbox/grid/tokens.css"]
-}

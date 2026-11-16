@@ -1,0 +1,71 @@
+/* Original recipes adapted from animate/RECIPES.md. MIT notice: ../README.md.
+   Load tokens.css first. Positioning and accessible behaviour belong to the
+   project's chosen primitive. Animate an inner wrapper, never its positioner. */
+[data-motion] {
+  --recipe-enter: var(--duration-menu);
+  --recipe-exit: var(--duration-feedback);
+  --recipe-scale: .95;
+  --recipe-y: 0px;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transform-origin: var(--motion-origin, center);
+  transition-property: opacity, transform;
+  transition-duration: var(--recipe-enter);
+  transition-timing-function: var(--ease-enter);
+}
+[data-motion][data-state="closed"] {
+  opacity: 0;
+  transform: translateY(var(--recipe-y)) scale(var(--recipe-scale));
+  pointer-events: none;
+  transition-duration: var(--recipe-exit);
+  transition-timing-function: var(--ease-exit);
+}
+[data-motion="popover"], [data-motion="tooltip"] {
+  --recipe-enter: var(--duration-popover);
+  --recipe-exit: var(--duration-feedback);
+}
+[data-motion="tooltip"] { --recipe-scale: .97; }
+[data-motion="dialog"] {
+  --recipe-enter: var(--duration-panel);
+  --recipe-exit: var(--duration-exit);
+  --recipe-scale: .96;
+  transform-origin: center;
+}
+[data-motion="backdrop"] {
+  --recipe-enter: var(--duration-panel);
+  --recipe-exit: var(--duration-exit);
+  --recipe-scale: 1;
+}
+[data-motion="toast"] {
+  --recipe-scale: 1;
+  --recipe-y: 100%;
+}
+.motion-tab-copy {
+  pointer-events: none;
+  transition: clip-path var(--duration-menu) var(--ease-move);
+}
+.motion-press {
+  transition: transform var(--duration-feedback) var(--ease-out);
+}
+.motion-press:active:not(:disabled) { transform: scale(.97); }
+/* Reduced mode can also be selected by the lab or an application setting. */
+[data-motion][data-reduced="true"],
+[data-motion][data-reduced="true"][data-state="closed"] {
+  transform: none;
+  transition-property: opacity;
+  transition-duration: var(--duration-reduced);
+}
+.motion-tab-copy[data-reduced="true"] { transition: none; }
+.motion-press[data-reduced="true"] { transform: none; transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  [data-motion], [data-motion][data-state="closed"] {
+    transform: none;
+    transition-property: opacity;
+    transition-duration: var(--duration-reduced);
+  }
+  .motion-tab-copy, .motion-press { transition: none; }
+  .motion-press:active:not(:disabled) { transform: none; }
+}
+/* Keep the frequency gate stronger than the gentler reduced-motion fallback. */
+[data-motion][data-instant="true"] { transition-duration: var(--duration-instant); }
+[data-motion][hidden] { display: none; }

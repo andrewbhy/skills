@@ -1,0 +1,57 @@
+{
+  "name": "paper",
+  "mode": "light",
+  "author": "jig contributors",
+  "licence": "UNLICENSED",
+  "version": "0.6.0",
+  "description": "Light canvas and node bodies with saturated, solid blue, teal and purple headers; light header text.",
+  "source": {
+    "id": "mixed-solid-headers",
+    "group": "Paper / saturated headers",
+    "scheme": "mixed-contrast",
+    "file": "gallery/contrast-palettes.mjs"
+  },
+  "presentation": {
+    "typeStyle": "solid-headers",
+    "layers": "stepped",
+    "darkChrome": false,
+    "chromeTone": "neutral",
+    "contrastTarget": 4.5
+  },
+  "harmony": {
+    "name": "Paper / saturated headers",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 260.50970897232435,
+    "keyColour": "#1958c2",
+    "offsets": {
+      "blue": 0,
+      "cyan": 286.0828257175431,
+      "violet": 46.58500644750552,
+      "orange": 97.88009400391229
+    },
+    "neutralHue": 85,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 238.00970897232435,
+    "sourceColours": [
+      "#1958c2",
+      "#00766e",
+      "#7936ab",
+      "#b22d68"
+    ],
+    "typeAngles": {
+      "ticket": 260.50970897232435,
+      "task": 215.50970897232435,
+      "session": 305.50970897232435,
+      "artifact": 350.50970897232435,
+      "check": 35.50970897232435,
+      "question": 80.50970897232435,
+      "decision": 125.50970897232435,
+      "note": 170.50970897232435
+    }
+  }
+}

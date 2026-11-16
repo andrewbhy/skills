@@ -1,0 +1,17 @@
+{
+  "name": "jig-spike",
+  "version": "0.2.0",
+  "description": "Run a timeboxed feasibility experiment.",
+  "author": {
+    "name": "andrewbhy"
+  },
+  "homepage": "https://github.com/andrewbhy/skills/tree/main/plugins/jig-spike",
+  "repository": "https://github.com/andrewbhy/skills",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "planning",
+    "review",
+    "verification"
+  ]
+}

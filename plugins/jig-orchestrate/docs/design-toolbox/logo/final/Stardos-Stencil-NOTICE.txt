@@ -1,0 +1,4 @@
+Stardos Stencil / Version 1.001
+Copyright (c) 2011 by vernon adams. All rights reserved.
+
+Font name records preserved from the downloaded WOFF2. See the accompanying licence file.

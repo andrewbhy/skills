@@ -1,0 +1,32 @@
+/* Round-2 application geometry, authorised by the 8 November brief.
+   A 16 px root preserves the existing rem spacing scale while type stays 13 px.
+   Theme packs remain the sole paint authority. */
+:root {
+ --app-root:16px;
+ --app-line:20px;
+ --app-small-line:16px;
+ --app-sidebar:208px;
+ --app-inspector:256px;
+ --app-pane-min:160px;
+ --app-overlay:288px;
+ --app-dialog:480px;
+ --app-column:192px;
+ --app-handle:8px;
+ --app-bar:36px;
+ --app-status:28px;
+ --app-scale-start:.96;
+ --app-scale-press:.97;
+ --app-motion-rate:1;
+ --app-motion-half:80ms;
+ --target-control:28px;
+ --inset-control-block:4px;
+ --inset-control-inline:8px;
+ --radius-panel:4px;
+ --text-body:13px;
+ --text-meta:12px;
+ --leading-body:var(--app-line);
+ --leading-meta:var(--app-small-line);
+}
+:root[data-density=comfortable] { --target-control:32px; --app-line:20px; }
+:root[data-speed="2"] { --app-motion-rate:2; }
+:root[data-speed="5"] { --app-motion-rate:5; }

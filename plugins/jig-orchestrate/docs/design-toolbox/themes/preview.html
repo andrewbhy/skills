@@ -1,0 +1,1058 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jig · Theme workbench</title>
+  <link rel="stylesheet" href="../jig-pages.css">
+  <link id="theme-css" rel="stylesheet" href="white-board/theme.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--surface-canvas); color: var(--text-primary); font-family: var(--font-interface); font-size: var(--text-body); font-weight: var(--weight-body); line-height: var(--leading-body); letter-spacing: var(--tracking-interface); }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: var(--text-app-title); }
+    h2 { font-size: var(--text-pane-title); }
+    h3 { font-size: var(--text-section); }
+    h1, h2, h3, strong { font-weight: var(--weight-emphasis); line-height: var(--leading-heading); }
+    button, select, textarea { font: inherit; color: var(--text-primary); background: var(--surface-panel); border: var(--stroke-divider) solid var(--border-control); border-radius: var(--radius-control); min-height: var(--target-control); padding: var(--inset-control-block) var(--inset-control-inline); }
+    button, select { cursor: pointer; }
+    option { color: var(--text-primary); background: var(--surface-panel); }
+    button:hover, select:hover { background: var(--surface-hover); }
+    :focus-visible { outline: var(--stroke-focus) solid var(--focus-ring); outline-offset: var(--focus-offset); }
+    button.primary { color: var(--text-on-action); background: var(--action-primary); border-color: var(--action-primary); font-weight: var(--weight-emphasis); }
+    button:disabled { color: var(--text-disabled); background: var(--surface-disabled); cursor: default; }
+    a { color: var(--text-link); text-underline-offset: var(--space-inline-tight); }
+    code { font-family: var(--font-code); }
+    .muted { color: var(--text-secondary); }
+    .meta { font-size: var(--text-meta); line-height: var(--leading-meta); }
+    .stack { display: grid; gap: var(--space-stack); align-content: start; }
+    .row { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-inline); }
+    .spread { justify-content: space-between; }
+    .frame { min-height: 100dvh; display: grid; grid-template-rows: auto auto 1fr auto; }
+    .toolbar { padding: var(--space-stack) var(--inset-pane); background: var(--surface-panel); border-bottom: var(--stroke-divider) solid var(--border-divider); gap: var(--space-pane); }
+    .identity { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--space-inline); }
+    .workspace { display: grid; grid-template-columns: minmax(0, calc(var(--target-coarse) * 5)) minmax(0, 1fr) minmax(0, calc(var(--target-coarse) * 9)); }
+    .sidebar { padding: var(--inset-pane); background: var(--surface-navigation); border-right: var(--stroke-divider) solid var(--border-divider); gap: var(--space-section); }
+    .sidebar ul { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-stack); }
+    .sidebar a { display: block; padding: var(--inset-control-block) var(--inset-control-inline); border: var(--stroke-divider) solid var(--border-control); border-radius: var(--radius-control); background: var(--surface-panel); }
+    .sidebar a:hover { background: var(--surface-hover); }
+    .sidebar a[aria-current] { background: var(--surface-selected); border-color: var(--border-selected); border-inline-start-width: var(--stroke-focus); font-weight: var(--weight-emphasis); }
+    .canvas { padding: var(--inset-pane); display: grid; gap: var(--gap-nodes); align-content: start; min-width: 0; }
+    .canvas-heading { border-bottom: var(--stroke-divider) solid var(--border-divider); padding-bottom: var(--space-section); }
+    .task { border: var(--stroke-divider) solid var(--border-control); border-radius: var(--radius-panel); padding: var(--inset-node); display: grid; gap: var(--gap-nodes); }
+    .node-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-nodes); align-items: start; }
+    .node { min-width: 0; text-align: start; display: grid; gap: var(--space-stack); padding: var(--inset-node); border-radius: var(--radius-panel); }
+    .selected { color: var(--text-primary); border: var(--stroke-focus) solid var(--border-selected); background: var(--surface-selected); }
+    .selected:hover { background: var(--surface-selected); }
+    .node-type { font-size: var(--text-meta); font-weight: var(--weight-emphasis); }
+    .document { border-radius: 0; border-top-width: var(--stroke-focus); }
+    .check { border-style: dashed; }
+    .relation { color: var(--text-secondary); display: flex; align-items: center; gap: var(--space-inline); font-size: var(--text-meta); }
+    .relation::before { content: ''; width: var(--gap-branches); border-top: var(--stroke-focus) solid var(--connector-relation); }
+    .dock { min-width: 0; border-left: var(--stroke-divider) solid var(--border-divider); background: var(--surface-panel); padding: var(--inset-pane); gap: var(--space-pane); }
+    .dock-header { border-bottom: var(--stroke-divider) solid var(--border-divider); padding-bottom: var(--space-section); }
+    .question { padding: var(--inset-node); border: var(--stroke-focus) solid var(--state-attention); border-radius: var(--radius-panel); background: var(--state-attention-surface); gap: var(--space-section); }
+    .question h3 { color: var(--state-attention); }
+    .question.answered { border-color: var(--state-success); background: var(--state-success-surface); }
+    .question.answered h3 { color: var(--state-success); }
+    .badge { display: inline-flex; align-items: center; gap: var(--space-inline-tight); border: var(--stroke-divider) solid; border-radius: var(--radius-control); padding: var(--space-stack-tight) var(--space-inline); font-size: var(--text-meta); font-weight: var(--weight-emphasis); width: fit-content; max-width: 100%; }
+    .working { color: var(--state-working); background: var(--state-working-surface); border-color: var(--state-working); }
+    .attention { color: var(--state-attention); background: var(--state-attention-surface); border-color: var(--state-attention); }
+    .success { color: var(--state-success); background: var(--state-success-surface); border-color: var(--state-success); }
+    .error { color: var(--state-error); background: var(--state-error-surface); border-color: var(--state-error); }
+    .unknown { color: var(--state-unknown); background: var(--state-unknown-surface); border-color: var(--state-unknown); }
+    .composer { border-top: var(--stroke-divider) solid var(--border-divider); padding-top: var(--space-section); }
+    textarea { display: block; width: 100%; min-height: calc(var(--target-control) * 3); resize: vertical; caret-color: var(--text-primary); }
+    textarea::placeholder { color: var(--text-secondary); opacity: 1; }
+    .statusbar { padding: var(--space-stack) var(--inset-pane); border-top: var(--stroke-divider) solid var(--border-divider); background: var(--surface-navigation); }
+    .footnote { padding-top: var(--space-section); border-top: var(--stroke-divider) solid var(--border-divider); }
+    .comparisons { padding: var(--inset-pane); border-bottom: var(--stroke-divider) solid var(--border-divider); }
+    .comparison-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 45rem), 1fr)); gap: var(--space-pane); }
+    .comparison-grid iframe { display: block; width: 100%; height: 81rem; border: var(--stroke-divider) solid var(--border-control); border-radius: var(--radius-panel); }
+    .harmony-swatches { display: flex; flex-wrap: wrap; gap: var(--space-inline); list-style: none; padding: 0; margin: 0; }
+    .harmony-swatches li { display: flex; align-items: center; gap: var(--space-inline-tight); font-size: var(--text-meta); }
+    .harmony-swatch { width: 1.25rem; height: 1.25rem; border-radius: 50%; border: var(--stroke-divider) solid var(--border-control); }
+    .accent-tabs { display: flex; gap: var(--space-inline); border-bottom: var(--stroke-divider) solid var(--border-divider); }
+    .accent-tabs a { color: var(--text-secondary); text-decoration: none; padding: var(--space-stack) var(--space-inline); border-bottom: var(--stroke-accent) solid transparent; }
+    .accent-tabs a[aria-current] { color: var(--text-primary); background: var(--surface-panel); border-bottom-color: var(--accent-1); }
+    .section-mark { border-inline-start: var(--stroke-accent) solid var(--accent-3); padding-inline-start: var(--space-inline); }
+    .category { color: var(--text-primary); background: var(--surface-panel); border-color: var(--accent-2); border-inline-start-width: var(--stroke-accent); }
+    .node.selected { border-inline-start-width: var(--stroke-accent); }
+    .accent-node { border-top: var(--stroke-accent) solid var(--accent-3); background: var(--surface-panel); }
+    .comparison-body { padding: var(--inset-pane); }
+    .comparison-body .node { border: var(--stroke-divider) solid var(--border-control); }
+    .comparison-body .node.selected { border-color: var(--border-selected); border-inline-start-width: var(--stroke-accent); }
+    .comparison-body .accent-node { border-top: var(--stroke-accent) solid var(--accent-3); }
+    .comparison-body .sample-focus { outline: var(--stroke-focus) solid var(--focus-ring); outline-offset: var(--focus-offset); }
+    * { scrollbar-width: thin; scrollbar-color: var(--border-control) transparent; }
+    .badge.attention { color: var(--state-attention); background: var(--state-attention-surface); }
+    .screen-sample { display: grid; grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.55fr); border: var(--stroke-divider) solid var(--border-control); }
+    .map-sample { background: var(--surface-canvas); padding: var(--inset-node); display: grid; align-content: start; gap: var(--gap-nodes); min-width: 0; }
+    .map-frame { background: var(--surface-frame-body); border: var(--stroke-divider) solid var(--border-control); min-width: 0; }
+    .frame-head { background: var(--surface-frame-header); padding: var(--space-inline); display: grid; gap: var(--space-stack); }
+    .frame-head .type-label { background: var(--type-task-header); }
+    .mini-node-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-section); padding: var(--inset-node); align-items: start; }
+    .map-node { position: relative; background: var(--surface-node-body); padding: var(--space-inline-tight); border: var(--stroke-divider) solid var(--border-control); border-radius: var(--radius-control); min-width: 0; display: grid; gap: var(--space-inline-tight); }
+    .map-node.is-selected { border-color: var(--border-selected); border-inline-start-width: var(--stroke-accent); }
+    .node-head { background: var(--type-header, var(--surface-node-header)); padding: var(--space-inline-tight); }
+    .type-label { display: flex; align-items: center; gap: var(--space-inline-tight); background: var(--type-header); padding: var(--space-inline-tight); font-size: var(--text-meta); font-weight: var(--weight-emphasis); }
+    .node-content { background: var(--surface-node-body); padding: var(--space-inline); display: grid; gap: var(--space-stack); overflow-wrap: anywhere; }
+    .type-label > .type-icon { background: var(--type-surface); border-radius: 50%; width: 1.5rem; height: 1.5rem; padding: var(--space-inline-tight); }
+    .node-content h3 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+    .type-icon { width: 1rem; height: 1rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    [data-type="ticket"] { --type-surface: var(--type-ticket-surface); --type-header: var(--type-ticket-header); --type-text: var(--type-ticket-text); --type-edge: var(--type-ticket-edge); }
+    [data-type="task"] { --type-surface: var(--type-task-surface); --type-header: var(--type-task-header); --type-text: var(--type-task-text); --type-edge: var(--type-task-edge); }
+    [data-type="session"] { --type-surface: var(--type-session-surface); --type-header: var(--type-session-header); --type-text: var(--type-session-text); --type-edge: var(--type-session-edge); border-radius: var(--space-section); }
+    [data-type="artifact"] { --type-surface: var(--type-artifact-surface); --type-header: var(--type-artifact-header); --type-text: var(--type-artifact-text); --type-edge: var(--type-artifact-edge); }
+    [data-type="check"] { --type-surface: var(--type-check-surface); --type-header: var(--type-check-header); --type-text: var(--type-check-text); --type-edge: var(--type-check-edge); border-radius: var(--space-section); }
+    [data-type="question"] { --type-surface: var(--type-question-surface); --type-header: var(--type-question-header); --type-text: var(--type-question-text); --type-edge: var(--type-question-edge); }
+    [data-type="decision"] { --type-surface: var(--type-decision-surface); --type-header: var(--type-decision-header); --type-text: var(--type-decision-text); --type-edge: var(--type-decision-edge); }
+    [data-type="note"] { --type-surface: var(--type-note-surface); --type-header: var(--type-note-header); --type-text: var(--type-note-text); --type-edge: var(--type-note-edge); }
+    .map-node[data-type="ticket"] { border-inline-start: var(--stroke-accent) dashed var(--border-control); }
+    .map-node[data-type="artifact"]::after { content: ''; position: absolute; right: 0; top: 0; border: var(--space-inline) solid var(--surface-node-header); border-top-color: var(--surface-frame-body); border-right-color: var(--surface-frame-body); }
+    .file-tab { margin-inline-end: var(--space-section); border-top: var(--stroke-accent) solid var(--border-divider); }
+    .live-tail { border-inline-start: var(--stroke-divider) solid var(--border-divider); padding-inline-start: var(--space-inline); font-family: var(--font-code); }
+    .map-node[data-type="question"]::after { content: ''; position: absolute; bottom: calc(-1 * var(--space-inline)); left: var(--space-section); width: var(--space-inline); height: var(--space-inline); background: var(--surface-node-body); border-inline-end: var(--stroke-divider) solid var(--border-control); border-bottom: var(--stroke-divider) solid var(--border-control); transform: skewY(-35deg); }
+    .map-node[data-type="note"] { border: 0; border-radius: 0; }
+    .map-node[data-type="note"] .type-label { border-top: var(--space-inline-tight) solid var(--border-divider); }
+    .queue-sample { background: var(--surface-panel); padding: var(--inset-node); min-width: 0; display: grid; align-content: start; gap: var(--space-section); border-inline-start: var(--stroke-divider) solid var(--border-control); }
+    .queue-sample ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-inline); }
+    .queue-item { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-inline); padding: var(--space-inline); background: var(--surface-node-body); border-radius: var(--radius-control); }
+    .queue-item > .type-icon { background: var(--type-surface); border-radius: 50%; width: 1.5rem; height: 1.5rem; padding: var(--space-inline-tight); }
+    .queue-item .stack { gap: var(--space-inline-tight); }
+    .queue-item time { color: var(--text-secondary); text-align: end; font-size: var(--text-meta); }
+    .surface-ladder { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border: var(--stroke-divider) solid var(--border-control); }
+    .surface-ladder span { padding: var(--space-inline); overflow-wrap: anywhere; font-size: var(--text-meta); }
+    /* Pass 6: separate reading pairs for coloured headers and mixed chrome. */
+    .node-head, .type-label { color: var(--type-text); }
+    .type-label > .type-icon { color: var(--text-primary); }
+    .type-label .board-open { color: inherit; }
+    .map-node[data-type]:not(.is-selected), .board-task { border-inline-start: var(--stroke-accent) solid var(--type-edge); }
+    .map-node, .node-content { background: color-mix(in srgb, var(--type-surface) var(--type-body-mix), var(--surface-node-body)); }
+    .board-card.is-selected .node-content { background: var(--surface-selected); }
+    .toolbar, .sidebar, .dock, .board-chat, .board-queue { color: var(--text-chrome); background: var(--surface-chrome); border-color: var(--border-chrome); }
+    :is(.toolbar, .sidebar, .dock, .board-chat, .board-queue) .muted { color: var(--text-chrome-secondary); }
+    :is(.toolbar, .sidebar, .dock, .board-chat, .board-queue) :is(a, button, select, textarea, .question) { color: var(--text-primary); }
+    :is(.toolbar, .sidebar, .dock, .board-chat, .board-queue) .primary { color: var(--text-on-action); }
+    :is(.toolbar, .sidebar, .dock, .board-chat, .board-queue) .question { color: var(--text-primary); }
+    :is(.toolbar, .sidebar, .dock, .board-chat, .board-queue) :is(a, .question) .muted { color: var(--text-secondary); }
+    .board-chat a { color: var(--text-chrome); }
+    :is(.toolbar, .sidebar, .dock, .board-chat, .board-queue) :focus-visible { outline-color: var(--border-chrome); }
+    :is(.toolbar, .sidebar, .dock, .board-chat, .board-queue):focus-visible { outline-color: var(--border-chrome); }
+    .dock .question :focus-visible { outline-color: var(--focus-ring); }
+    @media (max-width: 40em) { .screen-sample { grid-template-columns: minmax(0, 1fr); } .queue-sample { border-inline-start: 0; border-top: var(--stroke-divider) solid var(--border-control); } }
+    [hidden] { display: none !important; }
+    /* Board geometry follows the shared 4 px grid; colour comes only from pack roles. */
+    .preview-views { padding: var(--space-stack) var(--inset-pane); background: var(--surface-navigation); border-bottom: var(--stroke-divider) solid var(--border-divider); }
+    .preview-views [aria-pressed="true"], .board-zoom [aria-pressed="true"] { background: var(--surface-selected); border-color: var(--border-selected); }
+    .board-view { min-width: 0; }
+    .board-intro { padding: var(--inset-pane); border-bottom: var(--stroke-divider) solid var(--border-divider); }
+    .board-shell { display: grid; grid-template-columns: 14rem minmax(0, 1fr) 20rem; min-height: 56rem; }
+    .board-queue, .board-chat { padding: var(--inset-pane); background: var(--surface-chrome); min-width: 0; align-content: start; }
+    .board-queue { border-right: var(--stroke-divider) solid var(--border-control); }
+    .board-chat { border-left: var(--stroke-divider) solid var(--border-control); }
+    .board-queue ul, .board-chat ol { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-section); }
+    .board-queue a { display: grid; gap: var(--space-stack); color: var(--text-primary); text-decoration: none; padding: var(--inset-node); border: var(--stroke-divider) solid var(--border-control); border-radius: var(--radius-panel); background: var(--surface-node-body); }
+    .board-queue a:hover { background: var(--surface-hover); }
+    .board-chat li { display: grid; gap: var(--space-stack); padding-block: var(--space-section); border-bottom: var(--stroke-divider) solid var(--border-divider); overflow-wrap: anywhere; }
+    .board-chat .board-ask { border-inline-start: var(--stroke-focus) solid var(--state-attention); padding-inline-start: var(--inset-node); }
+    .board-chat textarea { min-height: calc(var(--target-control) * 3); }
+    .board-map { position: relative; min-width: 0; overflow: hidden; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; background: var(--surface-canvas); }
+    .board-map > * { min-width: 0; }
+    .board-map-tools, .board-key { padding: var(--inset-node); background: var(--surface-navigation); }
+    .board-viewport { position: relative; overflow: auto; height: 48rem; width: 100%; min-width: 0; scrollbar-gutter: stable; }
+    .board-scene { --board-scale: 1; position: relative; width: calc(var(--board-width) * var(--board-scale)); height: calc(var(--board-height) * var(--board-scale)); overflow: hidden; isolation: isolate; }
+    .board-scene[data-zoom="far"] { --board-scale: 0.6; }
+    .board-world { position: relative; width: var(--board-width); height: var(--board-height); transform: scale(var(--board-scale)); transform-origin: top left; }
+    .board-task { position: absolute; left: var(--x); top: var(--y); width: var(--w); height: var(--h); background: var(--surface-frame-body); border: var(--stroke-divider) solid var(--border-control); border-radius: var(--radius-panel); }
+    .board-task > header { display: flex; align-items: center; gap: var(--space-inline); padding: var(--inset-node); background: var(--surface-frame-header); border-radius: var(--radius-panel) var(--radius-panel) 0 0; }
+    .board-task .type-label { flex: none; }
+    .board-task h3 { min-width: 0; }
+    .board-links { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+    .board-edge { fill: none; stroke: var(--connector-relation); stroke-width: var(--stroke-focus); }
+    .board-edge.is-selected { stroke: var(--connector-selected); stroke-width: calc(var(--stroke-focus) * 2); }
+    .board-arrow { fill: var(--connector-relation); }
+    .board-arrow-selected { fill: var(--connector-selected); }
+    .board-edge-label { fill: var(--text-secondary); stroke: var(--surface-frame-body); stroke-width: calc(var(--stroke-focus) * 2); paint-order: stroke; font-size: var(--text-meta); }
+    .board-card { position: absolute; left: var(--x); top: var(--y); width: var(--w); height: var(--h); align-content: start; overflow: auto; scroll-margin: var(--space-pane); }
+    .board-card .node-content h3 { display: block; overflow: visible; }
+    .board-card.is-selected { border: var(--stroke-focus) solid var(--border-selected); border-inline-start-width: var(--stroke-accent); background: var(--surface-selected); }
+    .board-card.is-selected .node-content { background: var(--surface-selected); }
+    .board-card .board-node-link { color: var(--text-primary); text-decoration: underline; text-underline-offset: var(--space-inline-tight); }
+    .board-card .board-compact { display: none; }
+    .board-open { padding: 0; min-height: 0; background: transparent; border: 0; font: inherit; font-weight: inherit; text-align: left; cursor: pointer; }
+    .board-details { max-width: min(36rem, 90vw); max-height: 85dvh; overflow: auto; color: var(--text-primary); background: var(--surface-panel); border: var(--stroke-divider) solid var(--border-control); padding: var(--inset-pane); }
+    .board-details::backdrop { background: rgb(0 0 0 / 50%); }
+    .board-scene[data-zoom="far"] .board-card { padding: var(--space-inline-tight); gap: var(--space-inline-tight); }
+    .board-scene[data-zoom="far"] .board-card .node-head, .board-scene[data-zoom="far"] .board-card .node-content { display: none; }
+    .board-scene[data-zoom="far"] .board-compact { display: grid; gap: var(--space-inline-tight); }
+    .board-compact .type-label { background: var(--type-header); }
+    .board-compact > a { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .board-scene[data-zoom="far"] .board-task > header { padding: var(--space-inline); flex-wrap: wrap; gap: var(--space-inline-tight); }
+    .board-scene[data-zoom="far"] .board-task .type-label { font-size: var(--text-meta); }
+    .board-markers { display: flex; flex-wrap: wrap; gap: var(--space-inline); padding: var(--space-stack) var(--inset-node); border-top: var(--stroke-divider) solid var(--border-divider); }
+    .board-marker { display: inline-flex; align-items: center; gap: var(--space-inline-tight); min-height: var(--target-compact); padding: var(--space-inline-tight) var(--space-inline); border: var(--stroke-divider) solid var(--border-control); border-radius: var(--radius-control); background: var(--surface-panel); }
+    .board-zoom button, .theme-step { min-height: var(--target-compact); padding: var(--space-inline-tight) var(--space-inline); }
+    .board-icon { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+    .board-view .type-icon { stroke-width: 2; }
+    .board-key { border-top: var(--stroke-divider) solid var(--border-divider); }
+    .board-key .selected-line { display: inline-block; width: var(--gap-branches); border-top: calc(var(--stroke-focus) * 2) solid var(--connector-selected); }
+    @media (max-width: 68em) { .board-shell { grid-template-columns: 12rem minmax(0, 1fr) 16rem; } }
+    @media (max-width: 48em) { .board-shell { grid-template-columns: minmax(0, 1fr); } .board-queue, .board-chat { border: 0; border-bottom: var(--stroke-divider) solid var(--border-control); } .board-queue ul { grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); } }
+    @media (max-width: 76em) {
+      .workspace { grid-template-columns: minmax(0, calc(var(--target-coarse) * 5)) minmax(0, 1fr); }
+      .dock { grid-column: 2; border-top: var(--stroke-divider) solid var(--border-divider); border-left: 0; }
+      .sidebar { grid-row: span 2; }
+    }
+    @media (max-width: 48em) {
+      .workspace, .node-grid { grid-template-columns: minmax(0, 1fr); }
+      .sidebar { grid-row: auto; border-right: 0; border-bottom: var(--stroke-divider) solid var(--border-divider); }
+      .dock { grid-column: auto; }
+    }
+    @media (pointer: coarse) { button, select, .sidebar a { min-height: var(--target-coarse); } }
+    @media (forced-colors: active) { .selected { outline: var(--stroke-focus) solid; } }
+  </style>
+<style>
+body { background:#f5f4f0; }
+.frame { background:var(--surface-canvas); }
+.frame>.toolbar,.frame>.preview-views { color:#222831; background:#f5f4f0; padding:16px clamp(20px,4vw,72px); font-family:var(--jig-font-sans); font-size:var(--type-body); border-color:#d9dcd6; }
+.frame>.toolbar button,.frame>.toolbar select,.preview-views button { color:#222831; background:#fff; border:1px solid #cccec9; border-radius:6px; }
+.frame>.toolbar option { color:#222831; background:#fff; }
+.preview-views button[aria-pressed=true] { color:#222831; background:#eaece6; }
+.frame h2 { font-size:var(--text-pane-title); }
+.frame h3 { font-size:var(--text-section); }
+.frame h2,.frame h3 { font-weight:var(--weight-emphasis); line-height:var(--leading-heading); }
+.frame .board-map { margin:0; max-width:none; }
+.page-header { color-scheme:light; }
+.frame>.toolbar .meta { color:#62666d; }
+</style><link rel="stylesheet" href="../grid/tokens.css">
+</head>
+<body data-grid>
+<header class="page-header"><nav class="breadcrumb" aria-label="Breadcrumb" data-jig-shell="1" data-ledger="site-shell"><a class="brand" href="../../../README.md" aria-label="jig"><img class="brand-mark" src="../logo/final/ji-red-23.svg" width="23" height="23" alt=""><img class="brand-wordmark" src="../logo/final/jig-wordmark-charcoal.svg" alt="" height="23"></a><span aria-hidden="true">/</span><a href="../index.html">Design toolbox</a><span aria-hidden="true">/</span><span aria-current="page">Themes</span></nav><h1>Themes<span class="title-dot">.</span></h1><p class="intro">Compare colour packs on the Board view or inspect their components.</p></header>
+<div class="frame">
+  <header class="toolbar row spread" data-ledger="preview-toolbar">
+    <div class="identity"><strong>Themes</strong><span class="meta">Sample workspace</span></div>
+    <div class="row">
+      <label for="theme">Theme</label>
+      <select id="theme">
+        <option value="white-board">White board · solid headers</option>
+        <option value="white-board-soft">White board · soft cards</option>
+        <option value="paper">Paper · saturated headers</option>
+        <option value="studio">Studio · dark chrome</option>
+        <option value="clarity">Clarity · enhanced light</option>
+        <option value="dracula">Dracula</option>
+        <option value="electric">Electric · deep navy</option>
+      </select>
+      <button class="theme-step row" id="previous-theme" type="button" title="Previous theme" aria-label="Previous theme"><svg class="board-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <button class="theme-step row" id="next-theme" type="button" title="Next theme" aria-label="Next theme"><svg class="board-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      <button id="reset" type="button">Reset sample</button>
+    </div>
+  </header>
+  <nav class="preview-views row" aria-label="Workbench views">
+    <button id="show-board" type="button" aria-pressed="true" aria-controls="board-view">Board</button>
+    <button id="show-components" type="button" aria-pressed="false" aria-controls="component-comparisons component-workspace">Components</button>
+  </nav>
+  <dialog id="board-details" class="board-details" aria-labelledby="board-details-title"><form method="dialog"><button type="submit">Close details</button></form><div id="board-details-content" class="stack"></div></dialog>
+  <section id="board-view" class="board-view" aria-labelledby="board-question">
+    <header class="board-intro stack">
+      <h2 id="board-question">Can you tell the types apart, find what needs you, and follow a link, in each theme?</h2>
+      <p class="meta muted">Release preparation · 10:42 · sample work, frozen in place</p>
+    </header>
+    <div class="board-shell">
+      <nav class="board-queue stack" aria-label="Board work queue">
+        <h2 class="section-mark">Work queue</h2>
+        <p class="meta muted">3 tasks · 2 open questions</p>
+        <ul>
+          <li><a href="#board-keys-question"><strong>Keyboard controls</strong><span class="badge attention">Needs you · key choice</span><span class="meta muted">Working · 1 failed check</span></a></li>
+          <li><a href="#board-boundary-question"><strong>Boundary checks</strong><span class="badge attention">Needs you · empty value</span><span class="meta muted">1 stalled session</span></a></li>
+          <li><a href="#board-notes-session"><strong>Release notes</strong><span class="badge unknown">Waiting on keyboard</span><span class="meta muted">Draft ready · check passed</span></a></li>
+        </ul>
+        <p class="meta muted">Links locate the same work on the map. Selected: Implement focus route.</p>
+        <a href="../guides/theme-checker.html">Theme notes and contrast</a>
+      </nav>
+      <main class="board-map" aria-label="Board canvas">
+        <div class="board-map-tools row spread">
+          <div class="stack"><h2>Application canvas</h2><span class="meta muted">20 items · 3 task frames · static placement</span></div>
+          <div class="board-zoom row" role="group" aria-label="Board zoom">
+            <button type="button" data-board-zoom="middle" aria-pressed="true">Middle</button>
+            <button type="button" data-board-zoom="far" aria-pressed="false">Far</button>
+          </div>
+        </div>
+        <div>
+          <div class="board-viewport" tabindex="0" role="region" aria-label="Scrollable work map" aria-describedby="board-map-help">
+            <div class="board-scene" data-zoom="middle" id="board-scene"></div>
+          </div>
+          <nav class="board-markers" aria-label="Work beyond the visible map" id="board-markers"></nav>
+        </div>
+        <div class="board-key row"><span class="selected-line" aria-hidden="true"></span><span class="meta">Selected session links</span><span class="meta muted" id="board-map-help">Arrowheads show direction. Open an item for details and named links. Scroll to explore; Far shows compact chips.</span></div>
+      </main>
+      <aside class="board-chat stack" id="board-chat" aria-labelledby="board-chat-title" tabindex="-1">
+        <header class="stack"><h2 id="board-chat-title">Implement focus route</h2><span class="meta muted">Docked chat · selected session</span><span class="badge working">Working · editing focus route</span></header>
+        <ol aria-label="Sample conversation">
+          <li><strong>You · 10:28</strong><p>Keep a single tab stop in each group. Arrow keys should move between items.</p></li>
+          <li><strong>Assistant · 10:35</strong><p>The focus route is in place. The shortcut check found that Space already opens the command menu.</p><a href="#board-key-check">Follow failed check</a></li>
+          <li class="board-ask"><span class="badge attention">Needs you · 10:39</span><strong>Keep arrow keys alongside WASD?</strong><p>The keyboard session can continue with either choice.</p><a href="#board-keys-question">Locate open question</a></li>
+          <li><strong>Assistant · 10:42</strong><p>Boundary checks also need an empty-value rule before the stalled session can resume.</p><a href="#board-boundary-question">Follow other open question</a></li>
+        </ol>
+        <form class="stack composer" id="board-composer">
+          <label for="board-draft"><strong>Message to selected session</strong></label>
+          <textarea id="board-draft" placeholder="Keep arrows; use Enter to open…"></textarea>
+          <button class="primary" type="submit">Send sample note</button>
+          <p class="meta muted">Local sample only. No session starts.</p>
+        </form>
+      </aside>
+    </div>
+  </section>
+  <section id="component-comparisons" class="comparisons stack" aria-labelledby="compare-title" data-ledger="preview-comparisons" hidden>
+    <h2 id="compare-title">Compare every pack</h2>
+    <p class="muted">Eight types on the same map and queue in every pack. Compare white board solid headers and soft cards side by side, then the five gallery favourites. Only Needs you has a solid chip. Compare the canvas, frame and node layers as well as their outlines. The larger workspace below uses the theme picker.</p>
+    <div class="comparison-grid" id="comparison-grid"></div>
+  </section>
+  <div id="component-workspace" class="workspace" hidden>
+    <nav class="sidebar stack" aria-label="Workspace" data-ledger="preview-navigation">
+      <div class="stack"><h2>Work queue</h2><p class="muted meta">Three tasks · illustrative data</p></div>
+      <ul>
+        <li><a href="#session" aria-current="location">Keyboard controls<br><span class="meta question-state">? Needs you</span></a></li>
+        <li><a href="#boundary">Boundary checks<br><span class="meta">▸ Working</span></a></li>
+        <li><a href="#notes">Release notes<br><span class="meta">◇ Unknown</span></a></li>
+      </ul>
+      <p class="muted meta">This list reaches the same work without navigating the canvas.</p>
+      <div class="stack footnote" data-ledger="preview-reference"><strong>Theme study</strong><a href="README.md">Theme notes and contrast</a><span class="muted meta">Tab to compare focus with selection.</span></div>
+    </nav>
+    <main class="canvas" aria-labelledby="canvas-title">
+      <header class="canvas-heading row spread" data-ledger="preview-canvas-heading">
+        <div class="stack"><h2 id="canvas-title" class="section-mark">Application canvas</h2><p class="muted">Related work, with room to read.</p></div>
+        <span class="meta muted">Static layout · no live sessions</span>
+      </header>
+      <nav class="accent-tabs" aria-label="Sample views" data-ledger="preview-tabs"><a href="#session" aria-current="location">Canvas</a><a href="#notes">Notes</a></nav>
+      <section class="task" aria-labelledby="task-title" data-ledger="preview-task">
+        <span class="badge category">Keyboard</span>
+        <div class="row spread"><h3 id="task-title">▣ Task · Keyboard controls</h3><span class="meta muted">1 of 3 complete</span></div>
+        <div class="node-grid">
+          <a class="node selected" href="#question-title" id="session" data-ledger="preview-session">
+            <span class="node-type">▢ Session · Selected</span><strong>Implement input</strong><span class="meta question-state">? Needs you · choose movement keys</span>
+          </a>
+          <div class="stack">
+            <span class="relation" data-ledger="preview-relation">→ produces</span>
+            <article class="node document accent-node" style="border-inline:var(--stroke-divider) solid var(--border-control);border-bottom:var(--stroke-divider) solid var(--border-control)" data-ledger="preview-document">
+              <span class="node-type">▤ Document · v2</span><h3><code>input-notes.md</code></h3><p class="muted meta">Keyboard map and interaction notes.</p><a href="#document-summary">Read summary</a>
+            </article>
+          </div>
+        </div>
+        <p class="meta muted" id="document-summary" data-ledger="preview-summary">Document summary: keep movement keys configurable; preserve existing shortcuts.</p>
+      </section>
+      <div class="node-grid">
+        <article id="boundary" class="node stack" style="background:var(--surface-panel);border:var(--stroke-divider) solid var(--border-control)" data-ledger="preview-working">
+          <span class="node-type">⬡ Check · Boundary cases</span><h3>Exercise the edges</h3><span class="badge working">▸ Working</span><p class="muted meta">Last sample event: check started.</p>
+        </article>
+        <article class="node check" style="background:var(--surface-panel);border-color:var(--border-control);border-width:var(--stroke-divider)" data-ledger="preview-error">
+          <span class="node-type">⬡ Check · Shortcut overlap</span><h3>Resolve key conflict</h3><span class="badge error">× Error</span><p class="muted meta">Space is already assigned. Choose another key before retrying.</p>
+        </article>
+        <article id="notes" class="node document" style="background:var(--surface-panel);border:var(--stroke-divider) solid var(--border-control)" data-ledger="preview-unknown">
+          <span class="node-type">▤ Document · Release notes</span><h3>Awaiting observation</h3><span class="badge unknown">◇ Unknown</span><p class="muted meta">No completion event in this sample.</p>
+        </article>
+        <article class="node" style="background:var(--surface-panel);border:var(--stroke-divider) solid var(--border-control)" data-ledger="preview-success">
+          <span class="node-type">⬡ Check · Focus order</span><h3>Keyboard route recorded</h3><span class="badge success">✓ Complete</span><p class="muted meta">Sample result, not a test of this preview.</p>
+        </article>
+      </div>
+    </main>
+    <aside class="dock stack" aria-labelledby="dock-title">
+      <header class="dock-header stack" data-ledger="preview-dock-heading"><span class="meta muted">▢ Session · Implement input</span><h2 id="dock-title">Choose the next step</h2><p class="muted">An ordinary question stays beside the work.</p></header>
+      <section class="question stack" aria-labelledby="question-title" data-ledger="preview-question">
+        <h3 id="question-title" tabindex="-1">? Needs you</h3><p><strong>Which movement keys should the sample use?</strong></p><p class="meta">Your answer records a choice for this session.</p>
+        <div class="row" id="answers"><button class="primary" type="button" data-answer="WASD + arrows">WASD + arrows</button><button type="button" data-answer="Arrows only">Arrows only</button></div>
+        <p id="answer-receipt" hidden></p>
+      </section>
+      <form id="composer" class="composer stack" data-ledger="preview-composer">
+        <label for="draft"><strong>Message to Implement input</strong></label>
+        <textarea id="draft" placeholder="Add a note for the next turn…" aria-describedby="send-help"></textarea>
+        <p class="meta muted" id="send-help">Demo only. Sending adds a local receipt; no session starts.</p>
+        <div class="row spread"><button class="primary" type="submit">Send sample note</button><button type="button" disabled aria-describedby="export-help">Export</button></div>
+        <p class="meta muted" id="export-help">Export unavailable: this is sample data.</p>
+      </form>
+      <p class="meta muted" data-ledger="preview-limit">Palette and control study. Canvas placement, docking and session behaviour are prototypes.</p>
+    </aside>
+  </div>
+  <footer class="statusbar row spread" data-ledger="preview-status"><span id="receipt" role="status" aria-live="polite">Ready · Calm workbench · sample data</span><span class="meta muted">Local preview · no network</span></footer>
+</div>
+<noscript><style>#board-view, .preview-views { display: none; } #component-workspace[hidden] { display: grid !important; }</style>Board and theme switching need JavaScript. The white board component sample remains readable.</noscript>
+<!-- Board icons: Lucide (https://lucide.dev), ISC; Feather-derived icons, MIT.
+ISC License
+Copyright (c) 2026 Lucide Icons and Contributors
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+The MIT License (MIT)
+Copyright (c) 2013-present Cole Bemis
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
+  <symbol id="board-icon-ticket" viewBox="0 0 24 24"><path d="M2 9a3 3 0 0 1 0 6v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a3 3 0 0 1 0-6V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2m0 4v2m0 4v2"/></symbol>
+  <symbol id="board-icon-task" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 9v12"/></symbol>
+  <symbol id="board-icon-session" viewBox="0 0 24 24"><path d="m4 17 6-5-6-5m8 12h8"/></symbol>
+  <symbol id="board-icon-artifact" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8m-8 4h8"/></symbol>
+  <symbol id="board-icon-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="board-icon-question" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"/></symbol>
+  <symbol id="board-icon-decision" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M2 9h20"/></symbol>
+  <symbol id="board-icon-note" viewBox="0 0 24 24"><path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z"/><path d="M16 3v5h5"/></symbol>
+  <symbol id="board-icon-working" viewBox="0 0 24 24"><path d="m9 18 9-6-9-6Z"/></symbol>
+  <symbol id="board-icon-success" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></symbol>
+  <symbol id="board-icon-error" viewBox="0 0 24 24"><path d="m18 6-12 12M6 6l12 12"/></symbol>
+  <symbol id="board-icon-unknown" viewBox="0 0 24 24"><path d="M10 4H6v16h4M14 4h4v16h-4"/></symbol>
+  <symbol id="board-icon-attention" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"/></symbol>
+</defs></svg>
+<template id="comparison-sample">
+<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs><symbol id="icon-ticket" viewBox="0 0 16 16"><path d="M2 4h12v3a2 2 0 0 0 0 4v2H2v-2a2 2 0 0 0 0-4Z"/><path d="M6 4v9" stroke-dasharray="1 2"/></symbol><symbol id="icon-task" viewBox="0 0 16 16"><path d="M2 3h12v11H2zM2 6h12m-3-2 1 1 1-1"/></symbol><symbol id="icon-session" viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="3"/><circle cx="5" cy="5.5" r="1.5"/><path d="M8 5.5h4M4 9h8m-8 2h5"/></symbol><symbol id="icon-artifact" viewBox="0 0 16 16"><path d="M3 2h7l3 3v9H3Zm7 0v4h3M5 9h6m-6 2h4"/></symbol><symbol id="icon-check" viewBox="0 0 16 16"><rect x="1" y="4" width="14" height="8" rx="4"/><path d="m4 8 2 2 5-4"/></symbol><symbol id="icon-question" viewBox="0 0 16 16"><path d="M2 2h12v9H7l-4 3v-3H2Z"/><path d="M6 5a2 2 0 1 1 3 2l-1 1m0 1v.1"/></symbol><symbol id="icon-decision" viewBox="0 0 16 16"><path d="m8 1 7 7-7 7-7-7Z"/></symbol><symbol id="icon-note" viewBox="0 0 16 16"><path d="M2 3h12v11H2ZM6 1h4v4H6zM5 8h6m-6 3h4"/></symbol><symbol id="icon-working" viewBox="0 0 16 16"><path d="m5 3 7 5-7 5Z"/></symbol><symbol id="icon-success" viewBox="0 0 16 16"><path d="m3 8 3 3 7-7"/></symbol><symbol id="icon-error" viewBox="0 0 16 16"><path d="m4 4 8 8m0-8-8 8"/></symbol><symbol id="icon-attention" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M6 6a2 2 0 1 1 3 2l-1 1m0 2v.1"/></symbol><symbol id="icon-unknown" viewBox="0 0 16 16"><path d="m8 2 6 6-6 6-6-6Z"/><path d="m5 6 5 5m-3-7 5 5"/></symbol></defs></svg>
+<main class="stack comparison-body" data-ledger="preview-comparison-sample">
+<h1 class="section-mark" data-pack-title></h1>
+<section class="stack" aria-label="Colour harmony" data-ledger="preview-harmony"><p class="meta muted" data-harmony-name></p><ul class="harmony-swatches" data-harmony-swatches></ul></section>
+<nav class="accent-tabs" aria-label="Sample views" data-ledger="preview-comparison-tabs"><a href="about:srcdoc#sample-map" aria-current="location">Canvas</a><a href="about:srcdoc#sample-queue">Queue</a></nav>
+<div class="row" data-ledger="preview-comparison-categories"><span class="badge category">Keyboard</span><span class="meta muted">Release preparation · illustrative data</span></div>
+<section class="screen-sample" aria-label="Map and work queue" data-ledger="preview-screen">
+<div id="sample-map" class="map-sample" data-ledger="preview-map"><h2>Related work</h2>
+<article class="map-node" data-type="ticket" data-ledger="preview-map-ticket">
+<header class="node-head"><span class="type-label"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-ticket"></use></svg><span>Ticket</span></span></header>
+<div class="node-content"><h3>Keyboard navigation</h3><span class="badge working"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-working"></use></svg>Working</span><p class="muted meta">Today's release</p></div></article><div class="relation" data-ledger="preview-map-relation">Contains task</div>
+<section class="map-frame" data-type="task" aria-label="Task frame" data-ledger="preview-map-task">
+<header class="frame-head"><span class="type-label"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-task"></use></svg>Task frame</span><h3>Ship keyboard controls</h3><p class="meta muted">1 of 3 checks complete</p><span class="badge working"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-working"></use></svg>Working</span></header>
+<div class="mini-node-grid"><article class="map-node is-selected" data-type="session" data-ledger="preview-map-session">
+<header class="node-head"><span class="type-label"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-session"></use></svg><span>Session · Selected</span></span></header>
+<div class="node-content"><h3>Implement focus route</h3><span class="badge working"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-working"></use></svg>Working</span><p class="muted meta live-tail">Assistant · editing input.ts</p></div></article>
+<article class="map-node" data-type="artifact" data-ledger="preview-map-artifact">
+<header class="node-head"><span class="type-label file-tab"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-artifact"></use></svg><span>Artifact</span></span></header>
+<div class="node-content"><h3>input-map.md</h3><span class="badge success"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-success"></use></svg>Done</span><p class="muted meta">v2 · interaction notes</p></div></article>
+<article class="map-node" data-type="check" data-ledger="preview-map-check">
+<header class="node-head"><span class="type-label"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-check"></use></svg><span>Check</span></span></header>
+<div class="node-content"><h3>No shortcut collisions</h3><span class="badge error"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-error"></use></svg>Failed</span><p class="muted meta">Space is already assigned</p></div></article>
+<article class="map-node" data-type="question" data-ledger="preview-map-question">
+<header class="node-head"><span class="type-label"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-question"></use></svg><span>Question</span></span></header>
+<div class="node-content"><h3>Keep arrow keys?</h3><span class="badge attention"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-attention"></use></svg>Needs you</span><p class="muted meta">Choose the movement keys</p></div></article>
+<article class="map-node" data-type="decision" data-ledger="preview-map-decision">
+<header class="node-head"><span class="type-label"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-decision"></use></svg><span>Decision</span></span></header>
+<div class="node-content"><h3>Use roving focus</h3><span class="badge success"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-success"></use></svg>Done</span><p class="muted meta">One tab stop per group</p></div></article>
+<article class="map-node" data-type="note" data-ledger="preview-map-note">
+<header class="node-head"><span class="type-label"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-note"></use></svg><span>Note</span></span></header>
+<div class="node-content"><h3>Test at 200%</h3><span class="badge unknown"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-unknown"></use></svg>Unknown</span><p class="muted meta">Remember long labels</p></div></article></div></section></div>
+<aside id="sample-queue" class="queue-sample" aria-label="Work queue" data-ledger="preview-queue"><h2 class="section-mark">Work queue</h2><p class="meta muted">Same work · grouped by type</p><ul><li class="queue-item" data-type="ticket" data-ledger="preview-queue-ticket"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-ticket"></use></svg><div class="stack"><strong>Keyboard navigation</strong><span class="meta muted">Ticket</span><span class="badge working"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-working"></use></svg>Working</span><time>2m</time></div></li>
+<li class="queue-item" data-type="task" data-ledger="preview-queue-task"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-task"></use></svg><div class="stack"><strong>Ship keyboard controls</strong><span class="meta muted">Task</span><span class="badge working"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-working"></use></svg>Working</span><time>1m</time></div></li>
+<li class="queue-item" data-type="session" data-ledger="preview-queue-session"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-session"></use></svg><div class="stack"><strong>Implement focus route</strong><span class="meta muted">Session</span><span class="badge working"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-working"></use></svg>Working</span><time>now</time></div></li>
+<li class="queue-item" data-type="artifact" data-ledger="preview-queue-artifact"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-artifact"></use></svg><div class="stack"><strong>input-map.md</strong><span class="meta muted">Artifact</span><span class="badge success"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-success"></use></svg>Done</span><time>3m</time></div></li>
+<li class="queue-item" data-type="check" data-ledger="preview-queue-check"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-check"></use></svg><div class="stack"><strong>No shortcut collisions</strong><span class="meta muted">Check</span><span class="badge error"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-error"></use></svg>Failed</span><time>1m</time></div></li>
+<li class="queue-item" data-type="question" data-ledger="preview-queue-question"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-question"></use></svg><div class="stack"><strong>Keep arrow keys?</strong><span class="meta muted">Question</span><span class="badge attention"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-attention"></use></svg>Needs you</span><time>now</time></div></li>
+<li class="queue-item" data-type="decision" data-ledger="preview-queue-decision"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-decision"></use></svg><div class="stack"><strong>Use roving focus</strong><span class="meta muted">Decision</span><span class="badge success"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-success"></use></svg>Done</span><time>5m</time></div></li>
+<li class="queue-item" data-type="note" data-ledger="preview-queue-note"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-note"></use></svg><div class="stack"><strong>Test at 200%</strong><span class="meta muted">Note</span><span class="badge unknown"><svg class="type-icon" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-unknown"></use></svg>Unknown</span><time>8m</time></div></li></ul></aside></section>
+<div class="surface-ladder" aria-label="Surface layers" data-ledger="preview-surface-ladder"><span style="background:var(--surface-canvas)">canvas</span><span style="background:var(--surface-frame-body)">frame body</span><span style="background:var(--surface-node-body)">node body</span><span style="background:var(--surface-frame-header)">frame header</span><span style="background:var(--surface-node-header)">node header</span><span style="background:var(--surface-panel)">panel</span><span style="background:var(--surface-chrome);color:var(--text-chrome)">chrome</span></div>
+<p class="muted meta" data-ledger="preview-comparison-reading">Shape and labels identify type. Source colours fill headers or mark tinted cards; separate text roles keep each header readable. State chips use tinted fills; only Needs you is solid. Palette prototype: relations and queue are static.</p>
+<div class="gc gc-stack" data-ledger="preview-comparison-actions">
+  <p class="gc-help">Shared button specimens from <a href="../components/" target="_parent">Golden components</a>; board cards above are theme compositions.</p>
+  <svg class="gc-symbols" aria-hidden="true"><defs><symbol id="gc-check" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></symbol></defs></svg>
+  <div class="gc-line">
+    <button type="button" class="gc-button gc-button--primary"><svg class="gc-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#gc-check"></use></svg>Save</button>
+    <button type="button" class="gc-button gc-button--secondary">Cancel</button>
+    <button type="button" class="gc-button gc-button--secondary" data-state="focus-visible">Focus specimen</button>
+    <button type="button" class="gc-button gc-button--primary" disabled>Save unavailable</button>
+  </div>
+</div>
+</main>
+</template>
+<!-- harmony:start -->
+<script id="harmony-data" type="application/json">
+{
+  "white-board": {
+    "name": "Paper / saturated headers",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 260.50970897232435,
+    "keyColour": "#1958c2",
+    "offsets": {
+      "blue": 0,
+      "cyan": 286.0828257175431,
+      "violet": 46.58500644750552,
+      "orange": 97.88009400391229
+    },
+    "neutralHue": 255,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 238.00970897232435,
+    "sourceColours": [
+      "#1958c2",
+      "#00766e",
+      "#7936ab",
+      "#b22d68"
+    ],
+    "typeAngles": {
+      "ticket": 260.50970897232435,
+      "task": 215.50970897232435,
+      "session": 305.50970897232435,
+      "artifact": 350.50970897232435,
+      "check": 35.50970897232435,
+      "question": 80.50970897232435,
+      "decision": 125.50970897232435,
+      "note": 170.50970897232435
+    }
+  },
+  "white-board-soft": {
+    "name": "Paper / saturated headers",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 260.50970897232435,
+    "keyColour": "#1958c2",
+    "offsets": {
+      "blue": 0,
+      "cyan": 286.0828257175431,
+      "violet": 46.58500644750552,
+      "orange": 97.88009400391229
+    },
+    "neutralHue": 255,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 238.00970897232435,
+    "sourceColours": [
+      "#1958c2",
+      "#00766e",
+      "#7936ab",
+      "#b22d68"
+    ],
+    "typeAngles": {
+      "ticket": 260.50970897232435,
+      "task": 215.50970897232435,
+      "session": 305.50970897232435,
+      "artifact": 350.50970897232435,
+      "check": 35.50970897232435,
+      "question": 80.50970897232435,
+      "decision": 125.50970897232435,
+      "note": 170.50970897232435
+    }
+  },
+  "paper": {
+    "name": "Paper / saturated headers",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 260.50970897232435,
+    "keyColour": "#1958c2",
+    "offsets": {
+      "blue": 0,
+      "cyan": 286.0828257175431,
+      "violet": 46.58500644750552,
+      "orange": 97.88009400391229
+    },
+    "neutralHue": 85,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 238.00970897232435,
+    "sourceColours": [
+      "#1958c2",
+      "#00766e",
+      "#7936ab",
+      "#b22d68"
+    ],
+    "typeAngles": {
+      "ticket": 260.50970897232435,
+      "task": 215.50970897232435,
+      "session": 305.50970897232435,
+      "artifact": 350.50970897232435,
+      "check": 35.50970897232435,
+      "question": 80.50970897232435,
+      "decision": 125.50970897232435,
+      "note": 170.50970897232435
+    }
+  },
+  "studio": {
+    "name": "Studio / dark chrome",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 258.9593688166106,
+    "keyColour": "#2865c2",
+    "offsets": {
+      "blue": 0,
+      "cyan": 284.03247949670833,
+      "violet": 52.45221538679391,
+      "orange": 97.93841157188808
+    },
+    "neutralHue": 255,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 236.45936881661055,
+    "sourceColours": [
+      "#2865c2",
+      "#247b70",
+      "#864ca8",
+      "#a6406b"
+    ],
+    "typeAngles": {
+      "ticket": 258.95936881661055,
+      "task": 213.95936881661055,
+      "session": 303.95936881661055,
+      "artifact": 348.95936881661055,
+      "check": 33.959368816610606,
+      "question": 78.9593688166106,
+      "decision": 123.9593688166106,
+      "note": 168.95936881661055
+    }
+  },
+  "clarity": {
+    "name": "Clarity / enhanced light",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 256.934017542361,
+    "keyColour": "#003b80",
+    "offsets": {
+      "blue": 0,
+      "cyan": 273.69066606715995,
+      "violet": 49.83726991163991,
+      "orange": 102.77997425546039
+    },
+    "neutralHue": 255,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 234.43401754236106,
+    "sourceColours": [
+      "#003b80",
+      "#005340",
+      "#56247c",
+      "#782044"
+    ],
+    "typeAngles": {
+      "ticket": 256.93401754236106,
+      "task": 211.93401754236106,
+      "session": 301.93401754236106,
+      "artifact": 346.93401754236106,
+      "check": 31.934017542361005,
+      "question": 76.934017542361,
+      "decision": 121.934017542361,
+      "note": 166.93401754236106
+    }
+  },
+  "dracula": {
+    "name": "Dracula",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 301.88309457776535,
+    "keyColour": "#bd93f9",
+    "offsets": {
+      "blue": 0,
+      "cyan": 270.9633962125479,
+      "violet": 44.9293370722599,
+      "orange": 124.67539616861546
+    },
+    "neutralHue": 277.50866412366116,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 234.3830945777654,
+    "sourceColours": [
+      "#bd93f9",
+      "#8be9fd",
+      "#ff79c6",
+      "#ffb86c"
+    ],
+    "typeAngles": {
+      "ticket": 301.8830945777654,
+      "task": 256.8830945777654,
+      "session": 346.8830945777654,
+      "artifact": 31.88309457776535,
+      "check": 76.88309457776535,
+      "question": 121.88309457776535,
+      "decision": 166.8830945777654,
+      "note": 211.8830945777654
+    }
+  },
+  "electric": {
+    "name": "Electric / deep navy",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 209.2850787377381,
+    "keyColour": "#00e5ff",
+    "offsets": {
+      "blue": 0,
+      "cyan": 133.1510582247422,
+      "violet": 276.5067588754737,
+      "orange": 88.36473030828279
+    },
+    "neutralHue": 265,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 231.7850787377381,
+    "sourceColours": [
+      "#00e5ff",
+      "#ff39c7",
+      "#c3ff38",
+      "#ae83ff"
+    ],
+    "typeAngles": {
+      "ticket": 209.2850787377381,
+      "task": 164.2850787377381,
+      "session": 254.2850787377381,
+      "artifact": 299.2850787377381,
+      "check": 344.2850787377381,
+      "question": 29.285078737738104,
+      "decision": 74.2850787377381,
+      "note": 119.2850787377381
+    }
+  }
+}
+</script>
+<!-- harmony:end -->
+<script>
+const boardGeometryTest = (() => {
+  // A frozen workday, in rem on the shared 4 px grid. Task frames are nodes too.
+  const boardTasks = [
+    { id: 'keyboard', title: 'Keyboard controls', x: 2, y: 2, w: 62, h: 54 },
+    { id: 'boundary', title: 'Boundary checks', x: 68, y: 2, w: 62, h: 54 },
+    { id: 'notes', title: 'Release notes', x: 2, y: 62, w: 82, h: 22 },
+  ];
+  const boardNodes = [
+    { id: 'release', type: 'ticket', title: 'Release keyboard navigation', short: 'Release', frame: 'keyboard', x: 4, y: 8, w: 18, h: 14, state: 'working', status: 'Working', detail: 'Today · 3 tasks in progress' },
+    { id: 'release-plan', type: 'artifact', title: 'release-checklist.md', short: 'Checklist', frame: 'keyboard', x: 24, y: 8, w: 18, h: 14, state: 'success', status: 'Ready', detail: 'Keyboard, input boundaries and notes' },
+    { id: 'focus-session', type: 'session', title: 'Implement focus route', short: 'Focus route', frame: 'keyboard', x: 4, y: 24, w: 18, h: 14, state: 'working', status: 'Working', detail: 'Editing focus route · started 10:28', selected: true },
+    { id: 'key-artifact', type: 'artifact', title: 'keyboard-map.md', short: 'Key map', frame: 'keyboard', x: 24, y: 24, w: 18, h: 14, state: 'success', status: 'Ready', detail: 'v3 · arrow and tab routes' },
+    { id: 'key-check', type: 'check', title: 'Shortcut collisions', short: 'Shortcuts', frame: 'keyboard', x: 44, y: 24, w: 18, h: 14, state: 'error', status: 'Failed', detail: 'Space already opens the command menu' },
+    { id: 'keys-question', type: 'question', title: 'Keep arrows alongside WASD?', short: 'Arrow keys?', frame: 'keyboard', x: 4, y: 40, w: 18, h: 14, state: 'attention', status: 'Needs you', detail: 'Open · choose the movement keys' },
+    { id: 'key-decision', type: 'decision', title: 'Use roving focus', short: 'Roving focus', frame: 'keyboard', x: 24, y: 40, w: 18, h: 14, state: 'success', status: 'Decided', detail: 'One tab stop per group · 10:18' },
+    { id: 'key-note', type: 'note', title: 'Try long translated labels', short: 'Long labels', frame: 'keyboard', x: 44, y: 40, w: 18, h: 14, state: 'unknown', status: 'To try', detail: 'Keep labels readable at 200% text' },
+    { id: 'boundary-session', type: 'session', title: 'Exercise input boundaries', short: 'Boundaries', frame: 'boundary', x: 70, y: 8, w: 18, h: 14, state: 'working', status: 'Working', detail: 'Running empty and pasted values' },
+    { id: 'boundary-artifact', type: 'artifact', title: 'boundary-cases.json', short: 'Cases', frame: 'boundary', x: 90, y: 8, w: 18, h: 14, state: 'success', status: 'Ready', detail: '18 recorded input cases' },
+    { id: 'boundary-check', type: 'check', title: 'Paste preserves selection', short: 'Paste check', frame: 'boundary', x: 110, y: 8, w: 18, h: 14, state: 'success', status: 'Passed', detail: '18 of 18 cases · 10:36' },
+    { id: 'boundary-question', type: 'question', title: 'Should an empty value clear it?', short: 'Empty value?', frame: 'boundary', x: 70, y: 24, w: 18, h: 14, state: 'attention', status: 'Needs you', detail: 'Open · retain or clear the selection' },
+    { id: 'stalled-session', type: 'session', title: 'Reproduce empty-value reset', short: 'Empty reset', frame: 'boundary', x: 94, y: 24, w: 18, h: 14, state: 'error', status: 'Stalled', detail: 'Fixture unavailable · retry after rule choice' },
+    { id: 'notes-session', type: 'session', title: 'Write keyboard release notes', short: 'Release notes', frame: 'notes', x: 4, y: 68, w: 18, h: 14, state: 'unknown', status: 'Waiting', detail: 'Waiting for the keyboard choice' },
+    { id: 'notes-artifact', type: 'artifact', title: 'release-notes.md', short: 'Draft notes', frame: 'notes', x: 24, y: 68, w: 18, h: 14, state: 'success', status: 'Draft ready', detail: 'Keyboard section still provisional' },
+    { id: 'notes-check', type: 'check', title: 'Documentation links', short: 'Link check', frame: 'notes', x: 44, y: 68, w: 18, h: 14, state: 'success', status: 'Passed', detail: '12 links resolve · 10:32' },
+    { id: 'summary-session', type: 'session', title: 'Summarise boundary changes', short: 'Summary', frame: 'notes', x: 64, y: 68, w: 18, h: 14, state: 'working', status: 'Working', detail: 'Reading the recorded cases' },
+  ];
+  const boardEdges = [
+    ['release', 'release-plan', 'tracks'],
+    ['release', 'focus-session', 'starts'], ['release', 'boundary-session', 'starts'],
+    ['focus-session', 'key-artifact', 'writes'], ['focus-session', 'key-check', 'runs'],
+    ['focus-session', 'keys-question', 'asks'], ['key-decision', 'focus-session', 'guides'],
+    ['key-artifact', 'boundary-session', 'feeds'], ['key-check', 'stalled-session', 'blocks'],
+    ['boundary-session', 'boundary-artifact', 'records'], ['boundary-artifact', 'boundary-check', 'tested by'],
+    ['boundary-session', 'boundary-question', 'asks'], ['boundary-question', 'stalled-session', 'unblocks'],
+    ['keys-question', 'notes-session', 'holds'], ['boundary-artifact', 'summary-session', 'informs'],
+    ['key-note', 'notes-artifact', 'reminds'], ['notes-session', 'notes-artifact', 'writes'],
+    ['notes-artifact', 'notes-check', 'checked by'], ['summary-session', 'notes-artifact', 'updates'],
+  ];
+  const boardSize = {
+    w: Math.max(...[...boardTasks, ...boardNodes].map(rect => rect.x + rect.w)) + 2,
+    h: Math.max(...[...boardTasks, ...boardNodes].map(rect => rect.y + rect.h)) + 2,
+  };
+  const overlaps = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+  const clipRectangle = (rect, clip) => {
+    const x = Math.max(rect.x, clip.x), y = Math.max(rect.y, clip.y);
+    return { x, y, w: Math.max(0, Math.min(rect.x + rect.w, clip.x + clip.w) - x), h: Math.max(0, Math.min(rect.y + rect.h, clip.y + clip.h) - y) };
+  };
+  function checkBoardGeometry(styles) {
+    const require = (condition, message) => { if (!condition) throw new Error(`Board geometry: ${message}`); };
+    // Check the actual clipping/column declarations as well as the placement data.
+    const rule = selector => styles.slice(styles.indexOf(`${selector} {`)).split('}')[0];
+    require(/grid-template-columns: 14rem minmax\(0, 1fr\) 20rem/.test(rule('.board-shell')), 'chat must have its own grid column');
+    require(/overflow: hidden/.test(rule('.board-map')), 'canvas must clip before the chat column');
+    require(/min-width: 0/.test(rule('.board-map > *')), 'canvas children must shrink within the column');
+    require(/overflow: auto/.test(rule('.board-viewport')), 'canvas content must scroll');
+    require(/width: var\(--w\); height: var\(--h\)/.test(rule('.board-card')), 'cards must use the checked bounds');
+    require(/overflow: auto/.test(rule('.board-card')), 'large text must stay within card bounds');
+    require(/transform: scale\(var\(--board-scale\)\)/.test(rule('.board-world')), 'zoom must scale text and geometry together');
+    for (const far of [false, true]) {
+      const nodes = boardNodes.map(node => ({ ...node, h: far ? 7 : node.h }));
+      const rectangles = [...boardTasks, ...nodes];
+      for (const rect of rectangles) {
+        require(rect.w > 0 && rect.h > 0 && rect.x >= 0 && rect.y >= 0 && rect.x + rect.w <= boardSize.w && rect.y + rect.h <= boardSize.h, `${rect.id} outside scene`);
+      }
+      for (const node of nodes) {
+        const frame = boardTasks.find(task => task.id === node.frame);
+        require(frame && node.x >= frame.x + 2 && node.y >= frame.y + 6 && node.x + node.w <= frame.x + frame.w - 2 && node.y + node.h <= frame.y + frame.h - 2, `${node.id} crosses its frame inset or header`);
+      }
+      const ticket = nodes.find(node => node.type === 'ticket');
+      const ticketFrame = boardTasks.find(task => task.id === ticket.frame);
+      require(ticket.x === ticketFrame.x + 2 && ticket.y === ticketFrame.y + 6, 'ticket must start at its frame top-left');
+      for (let i = 0; i < rectangles.length; i++) {
+        for (const other of rectangles.slice(i + 1)) {
+          const rect = rectangles[i];
+          const ownFrame = rect.id === other.frame || other.id === rect.frame;
+          require(ownFrame || !overlaps(rect, other), `${rect.id} overlaps ${other.id}`);
+        }
+      }
+      // Project and clip node rectangles into the desktop canvas column, including
+      // the reported 1400 x 900 viewport. Scroll offsets cannot paint into chat.
+      const scale = far ? 0.6 : 1;
+      for (const width of [1100, 1400, 1920]) {
+        const canvasLeft = 14 * 16;
+        const chatLeft = width - 20 * 16;
+        const canvas = { x: canvasLeft, y: 0, w: chatLeft - canvasLeft, h: 48 * 16 };
+        const chat = { x: chatLeft, y: 0, w: 20 * 16, h: 900 };
+        const maxScroll = Math.max(0, boardSize.w * 16 * scale - canvas.w);
+        for (const scroll of [0, maxScroll / 2, maxScroll]) {
+          for (const node of nodes) {
+            const projected = { x: canvas.x + node.x * 16 * scale - scroll, y: node.y * 16 * scale, w: node.w * 16 * scale, h: node.h * 16 * scale };
+            const visible = clipRectangle(projected, canvas);
+            require(!visible.w || !visible.h || !overlaps(visible, chat), `${node.id} crosses chat column`);
+          }
+        }
+      }
+    }
+  }
+  // Execute this script with Node's Function constructor to test without a DOM:
+  // new Function(script + '; return boardGeometryTest;')().checkBoardGeometry(styles)
+  if (typeof document === 'undefined') return { checkBoardGeometry };
+  checkBoardGeometry(document.querySelector('style').textContent);
+  const picker = document.querySelector('#theme');
+  const stylesheet = document.querySelector('#theme-css');
+  const receipt = document.querySelector('#receipt');
+  const choices = new Set(Array.from(picker.options, option => option.value));
+  const scene = document.querySelector('#board-scene');
+  const boardIcon = name => `<svg class="type-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#board-icon-${name}"></use></svg>`;
+  const stateChip = node => `<span class="badge ${node.state}">${boardIcon(node.state)}${node.status}</span>`;
+  const typeName = type => type[0].toUpperCase() + type.slice(1);
+  const nodeLinks = node => boardEdges.filter(([from]) => from === node.id).map(([, to, label]) => {
+    const target = boardNodes.find(item => item.id === to);
+    return `<a class="meta" href="#board-${to}">${label} → ${target.short}</a>`;
+  }).join('');
+  function renderBoard() {
+    const far = scene.dataset.zoom === 'far';
+    scene.style.setProperty('--board-width', `${boardSize.w}rem`);
+    scene.style.setProperty('--board-height', `${boardSize.h}rem`);
+    scene.innerHTML = '<div class="board-world"></div>';
+    const world = scene.querySelector('.board-world');
+    world.innerHTML = boardTasks.map(task => `<section class="board-task" data-type="task" aria-label="Task: ${task.title}" style="--x:${task.x}rem;--y:${task.y}rem;--w:${task.w}rem;--h:${task.h}rem"><header><span class="type-label">${boardIcon('task')}Task</span><h3>${task.title}</h3></header></section>`).join('');
+    // Draw relations above frame grounds, below readable node bodies. Several share lanes
+    // or cross between tasks, rather than presenting an unrealistically tidy tree.
+    const edgeMarkup = boardEdges.map(([from, to, label], index) => {
+      const source = boardNodes.find(node => node.id === from);
+      const target = boardNodes.find(node => node.id === to);
+      const selected = source.selected || target.selected;
+      const right = target.x >= source.x;
+      const x1 = (source.x + (right ? source.w : 0)) * 16;
+      const x2 = (target.x + (right ? 0 : target.w)) * 16;
+      const y1 = source.y * 16 + 32;
+      const y2 = target.y * 16 + 32;
+      const bend = (index % 3 + 1) * 32;
+      const lane = (x1 + x2) / 2 + bend;
+      return `<g><title>${source.title} ${label} ${target.title}</title><path class="board-edge${selected ? ' is-selected' : ''}" marker-end="url(#board-arrow${selected ? '-selected' : ''})" d="M${x1} ${y1} C${lane} ${y1},${lane} ${y2},${x2} ${y2}"/>${!far && selected ? `<text class="board-edge-label" x="${lane}" y="${(y1 + y2) / 2 - 8}">${label}</text>` : ''}</g>`;
+    }).join('');
+    world.insertAdjacentHTML('beforeend', `<svg class="board-links" viewBox="0 0 ${boardSize.w * 16} ${boardSize.h * 16}" aria-label="Directed relationships between work items" role="img"><defs><marker id="board-arrow" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path class="board-arrow" d="M0 0 8 4 0 8Z"/></marker><marker id="board-arrow-selected" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path class="board-arrow-selected" d="M0 0 8 4 0 8Z"/></marker></defs>${edgeMarkup}</svg>`);
+    world.insertAdjacentHTML('beforeend', boardNodes.map(node => `<article id="board-${node.id}" class="board-card map-node${node.selected ? ' is-selected' : ''}" data-type="${node.type}" style="--x:${node.x}rem;--y:${node.y}rem;--w:${node.w}rem;--h:${far ? 7 : node.h}rem" tabindex="-1" aria-label="${typeName(node.type)}: ${node.title}, ${node.status}${node.selected ? ', selected' : ''}">
+      <header class="node-head"><span class="type-label">${boardIcon(node.type)}${typeName(node.type)}${node.selected ? ' · Selected' : ''}</span></header>
+      <div class="node-content"><h3><button type="button" class="board-open board-node-link" data-open-node="${node.id}">${node.title}</button></h3>${stateChip(node)}<p class="meta muted">${node.detail}</p></div>
+      <div class="board-compact"><span class="type-label">${boardIcon(node.type)}${typeName(node.type)}${node.selected ? ' · Selected' : ''}</span><a class="board-node-link" href="#board-${node.id}" title="${node.title} · ${node.status}">${node.short}</a>${stateChip(node)}</div>
+    </article>`).join(''));
+    updateBoardMarkers();
+  }
+  const boardViewport = document.querySelector('.board-viewport');
+  function updateBoardMarkers() {
+    const markers = [
+      ['keys-question', 'Key choice'], ['boundary-question', 'Empty-value choice'], ['notes-session', 'Release notes'],
+    ].filter(([id]) => {
+      const node = document.getElementById(`board-${id}`).getBoundingClientRect();
+      const viewport = boardViewport.getBoundingClientRect();
+      return node.left < viewport.left || node.top < viewport.top || node.right > viewport.left + boardViewport.clientWidth || node.bottom > viewport.top + boardViewport.clientHeight;
+    }).map(([id, label]) => `<a class="board-marker meta" href="#board-${id}">${boardIcon(id === 'notes-session' ? 'session' : 'question')}${label} · off screen</a>`);
+    document.querySelector('#board-markers').innerHTML = markers.join('') || '<span class="meta muted">All marked work is in view</span>';
+  }
+  boardViewport.addEventListener('scroll', updateBoardMarkers, { passive: true });
+  window.addEventListener('resize', updateBoardMarkers);
+  renderBoard();
+  document.querySelectorAll('[data-board-zoom]').forEach(button => button.addEventListener('click', () => {
+    scene.dataset.zoom = button.dataset.boardZoom;
+    document.querySelectorAll('[data-board-zoom]').forEach(choice => choice.setAttribute('aria-pressed', String(choice === button)));
+    boardViewport.scrollTo(0, 0);
+    renderBoard();
+  }));
+  document.querySelector('.frame').addEventListener('click', event => {
+    const opener = event.target.closest('[data-open-node]');
+    if (opener) {
+      const node = boardNodes.find(item => item.id === opener.dataset.openNode);
+      document.querySelector('#board-details-content').innerHTML = `<h2 id="board-details-title">${node.title}</h2>${stateChip(node)}<p>${node.detail}</p><nav class="stack" aria-label="Related items">${nodeLinks(node)}</nav>${node.selected ? '<a href="#board-chat">Open docked chat</a>' : ''}`;
+      document.querySelector('#board-details').showModal();
+      return;
+    }
+    const link = event.target.closest('a[href^="#board-"]');
+    if (!link) return;
+    const target = document.querySelector(link.getAttribute('href'));
+    if (!target) return;
+    event.preventDefault();
+    document.querySelector('#board-details').close();
+    // Compact chips disclose the same full node; its title opens details and outgoing links.
+    if (scene.dataset.zoom === 'far' && target.classList.contains('board-card')) {
+      const id = target.id;
+      scene.dataset.zoom = 'middle';
+      document.querySelectorAll('[data-board-zoom]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.boardZoom === 'middle')));
+      renderBoard();
+      const fullNode = document.getElementById(id);
+      fullNode.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      fullNode.focus({ preventScroll: true });
+      return;
+    }
+    target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    target.focus({ preventScroll: true });
+  });
+  for (const name of ['board', 'components']) {
+    document.querySelector(`#show-${name}`).addEventListener('click', () => {
+      document.querySelector('#board-view').hidden = name !== 'board';
+      document.querySelector('#component-comparisons').hidden = name !== 'components';
+      document.querySelector('#component-workspace').hidden = name !== 'components';
+      document.querySelector('#show-board').setAttribute('aria-pressed', String(name === 'board'));
+      document.querySelector('#show-components').setAttribute('aria-pressed', String(name === 'components'));
+      if (name === 'components') renderComparisons();
+      updateBoardMarkers();
+    });
+  }
+  document.querySelector('#board-composer').addEventListener('submit', event => {
+    event.preventDefault();
+    const draft = document.querySelector('#board-draft');
+    receipt.textContent = draft.value.trim() ? 'Sample note recorded locally. Draft kept for theme comparison.' : 'Write a sample note before sending.';
+    if (!draft.value.trim()) draft.focus();
+  });
+  const harmonies = JSON.parse(document.querySelector('#harmony-data').textContent);
+  // Each srcdoc has its own token root: seven packs can coexist without cascade leaks.
+  // No fetch, server, recursive frames or scripts inside the comparison documents.
+  const comparisonStyles = document.querySelector('style').textContent;
+  let comparisonsRendered = false;
+  function renderComparisons() {
+  if (comparisonsRendered) return;
+  comparisonsRendered = true;
+  for (const option of picker.options) {
+    const sample = document.implementation.createHTMLDocument(option.textContent);
+    sample.documentElement.lang = 'en';
+    const viewport = sample.createElement('meta');
+    viewport.name = 'viewport';
+    viewport.content = 'width=device-width, initial-scale=1';
+    const link = sample.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `${option.value}/theme.css`;
+    const style = sample.createElement('style');
+    style.textContent = comparisonStyles;
+    sample.head.append(viewport, link, style);
+    // The same primitives as the reference, with this frame's own theme root.
+    for (const href of ['../motion-lab/tokens.css', '../components/components.css']) {
+      const shared = sample.createElement('link');
+      shared.rel = 'stylesheet';
+      shared.href = href;
+      sample.head.append(shared);
+    }
+    sample.body.append(document.querySelector('#comparison-sample').content.cloneNode(true));
+    sample.querySelector('[data-pack-title]').textContent = option.textContent;
+    const harmony = harmonies[option.value];
+    sample.querySelector('[data-harmony-name]').textContent = `${harmony.name} · source key ${Math.round(harmony.keyHue)}° OKLCH · eight type hues`;
+    for (const [type, angle] of Object.entries(harmony.typeAngles)) {
+      const item = sample.createElement('li');
+      const swatch = sample.createElement('span');
+      swatch.className = 'harmony-swatch';
+      swatch.setAttribute('aria-hidden', 'true');
+      swatch.style.background = `var(--type-${type}-header)`;
+      item.append(swatch, sample.createTextNode(`${typeName(type)} ${Math.round(angle)}°`));
+      sample.querySelector('[data-harmony-swatches]').append(item);
+    }
+    const frame = document.createElement('iframe');
+    frame.title = `${option.textContent} component comparison`;
+    frame.setAttribute('sandbox', 'allow-same-origin');
+    frame.srcdoc = '<!doctype html>' + sample.documentElement.outerHTML;
+    document.querySelector('#comparison-grid').append(frame);
+  }
+  }
+  let appliedTheme = 'white-board';
+  function setTheme(name) {
+    if (!choices.has(name)) return;
+    picker.value = name;
+    stylesheet.onload = () => {
+      appliedTheme = name;
+      receipt.textContent = `Theme: ${picker.selectedOptions[0].textContent} · draft and answer preserved`;
+    };
+    stylesheet.onerror = () => {
+      picker.value = appliedTheme;
+      stylesheet.onload = null;
+      stylesheet.onerror = null;
+      stylesheet.href = `${appliedTheme}/theme.css`;
+      receipt.textContent = 'Theme file unavailable. Keep each theme pack folder beside this page.';
+    };
+    stylesheet.href = `${name}/theme.css`;
+  }
+  picker.addEventListener('change', () => setTheme(picker.value));
+  function stepTheme(direction) {
+    const index = (picker.selectedIndex + direction + picker.options.length) % picker.options.length;
+    setTheme(picker.options[index].value);
+  }
+  document.querySelector('#previous-theme').addEventListener('click', () => stepTheme(-1));
+  document.querySelector('#next-theme').addEventListener('click', () => stepTheme(1));
+  const initial = location.hash.slice(1);
+  if (choices.has(initial)) setTheme(initial);
+  document.querySelectorAll('[data-answer]').forEach(button => {
+    button.addEventListener('click', () => {
+      const answer = button.dataset.answer;
+      const message = document.querySelector('#answer-receipt');
+      message.textContent = `✓ Answered: ${answer}`;
+      message.hidden = false;
+      document.querySelector('.question').classList.add('answered');
+      document.querySelector('#question-title').textContent = '✓ Answered';
+      document.querySelectorAll('.question-state').forEach(label => { label.textContent = '✓ Answered locally'; });
+      receipt.textContent = `Recorded locally: ${answer}`;
+      // Keep the focused answer mounted; changing a theme never resets it.
+      document.querySelectorAll('[data-answer]').forEach(choice => {
+        choice.setAttribute('aria-pressed', String(choice === button));
+      });
+    });
+  });
+  document.querySelector('#composer').addEventListener('submit', event => {
+    event.preventDefault();
+    const draft = document.querySelector('#draft');
+    if (!draft.value.trim()) {
+      receipt.textContent = 'Write a sample note before sending.';
+      draft.focus();
+      return;
+    }
+    receipt.textContent = 'Sample note recorded locally. Draft kept for theme comparison.';
+  });
+  document.querySelector('#reset').addEventListener('click', () => {
+    document.querySelector('#board-draft').value = '';
+    document.querySelector('#draft').value = '';
+    document.querySelector('#answer-receipt').hidden = true;
+    document.querySelector('.question').classList.remove('answered');
+    document.querySelector('#question-title').textContent = '? Needs you';
+    document.querySelectorAll('.question-state').forEach(label => { label.textContent = '? Needs you'; });
+    document.querySelectorAll('[data-answer]').forEach(button => button.removeAttribute('aria-pressed'));
+    receipt.textContent = 'Sample reset. Theme kept.';
+  });
+})();
+</script>
+</body>
+</html>

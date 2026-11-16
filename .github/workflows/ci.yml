@@ -1,0 +1,74 @@
+name: ci
+
+# Runs only when started by hand (Actions tab > ci > Run workflow); exports are tested locally before every push.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Install plugin dependencies
+        shell: bash
+        run: |
+          for plugin in plugins/*/; do
+            if [ -f "${plugin}package-lock.json" ]; then
+              (cd "$plugin" && npm ci)
+            fi
+          done
+      - name: Check plugin JavaScript syntax
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const { execFileSync } = require('node:child_process');
+          function check(dir) {
+            if (!fs.existsSync(dir)) return;
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              const file = path.join(dir, entry.name);
+              if (entry.isDirectory()) check(file);
+              else if (/\.(mjs|js)$/.test(entry.name)) execFileSync(process.execPath, ['--check', file], { stdio: 'inherit' });
+            }
+          }
+          for (const plugin of fs.readdirSync('plugins', { withFileTypes: true })) {
+            const dir = path.join('plugins', plugin.name);
+            if (!plugin.isDirectory() || !fs.existsSync(path.join(dir, 'package-lock.json'))) continue;
+            for (const folder of ['scripts', 'skills']) check(path.join(dir, folder));
+          }
+          NODE
+      - run: npm install --global @anthropic-ai/claude-code@2.1.325
+        shell: bash
+      - name: Install all marketplace plugins in an isolated profile
+        shell: bash
+        run: |
+          export HOME="$(node -p "require('node:fs').mkdtempSync(require('node:path').join(process.env.RUNNER_TEMP, 'jig-ci-'))")"
+          export USERPROFILE="$HOME"
+          export CLAUDE_CONFIG_DIR="$HOME/claude"
+          export JIG_HOME="$HOME/jig"
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const marketplace = require('./.claude-plugin/marketplace.json');
+          fs.mkdirSync(process.env.CLAUDE_CONFIG_DIR, { recursive: true });
+          fs.writeFileSync(path.join(process.env.CLAUDE_CONFIG_DIR, 'settings.json'), JSON.stringify({
+            extraKnownMarketplaces: { [marketplace.name]: { source: { source: 'directory', path: process.cwd() } } }
+          }));
+          NODE
+          claude plugin marketplace add "$(node -p 'process.cwd()')"
+          for plugin in $(node -p "require('./.claude-plugin/marketplace.json').plugins.map(p => p.name + '@' + require('./.claude-plugin/marketplace.json').name).join(' ')"); do
+            claude plugin install "$plugin"
+          done

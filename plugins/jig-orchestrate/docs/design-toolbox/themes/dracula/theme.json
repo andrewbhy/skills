@@ -1,0 +1,62 @@
+{
+  "name": "dracula",
+  "mode": "dark",
+  "author": "jig contributors; Dracula Theme, created by Zeno Rocha",
+  "licence": "MIT (Dracula palette); UNLICENSED (jig additions)",
+  "version": "0.6.0",
+  "description": "Dracula palette adapted to complete semantic roles; neutral reading text and accessible state fills.",
+  "source": {
+    "id": "dracula-dark",
+    "group": "Dracula",
+    "scheme": "editor",
+    "file": "gallery/palettes.mjs",
+    "attribution": "Dracula Theme; created by Zeno Rocha",
+    "licence": "MIT",
+    "licenceFile": "LICENSE-Dracula.txt",
+    "revision": "8d33e5492b56740c4857c5ebe7c5d5ab4040caf1",
+    "url": "https://github.com/dracula/dracula-theme/blob/8d33e5492b56740c4857c5ebe7c5d5ab4040caf1/README.md"
+  },
+  "presentation": {
+    "typeStyle": "tinted-headers",
+    "layers": "stepped",
+    "darkChrome": false,
+    "chromeTone": "neutral",
+    "contrastTarget": 4.5
+  },
+  "harmony": {
+    "name": "Dracula",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 301.88309457776535,
+    "keyColour": "#bd93f9",
+    "offsets": {
+      "blue": 0,
+      "cyan": 270.9633962125479,
+      "violet": 44.9293370722599,
+      "orange": 124.67539616861546
+    },
+    "neutralHue": 277.50866412366116,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 234.3830945777654,
+    "sourceColours": [
+      "#bd93f9",
+      "#8be9fd",
+      "#ff79c6",
+      "#ffb86c"
+    ],
+    "typeAngles": {
+      "ticket": 301.8830945777654,
+      "task": 256.8830945777654,
+      "session": 346.8830945777654,
+      "artifact": 31.88309457776535,
+      "check": 76.88309457776535,
+      "question": 121.88309457776535,
+      "decision": 166.8830945777654,
+      "note": 211.8830945777654
+    }
+  }
+}

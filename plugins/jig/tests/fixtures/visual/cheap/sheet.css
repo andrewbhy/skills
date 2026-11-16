@@ -1,3 +1,0 @@
-[data-component=row] { color:var(--ink); background:var(--paper); font-size:var(--body); font-weight:var(--weight); }
-[data-state=hover] { background:var(--hover); }
-[data-state=selected] { background:var(--selected); color:var(--on-accent); }

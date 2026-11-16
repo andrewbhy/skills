@@ -1,0 +1,27 @@
+{
+  "name": "warm-studio",
+  "mode": "light",
+  "author": "jig contributors",
+  "licence": "UNLICENSED",
+  "version": "0.4.0",
+  "description": "Limestone and paper with analogous earth tones and a cool slate complement; compact and flat.",
+  "harmony": {
+    "name": "Earth and slate",
+    "scheme": "accented-analogous",
+    "space": "oklch",
+    "keyHue": 55,
+    "keyColour": "#7b3d00",
+    "offsets": {
+      "blue": 0,
+      "cyan": -30,
+      "violet": 30,
+      "orange": 180
+    },
+    "neutralHue": 70,
+    "stateHues": {
+      "green": 140,
+      "amber": 85,
+      "red": 25
+    }
+  }
+}

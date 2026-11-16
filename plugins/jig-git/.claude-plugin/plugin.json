@@ -1,0 +1,17 @@
+{
+  "name": "jig-git",
+  "version": "0.2.0",
+  "description": "Manage task worktrees and authorized merges.",
+  "author": {
+    "name": "andrewbhy"
+  },
+  "homepage": "https://github.com/andrewbhy/skills/tree/main/plugins/jig-git",
+  "repository": "https://github.com/andrewbhy/skills",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "planning",
+    "review",
+    "verification"
+  ]
+}

@@ -1,0 +1,79 @@
+/* Slice 1 draft. Rule IDs resolve in rules.md, with URLs and named sections.
+   Opt in with data-grid on a shell; no existing typography/theme is changed.
+   Values are defaults, not fixed element heights or limits on user overrides.
+   Threshold tokens document container sizes. var() cannot be used in native
+   @container conditions: slice 2 must use matching literal thresholds and
+   slice 3 must check drift. No custom-media transform dependency is required. */
+[data-grid] {
+  /* G01-G03: local 4 px base and the plan's eight positive spacing steps. */
+  --grid-base: 4px;
+  --grid-space-0: 0px;
+  --grid-space-1: 4px;
+  --grid-space-2: 8px;
+  --grid-space-3: 12px;
+  --grid-space-4: 16px;
+  --grid-space-6: 24px;
+  --grid-space-8: 32px;
+  --grid-space-12: 48px;
+  --grid-space-16: 64px;
+
+  /* G04-G05: choose one outer gap and one inset per named context. */
+  --grid-gap-inner: var(--grid-space-2);
+  --grid-gap-outer: var(--grid-space-6);
+  --grid-gap-outer-roomy: var(--grid-space-8);
+  --grid-panel-inset: var(--grid-space-4);
+
+  /* G06: line boxes, independently overridable for text spacing (G27). */
+  --grid-line-4: 16px;
+  --grid-line-5: 20px;
+  --grid-line-6: 24px;
+  --grid-line-7: 28px;
+  --grid-line-8: 32px;
+  /* G07: policy metadata; enforcement arrives in slice 3. */
+  --grid-type-min: 12px;
+
+  /* G14-G15: lower inclusive container inline sizes in CSS px.
+     compact starts at zero; medium starts at 600px, and so on.
+     These declarations do not establish or query a container. */
+  --grid-width-compact: 0px;
+  --grid-width-medium: 600px;
+  --grid-width-expanded: 840px;
+  --grid-width-large: 1200px;
+  --grid-width-extra-wide: 1600px;
+
+  /* G16-G18: per-class values; slice 2 selects by container query. */
+  --grid-columns-compact: 4;
+  --grid-columns-medium: 8;
+  --grid-columns-expanded: 12;
+  --grid-columns-large: 12;
+  --grid-columns-extra-wide: 12;
+  --grid-gutter: var(--grid-space-6);
+  --grid-margin-compact: var(--grid-space-4);
+  --grid-margin-medium: var(--grid-space-6);
+  --grid-margin-expanded: var(--grid-space-8);
+  --grid-margin-large: var(--grid-space-8);
+  --grid-margin-extra-wide: var(--grid-space-12);
+  /* G19: reading maximum, bounded by available width in slice 2. */
+  --grid-reading-max: 72ch;
+  /* G28-G29: hit areas, not icon dimensions or spacing-scale steps. */
+  --grid-target-min: 24px;
+  --grid-target-touch: 44px;
+}
+
+/* G07-G12: worked project example, explicitly opted in on the grid shell
+   or a descendant. Other projects fill the same five role names with their
+   own declared scale. No font family, weight, colour or theme is selected. */
+[data-grid][data-grid-type="vast"],
+[data-grid] [data-grid-type="vast"] {
+  --grid-type-meta: 12px;
+  --grid-leading-meta: var(--grid-line-4);
+  --grid-type-code: 14px;
+  --grid-leading-code: var(--grid-line-5);
+  --grid-type-content: 15px;
+  --grid-leading-content: var(--grid-line-6);
+  --grid-type-title: 18px;
+  --grid-leading-title: var(--grid-line-6);
+  /* 24/32 is provisional: the plan leaves the numeral value open. */
+  --grid-type-numeral: 24px;
+  --grid-leading-numeral: var(--grid-line-8);
+}
