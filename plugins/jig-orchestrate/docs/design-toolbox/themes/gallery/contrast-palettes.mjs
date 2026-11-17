@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node docs/design-toolbox/themes/gallery/contrast-palettes.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // Original role studies and licensed palette adaptations; see SOURCES.md.
 const states = ['#21804b', '#9c6500', '#c52d4b', '#245cba'];
 const mixed = (id, name, bg, accents, extra = {}) => ({

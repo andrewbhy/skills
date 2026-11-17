@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-review/test-budget.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 // Canonical source; sync-skills.mjs ships this dependency-free helper with its callers.
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -159,7 +161,7 @@ if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.m
   let json = false;
   try {
     const args = process.argv.slice(2), split = args.indexOf('--');
-    if (split < 0) throw new Error('Usage: node test-budget.mjs [--summary] [--json] [--config path] -- <executable> [args...]');
+    if (split < 0) throw new Error(`Usage: ${commandFor(import.meta.url)} [--summary] [--json] [--config path] -- <executable> [args...]`);
     const options = args.slice(0, split);
     let configPath, summary = false;
     for (let i = 0; i < options.length; i++) {

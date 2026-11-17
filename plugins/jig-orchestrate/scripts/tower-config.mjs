@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/tower-config.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from './command-line.mjs';
 // Tower preferences live in the personal project store, never legacy repo state.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -7,7 +9,7 @@ import { createGpuMonitor, gpuStatus } from './gpu-status.mjs';
 import { defaultThemePack, pairedPack, themePacks, validateThemePack } from './tower-theme.mjs';
 
 const object = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
-const defaults = { quietHours: 72, stalledHours: 24, newHome: false, themePack: defaultThemePack };
+const defaults = { quietHours: 72, stalledHours: 24, themePack: defaultThemePack };
 const keys = ['gpu.enabled', 'gpu.comfyUrl', 'gpu.smi', ...Object.keys(defaults)];
 export function towerPreferences(options) {
   const data = readTowerConfig(options);
@@ -32,13 +34,14 @@ export function readTowerConfig(options) {
   }
 }
 export function validate(key, value) {
+  if (key === 'newHome') throw new Error('newHome was removed: the new home is always on');
   if (!keys.includes(key)) throw new Error(`Unknown setting: ${key}`);
   if (key === 'themePack') {
     validateThemePack(value);
   } else if (key === 'quietHours' || key === 'stalledHours') {
     const max = key === 'quietHours' ? 720 : 168;
     if (!Number.isInteger(value) || value < 1 || value > max) throw new Error(`${key} must be an integer from 1 to ${max}`);
-  } else if (key === 'gpu.enabled' || key === 'newHome') {
+  } else if (key === 'gpu.enabled') {
     if (typeof value !== 'boolean') throw new Error(`${key} must be true or false`);
   } else {
     if (typeof value !== 'string' || !value.trim()) throw new Error(`${key} must be a nonempty string`);
@@ -60,13 +63,14 @@ export function gpuPreferences(options, env = process.env) {
 export function towerConfigCommand(argv, options, out = console.log) {
   const [verb, key, raw, ...extra] = argv;
   if (!['get', 'set', 'list'].includes(verb) || extra.length || (verb === 'list' ? key !== undefined : !key || (verb === 'get' ? raw !== undefined : raw === undefined))) {
-    throw new Error('Usage: tower.mjs config list | get <key> | set <key> <value>');
+    throw new Error(`Usage: ${commandFor(import.meta.url)} config list | get <key> | set <key> <value>`);
   }
   const data = readTowerConfig(options);
-  if (verb === 'list') { out(JSON.stringify(data, null, 2)); return; }
+  if (verb === 'list') { out(JSON.stringify(Object.fromEntries(Object.entries(data).filter(([key]) => key !== 'newHome')), null, 2)); return; }
+  if (key === 'newHome') throw new Error('newHome was removed: the new home is always on');
   if (!keys.includes(key)) throw new Error(`Unknown setting: ${key}`);
   if (verb === 'get') { out(JSON.stringify(key.startsWith('gpu.') ? data.gpu?.[key.slice(4)] ?? (key === 'gpu.enabled' ? false : null) : data[key] ?? defaults[key])); return; }
-  const value = key === 'gpu.enabled' || key === 'newHome' ? (raw === 'true' ? true : raw === 'false' ? false : raw) : key === 'quietHours' || key === 'stalledHours' ? (raw.length && !/\D/.test(raw) ? Number(raw) : raw) : raw;
+  const value = key === 'gpu.enabled' ? (raw === 'true' ? true : raw === 'false' ? false : raw) : key === 'quietHours' || key === 'stalledHours' ? (raw.length && !/\D/.test(raw) ? Number(raw) : raw) : raw;
   validate(key, value);
   if (key.startsWith('gpu.')) {
     if (data.gpu !== undefined && !object(data.gpu)) throw new Error('gpu must be an object');
@@ -92,14 +96,14 @@ export function createTowerGpuMonitor(options, { env = process.env, load = gpuSt
 }
 
 // Settings the person may change from the web panel. gpu.comfyUrl and gpu.smi stay CLI-only (they name a URL and a program to run).
-export const settingKeys = Object.freeze(['quietHours', 'stalledHours', 'themePack', 'gpu.enabled', 'newHome']);
+export const settingKeys = Object.freeze(['quietHours', 'stalledHours', 'themePack', 'gpu.enabled']);
 export class SettingsError extends Error {
   constructor(fields) { super('Settings refused'); this.fields = fields; }
 }
 export function towerSettings(options) {
   const data = readTowerConfig(options), prefs = towerPreferences(options);
   const packs = themePacks.flatMap((id) => { try { validateThemePack(id); return [{ id, dark: pairedPack(id, true) }]; } catch { return []; } });
-  return { values: { quietHours: prefs.quietHours, stalledHours: prefs.stalledHours, themePack: prefs.themePack, 'gpu.enabled': data.gpu?.enabled === true, newHome: prefs.newHome }, packs };
+  return { values: { quietHours: prefs.quietHours, stalledHours: prefs.stalledHours, themePack: prefs.themePack, 'gpu.enabled': data.gpu?.enabled === true }, packs };
 }
 // One validation path: the same validate() as `tower.mjs config set`. Nothing is written unless every field passes.
 export function saveTowerSettings(body, options) {

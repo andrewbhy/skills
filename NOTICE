@@ -1,4 +1,4 @@
-jig 0.2.0 is MIT licensed (see LICENSE). It adapts material from the sources below.
+jig 0.3.0 is MIT licensed (see LICENSE). It adapts material from the sources below.
 
 - OpenSpec (Fission-AI/OpenSpec, pin v1.16.1, MIT): Named requirements, WHEN/THEN scenarios and opt-in change layout; [full licence](licenses/OPENSPEC-MIT.txt). Studied commit 0fa4a9705c20ef1c571fe3ded74435733e4b73a1.
 - pstack (backnotprop/pstack, pin f104aa8, MIT): Review evidence/simplicity ideas; .agents/skills/jig-review/NOTICE

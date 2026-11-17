@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-pr/pr-body.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 import { spawnSync } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -15,7 +16,7 @@ const fullSha = value => /^[a-f0-9]{40}$/.test(value ?? '');
 const branch = value => text(value) && value.length > 0 && !/^[-]/.test(value) && !/[\s\x00-\x1f\x7f]/.test(value);
 const cell = value => value.replaceAll('|', '\\|').replace(/\r?\n/g, '<br>');
 const bullet = value => value.replace(/\r?\n/g, ' ');
-export const bodyHash = body => createHash('sha256').update(body).digest('hex');
+export const bodyHash = (title, body) => createHash('sha256').update(`${title}\n${body}`).digest('hex');
 
 export function scanBody(body, { products = [], machine = hostname(), home = homedir() } = {}) {
   if (/(?:[a-z]:[\\/]|\\\\[^\s]+[\\/]|(?:^|[\s("'`])\/(?!\/)[\w.~-])/im.test(body)) refuse('leak: absolute path');
@@ -27,10 +28,12 @@ export function scanBody(body, { products = [], machine = hostname(), home = hom
 
 export function renderBody(spec, options) {
   if (!options || !options.root || !existsSync(options.root) || !statSync(options.root).isDirectory() || !fullSha(options.commit) || options.base !== undefined && !fullSha(options.base)) invalid();
-  if (!spec || typeof spec !== 'object' || Array.isArray(spec) || !text(spec.why) || !Array.isArray(spec.changes)
+  if (!spec || typeof spec !== 'object' || Array.isArray(spec) || !text(spec.title) || !text(spec.why) || !Array.isArray(spec.changes)
       || !spec.changes.every(row => row && ['what', 'before', 'after'].every(key => text(row[key])))
       || !list(spec.how) || !list(spec.open) || !Array.isArray(spec.verify)
       || !spec.verify.every(item => item && text(item.text) && typeof item.done === 'boolean' && (item.evidence === undefined || text(item.evidence)))) invalid();
+  if (!spec.title.trim() || /[\r\n\u2028\u2029]/u.test(spec.title) || [...spec.title].length > 72) refuse('title: one line of 1 to 72 characters required');
+  scanBody(spec.title, options);
   if (!spec.why.trim()) refuse('why: empty');
   if (spec.why.trim().split(/\s+/).length > 80) refuse('cap: why 80 words');
   if (spec.changes.length > 6) refuse('cap: changes 6 rows');
@@ -51,7 +54,7 @@ export function renderBody(spec, options) {
   const receipt = checkReceipt(options.root, options.commit, { ...(options.base ? { base: options.base } : {}), ...(options.home ? { home: options.home } : {}) });
   const body = `## Why\n\n${stack}${spec.why}\n\n## What changes\n\n| What | Before | After |\n|---|---|---|\n${spec.changes.map(row => `| ${cell(row.what)} | ${cell(row.before)} | ${cell(row.after)} |`).join('\n')}\n\n## How\n\n${spec.how.map(value => `- ${bullet(value)}`).join('\n')}\n\n## Verify\n\n${receipt.line}\n${spec.verify.map(item => `- [${item.done ? 'x' : ' '}] ${bullet(item.text)}${item.evidence ? ` (${bullet(item.evidence)})` : ''}`).join('\n')}\n\n## Open\n\n${spec.open.map(value => `- ${bullet(value)}`).join('\n')}\n`;
   scanBody(body, options);
-  return { body, status: receipt.ok ? 'ready' : `draft: ${receipt.state}`, hash: bodyHash(body) };
+  return { title: spec.title, body, status: receipt.ok ? 'ready' : `draft: ${receipt.state}`, hash: bodyHash(spec.title, body) };
 }
 
 // All host calls use argv and a temporary body file. No operation pushes.
@@ -63,14 +66,14 @@ export function publishBody(rendered, options) {
     writeFileSync(file, rendered.body, { flag: 'wx', mode: 0o600 });
     let auth;
     try { auth = JSON.parse(readFileSync(options.authorize, 'utf8')); } catch { refuse('authorization: required'); }
-    if (auth.branch !== options.branch || auth.bodyHash !== rendered.hash || auth.push !== true) refuse('authorization: branch and body hash required');
+    if (!auth || auth.branch !== options.branch || auth.bodyHash !== rendered.hash || auth.title !== rendered.title) refuse('authorization: branch, body hash and title required');
     const args = options.host === 'gh'
-      ? ['pr', 'create', '--head', options.branch, '--base', options.targetBase, '--body-file', file]
-      : ['mr', 'create', '--source-branch', options.branch, '--target-branch', options.targetBase, '--description', '', '--body-file', file];
+      ? ['pr', 'create', '--head', options.branch, '--base', options.targetBase, '--title', rendered.title, '--body-file', file]
+      : ['mr', 'create', '--source-branch', options.branch, '--target-branch', options.targetBase, '--title', rendered.title, '--description', rendered.body];
     if (rendered.status !== 'ready') args.push('--draft');
     // Host stdout/stderr may contain user content; report only a fixed result.
     const result = spawnSync(options.host, args, { shell: false, stdio: 'pipe', env: options.env ?? process.env });
-    if (result.error || result.status !== 0) refuse('publish: host failed');
+    if (result.error || result.status !== 0) refuse(`publish: host failed (exit ${Number.isInteger(result.status) ? result.status : 1})`);
   } finally { rmSync(file, { force: true }); }
 }
 
@@ -101,6 +104,7 @@ export function prCLI(argv) {
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try {
     const result = prCLI(process.argv.slice(2));
+    console.error(`title: ${result.title}`);
     process.stdout.write(result.body);
     if (result.file) console.error(`Body: ${result.file}\nBranch: ${result.branch}\nBase: ${result.base}`);
     console.error(result.status);

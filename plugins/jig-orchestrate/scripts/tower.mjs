@@ -1,22 +1,24 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/tower.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // jig control tower ("tower"): the same commands as review.mjs, plus
 //   up [--port N]                       start the tower server if nothing answers on that port (detached, log in the store), else reuse it; prints the URL
 //   resume [--stale-minutes N]          after a crash or restart: handoff note, interrupted running work, unanswered person messages, board summary
-// Everything else (add, list, reply, watch, queue-set, park, undo, doctor ...) is passed to review.mjs unchanged.
+// Everything else (add, list, reply, watch, queue-set, park, undo, doctor ...) is passed to tower-commands.mjs unchanged.
 import { spawn } from 'node:child_process';
 import { mkdirSync, openSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { projectName, storeRoot } from './jig-store.mjs';
-import { defaultPort, listItems, loadConfig, projectRoot, readQueue, repoRoot, reviewDir } from './review-core.mjs';
-import { readDecisions } from './review-decisions.mjs';
-import { doctor } from './review-work.mjs';
-import { run as reviewRun } from './review.mjs';
+import { projectName, storeRoot, writeJson } from './jig-store.mjs';
+import { defaultPort, listItems, loadConfig, projectRoot, readQueue, repoRoot, reviewDir, rootsFile } from './tower-core.mjs';
+import { readDecisions } from './tower-decisions.mjs';
+import { doctor } from './tower-work.mjs';
+import { run as reviewRun } from './tower-commands.mjs';
 import { defaultStaleMinutes, findInterrupted, handoffNote, resumeLines, unansweredMessages } from './tower-resume.mjs';
 import { readFileSync } from 'node:fs';
 import { towerConfigCommand } from './tower-config.mjs';
-import { capabilityEnv, mintTowerCoordinator } from './review-capabilities.mjs';
+import { capabilityEnv, mintTowerCoordinator } from './capabilities.mjs';
+import { pluginVersions, requireCompatiblePlugins } from './plugin-versions.mjs';
 
 async function answers(port) {
   try {
@@ -26,17 +28,26 @@ async function answers(port) {
 }
 
 export async function up({ port, out = console.log, start = true } = {}) {
+  const compatibility = pluginVersions();
+  for (const note of compatibility.notes) out(`note: ${note}`);
+  for (const issue of compatibility.issues) out(`warning: ${issue}`);
   const config = loadConfig();
   const p = Number(port ?? process.env.JIG_REVIEW_PORT ?? config.port ?? defaultPort);
   const url = `http://127.0.0.1:${p}/`;
-  if (await answers(p)) { out(`tower already running: ${url}`); return { url, started: false }; }
+  // Commands use this config too: keep their links on the confirmed server port.
+  const rememberPort = () => {
+    if (compatibility.issues.length) return;
+    const path = rootsFile(), current = JSON.parse(readFileSync(path, 'utf8'));
+    if (current.port !== p) writeJson(path, { ...current, port: p });
+  };
+  if (await answers(p)) { rememberPort(); out(`tower already running: ${url}`); return { url, started: false }; }
   if (!start) return { url, started: false };
   const root = storeRoot() ?? tmpdir();
   mkdirSync(root, { recursive: true });
   const log = openSync(join(root, 'tower.log'), 'a');
-  const child = spawn(process.execPath, [join(repoRoot, 'scripts', 'review-server.mjs'), '--port', String(p)], { detached: true, stdio: ['ignore', log, log], cwd: projectRoot(), windowsHide: true });
+  const child = spawn(process.execPath, [join(repoRoot, 'scripts', 'tower-server.mjs'), '--port', String(p)], { detached: true, stdio: ['ignore', log, log], cwd: projectRoot(), windowsHide: true });
   child.unref();
-  for (let i = 0; i < 30; i++) { if (await answers(p)) { out(`tower started: ${url} (log ${join(root, 'tower.log')})`); return { url, started: true }; } await new Promise((r) => setTimeout(r, 200)); }
+  for (let i = 0; i < 30; i++) { if (await answers(p)) { rememberPort(); out(`tower started: ${url} (log ${join(root, 'tower.log')})`); return { url, started: true }; } await new Promise((r) => setTimeout(r, 200)); }
   throw new Error(`tower did not answer on port ${p}; see ${join(root, 'tower.log')}`);
 }
 
@@ -55,11 +66,15 @@ export function resume({ staleMinutes = defaultStaleMinutes, project = projectNa
   return lines;
 }
 
-async function main(argv) {
+async function dispatch(argv) {
   const command = argv[0];
-  if (command === 'config') return towerConfigCommand(argv.slice(1), { project: projectName(projectRoot()) });
+  if (command === 'config') {
+    if (argv[1] === 'set') requireCompatiblePlugins();
+    return towerConfigCommand(argv.slice(1), { project: projectName(projectRoot()) });
+  }
   const flag = (name) => { const i = argv.indexOf(`--${name}`); return i >= 0 ? argv[i + 1] : undefined; };
   if (command === 'start') {
+    requireCompatiblePlugins();
     // Credential-only supports an already managed server and deterministic tests.
     // Bind to the person-launched session's PID; nested processes are children.
     const file = mintTowerCoordinator({ holderPid: flag('holder-pid') ? Number(flag('holder-pid')) : process.ppid, replaceStale: argv.includes('--replace-stale') });
@@ -73,6 +88,10 @@ async function main(argv) {
   return reviewRun(argv, { out: (l) => process.stdout.write(l + '\n') });
 }
 
+export async function main(argv) {
+  try { await dispatch(argv); } catch (e) { console.error(String(e.message).replace(/\s+/g, ' ')); process.exit(e.exitCode ?? (argv[0] === 'watch' && argv.includes('--once') ? 2 : 1)); }
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main(process.argv.slice(2)).catch((e) => { console.error(String(e.message).replace(/\s+/g, ' ')); process.exit(e.exitCode ?? (process.argv[2] === 'watch' && process.argv.includes('--once') ? 2 : 1)); });
+  await main(process.argv.slice(2));
 }

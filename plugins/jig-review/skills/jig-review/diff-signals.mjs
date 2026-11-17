@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-review/diff-signals.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 // Canonical source; sync-skills.mjs ships a standalone copy with jig-review.
 import { execFileSync } from 'node:child_process';
 import { resolve, posix } from 'node:path';
@@ -190,7 +192,7 @@ export function diffSignals(cwd, base, revision) {
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try {
     const [base, revision, ...extra] = process.argv.slice(2);
-    if (!base || !revision || extra.length) throw new Error('Usage: node diff-signals.mjs <base> <revision> (from the project repository)');
+    if (!base || !revision || extra.length) throw new Error(`Usage: ${commandFor(import.meta.url)} <base> <revision> (from the project repository)`);
     console.log(JSON.stringify(diffSignals(process.cwd(), base, revision), null, 2));
   } catch (error) {
     console.error(error instanceof SyntaxError ? 'Invalid JSON in review configuration' : error.status !== undefined ? 'Git could not read the repository, revisions or diff' : error.message);

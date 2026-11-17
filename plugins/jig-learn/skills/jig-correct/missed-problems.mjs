@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-correct/missed-problems.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 // Canonical, dependency-free intake helper; generated copies ship beside callers.
 import { readFileSync } from 'node:fs';
 import { isAbsolute, join, relative, resolve } from 'node:path';
@@ -69,6 +71,24 @@ function reviewProblem(root, entry) {
   if (!text) return 'rule review missing or empty';
   // A reference to an unrelated report does not close a repeat.
   const substantive = heading => Boolean(text.match(new RegExp(`^## ${heading}[ \\t]*\\r?\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))`, 'm'))?.[1].trim());
+  if (entry.date >= '2026-11-16') {
+    const prevention = text.match(/^## Prevention[ \t]*\r?\n([\s\S]*?)(?=^## |$(?![\s\S]))/m)?.[1] ?? '';
+    const namesPrevention = prevention.split(/\r?\n/).some(line => {
+      // Keep each decision on the incident's own table row or line. Exact IDs
+      // prevent another incident with a common prefix from closing this one.
+      if (!line.match(/[\w-]+/g)?.includes(entry.id)) return false;
+      const level = /\b(deterministic|end-to-end)\b/.exec(line);
+      if (!level) return false;
+      const suffix = line.slice(level.index + level[0].length);
+      // In a table, an empty detail cell cannot borrow a later status cell.
+      const content = /^[\s*`_]*\|/.test(suffix) ? suffix.split('|')[1] : suffix.split('|')[0];
+      const detail = content
+        .replace(/^[\s|:;*`_\u2013\u2014-]+/, '')
+        .replace(/^(?:reason|check|board item)\b\s*:?\s*/i, '');
+      return /[\p{L}\p{N}]/u.test(detail);
+    });
+    if (!namesPrevention) return `rule review must name a prevention level for ${entry.id}`;
+  }
   if (!text.includes(entry.id) || !substantive('Rule failed') || !substantive('Changes')) return 'rule review must name the incident and explain Rule failed and Changes';
   return undefined;
 }
@@ -102,10 +122,10 @@ if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.m
   try {
     const args = process.argv.slice(2);
     if (args[0] === 'append') {
-      if (args.length !== 3) throw Error('Usage: missed-problems.mjs append <project> <JSON>');
+      if (args.length !== 3) throw Error(`Usage: ${commandFor(import.meta.url)} append <project> <JSON>`);
       try { console.log(JSON.stringify(appendMissedProblem(resolve(args[1]), JSON.parse(args[2])))); } catch (error) { console.error(error.message); process.exitCode = 1; }
     } else {
-    if (args.length !== 2 || args[0] !== '--area') throw Error('Usage: node missed-problems.mjs --area <design|runner|skills|"product slice">');
+    if (args.length !== 2 || args[0] !== '--area') throw Error(`Usage: ${commandFor(import.meta.url)} --area <design|runner|skills|"product slice">`);
     const report = missedProblems(process.cwd(), args[1]);
     for (const warning of report.warnings) console.error(warning);
     for (const entry of report.checks) console.log(`${entry.id}: ${entry.brief}\n  Check: ${entry.check}`);

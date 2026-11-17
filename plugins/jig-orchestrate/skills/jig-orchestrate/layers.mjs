@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-orchestrate/layers.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 // One resolver for optional enforcement and dashboard capabilities.
 import { existsSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -64,14 +66,14 @@ export function layers(root = process.env.JIG_PROJECT_ROOT || process.cwd(), { h
     orchestration ||= value.orchestration === true;
     tower ||= value.tower === true;
   }
-  return { orchestration, tower: orchestration && tower };
+  return { orchestration, tower };
 }
 export function requireTower(root, options) {
   if (!layers(root, options).tower) throw new Error(towerOff);
 }
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try {
-    if (process.argv.length > 3) throw new Error('Usage: layers.mjs [project]');
+    if (process.argv.length > 3) throw new Error(`Usage: ${commandFor(import.meta.url)} [project]`);
     console.log(JSON.stringify(layers(process.argv[2])));
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

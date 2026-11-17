@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-orchestrate/telemetry.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 // Canonical source. sync-skills.mjs copies this beside each skill's VERSION.
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
@@ -6,6 +8,7 @@ import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { docsPath, statePath, appendLine, waitingRecords } from './jig-store.mjs';
 
+const feedbackScript = 'interaction-feedback.mjs';
 function feedbackProblem(root) {
   let data;
   try { data = JSON.parse(readFileSync(docsPath(root, 'docs/design/feedback.json'), 'utf8')); } catch { return 'docs/design/feedback.json is missing or not valid JSON'; }
@@ -29,7 +32,7 @@ try {
       || extra.length || (event === 'start' && (run || outcome))
       || (event === 'end' && (!/^[0-9a-f-]{36}$/.test(run ?? '')
         && run !== 'off' || !['passed', 'failed', 'stopped', 'partly'].includes(outcome)))) {
-    throw new Error('Usage: node <skill>/telemetry.mjs start <project> <codex|claude> OR end <project> <provider> <run-id> <passed|failed|stopped|partly>');
+    throw new Error(`Usage: ${commandFor(import.meta.url)} start <project> <codex|claude> OR end <project> <provider> <run-id> <passed|failed|stopped|partly>`);
   }
   const root = resolve(project);
   if (event === 'start' && waitingRecords(root)) console.error(waitingRecords(root));
@@ -58,7 +61,7 @@ try {
         console.error('jig-interaction feedback gate is off; recorded partly, not passed');
       } else {
         const problem = feedbackProblem(root);
-        if (problem) throw new Error('Refusing passed for jig-interaction: ' + problem + '. Record docs/design/feedback.json and run interaction-feedback.mjs file, or end partly for a spec-only run.');
+        if (problem) throw new Error('Refusing passed for jig-interaction: ' + problem + '. Record docs/design/feedback.json and run ' + commandFor(new URL(feedbackScript, import.meta.url), ['file']) + ', or end partly for a spec-only run.');
       }
     }
     const runId = event === 'start' ? randomUUID() : run;

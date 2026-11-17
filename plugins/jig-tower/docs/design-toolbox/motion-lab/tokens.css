@@ -1,0 +1,48 @@
+/* Adapted from Emil Kowalski's emil-design-eng and review-animations/STANDARDS.
+   Source links, local overrides and full MIT notice: ../README.md.
+   General UI stays below 300ms; explanatory motion may use 250–1250ms. */
+:root {
+  --duration-instant: 0ms;
+  --duration-feedback: 120ms; /* press: 100–160ms */
+  --duration-popover: 160ms; /* tooltip / small popover: 125–200ms */
+  --duration-menu: 200ms; /* dropdown / select: 150–250ms */
+  --duration-panel: 270ms; /* panel / drawer: 200–299ms */
+  --duration-exit: 180ms; /* shorter than the matching entrance */
+  --duration-explanatory-short: 250ms;
+  --duration-explanatory: 800ms;
+  --duration-explanatory-long: 1250ms;
+  --duration-reduced: 160ms; /* opacity only, no travel or stagger */
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-enter: var(--ease-out);
+  --ease-exit: var(--ease-out);
+  --ease-move: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-hover: cubic-bezier(0.25, 0.1, 0.25, 1); /* CSS ease */
+  --ease-constant: linear;
+
+  --motion-feedback: var(--duration-feedback);
+  --motion-disclosure: var(--duration-popover);
+  --motion-placement: var(--duration-menu);
+  --motion-arrival: 240ms;
+  --motion-settle: 240ms;
+  --motion-stream: var(--duration-feedback);
+  --motion-receipt: 350ms; /* reading hold, not an animation duration */
+  --motion-leaving: var(--duration-exit);
+  --motion-state: var(--duration-popover);
+  --motion-fold: 240ms;
+  --motion-dock: var(--duration-panel);
+  --motion-flow: var(--duration-explanatory); /* explains a transfer */
+  --spring-arrival-stiffness: 260;
+  --spring-arrival-damping: 26;
+  /* Local stage geometry and light-mode ink; projects supply theme overrides. */
+  --lab-event-width: 200px;
+  --lab-event-ink: #24664c;
+  --lab-text-ink: #222831;
+  --lab-selection-ink: #a4522c;
+  --lab-halo-inset: -5px;
+  --lab-halo-border: 2px;
+  --lab-halo-radius: 12px;
+  --lab-halo-shadow: 0 0 12px 3px #a4522c66;
+  --lab-collapse-gap: 12px;
+}

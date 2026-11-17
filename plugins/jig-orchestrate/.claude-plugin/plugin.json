@@ -1,6 +1,6 @@
 {
   "name": "jig-orchestrate",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Coordinate jobs with an optional dashboard.",
   "author": {
     "name": "andrewbhy"

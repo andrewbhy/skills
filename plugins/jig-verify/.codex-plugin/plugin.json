@@ -1,6 +1,6 @@
 {
   "name": "jig-verify",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Verify changed behaviour and record evidence.",
   "author": {
     "name": "andrewbhy"

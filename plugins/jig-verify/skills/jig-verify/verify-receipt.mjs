@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-verify/verify-receipt.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 // Local suite evidence, shared by verification and review helpers.
 import { spawn, execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -179,7 +181,7 @@ export async function recordReceipt(root, command, { base, force = false, ...opt
 
 export async function receiptCLI(argv, root = process.cwd()) {
   const [action, ...args] = argv;
-  if (!['record', 'check', 'line'].includes(action)) throw invalid('Usage: verify-receipt.mjs record [--base ref] [--force] -- command | check ref [--base ref] | line ref [--base ref]');
+  if (!['record', 'check', 'line'].includes(action)) throw invalid(`Usage: ${commandFor(import.meta.url)} record [--base ref] [--force] -- command | check ref [--base ref] | line ref [--base ref]`);
   const options = {};
   const value = action === 'record' ? undefined : ref(args.shift());
   while (args.length && args[0] !== '--') {

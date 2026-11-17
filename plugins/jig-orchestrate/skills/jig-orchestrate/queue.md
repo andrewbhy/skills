@@ -26,6 +26,8 @@ non-resource reasons. Invalid configuration fails closed. Empty queues exit 3
 from suggest. Ctrl-C or termination ends follow cleanly. Watch prints only
 changed snapshots, including elapsed-time and stale-boundary changes.
 
+`<skill-folder>/../../scripts/queue-schema.mjs` is the single source of persisted record rules for queue readers and tower writers. Writers validate each changed record before storing it. Item text may contain line breaks but must be non-empty and contain no NUL; job fields remain single-line. The schema also owns waits and queue dependency validation; `wait-list.mjs` re-exports its normaliser.
+
 `.jig/queue.json` is version 1, `{ "version": 1, "items": [...] }`. Add items:
 
 ```json
@@ -134,8 +136,12 @@ line to 240 characters. UTF-8 and BOM-marked UTF-16LE shell logs are supported. 
 the latter two. Its automation share is (scripted + delegated) / all eligible
 reads, for the coordinator to include in telemetry; exact-judgement reads are
 excluded. Update updatedAt on completion; elapsed time freezes at that timestamp.
-Optional waitsFor strings name plan/merge/person holds and block scheduling
-until the coordinator records the decision and clears them.
+Optional waitsFor (a string or a list of strings; an empty list means no waits) names plan/merge/person
+holds and blocks scheduling until the coordinator records the decision and clears them.
+The queue holds two kinds of record. A job has a plan and a worktree, and needs provider, area,
+dependsOn and touches; only jobs with at least one declared touch are scheduled. Board items
+added by the tower need only id, item and state, may carry a plan link, and are never scheduled;
+status counts them on one line.
 Provider tokens remain unknown until provider records are available.
 Keep queue, progress, decisions, feedback and handoff files durable and private.
 Cleanup belongs to jig-worktree close and jig-merge.

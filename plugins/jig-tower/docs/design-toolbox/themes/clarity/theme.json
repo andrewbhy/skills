@@ -1,0 +1,57 @@
+{
+  "name": "clarity",
+  "mode": "light",
+  "author": "jig contributors",
+  "licence": "UNLICENSED",
+  "version": "0.6.0",
+  "description": "WCAG 2.2 Contrast (Enhanced): target 7:1 for every measured normal-text pair, including secondary text and chrome. A text-pair study, not full AAA certification.",
+  "source": {
+    "id": "mixed-enhanced-light",
+    "group": "Clarity / enhanced light",
+    "scheme": "mixed-contrast",
+    "file": "gallery/contrast-palettes.mjs"
+  },
+  "presentation": {
+    "typeStyle": "solid-headers",
+    "layers": "stepped",
+    "darkChrome": true,
+    "chromeTone": "neutral",
+    "contrastTarget": 7
+  },
+  "harmony": {
+    "name": "Clarity / enhanced light",
+    "scheme": "source-palette",
+    "space": "oklch",
+    "keyHue": 256.934017542361,
+    "keyColour": "#003b80",
+    "offsets": {
+      "blue": 0,
+      "cyan": 273.69066606715995,
+      "violet": 49.83726991163991,
+      "orange": 102.77997425546039
+    },
+    "neutralHue": 255,
+    "stateHues": {
+      "green": 145,
+      "amber": 55,
+      "red": 15
+    },
+    "workingHue": 234.43401754236106,
+    "sourceColours": [
+      "#003b80",
+      "#005340",
+      "#56247c",
+      "#782044"
+    ],
+    "typeAngles": {
+      "ticket": 256.93401754236106,
+      "task": 211.93401754236106,
+      "session": 301.93401754236106,
+      "artifact": 346.93401754236106,
+      "check": 31.934017542361005,
+      "question": 76.934017542361,
+      "decision": 121.934017542361,
+      "note": 166.93401754236106
+    }
+  }
+}

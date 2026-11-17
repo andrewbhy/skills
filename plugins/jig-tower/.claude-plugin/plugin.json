@@ -1,0 +1,17 @@
+{
+  "name": "jig-tower",
+  "version": "0.3.0",
+  "description": "Run the board, threads and Give independently.",
+  "author": {
+    "name": "andrewbhy"
+  },
+  "homepage": "https://github.com/andrewbhy/skills/tree/main/plugins/jig-tower",
+  "repository": "https://github.com/andrewbhy/skills",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "planning",
+    "review",
+    "verification"
+  ]
+}

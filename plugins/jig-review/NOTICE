@@ -1,4 +1,4 @@
-jig 0.2.0 is MIT licensed (see LICENSE). It adapts material from the sources below.
+jig 0.3.0 is MIT licensed (see LICENSE). It adapts material from the sources below.
 
 - pstack (backnotprop/pstack, pin f104aa8, MIT): Review evidence/simplicity ideas; .agents/skills/jig-review/NOTICE
 - skills (mattpocock/skills, pin 4ae2317, MIT): Standards/spec and testability ideas; .agents/skills/jig-review/NOTICE

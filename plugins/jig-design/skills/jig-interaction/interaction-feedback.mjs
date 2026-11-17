@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-interaction/interaction-feedback.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 // The jig-interaction learning loop: file the person's Fix items as missed problems, keep the
 // slice log, fire the trip-wire, count false alarms and close a miss only on a planted-defect fixture.
 // Dependency-free. Usage:
@@ -116,7 +118,7 @@ export function closeMiss(root, id, fixture, control, rule) {
 function main(argv) {
   const [command, project, ...rest] = argv.slice(2);
   try {
-    if (!command || !project) throw new Error('Usage: interaction-feedback.mjs file|status|review|close <project> ...');
+    if (!command || !project) throw new Error(`Usage: ${commandFor(import.meta.url)} file|status|review|close <project> ...`);
     const root = resolve(project);
     if (command === 'file') {
       const result = fileFeedback(root);

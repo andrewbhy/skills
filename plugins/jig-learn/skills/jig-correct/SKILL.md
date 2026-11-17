@@ -31,12 +31,16 @@ mark a recurrence repeat: true. Run
 3. **Review the failed rule.** A repeat blocks the next round for that area.
 Write a short incident-linked Markdown review under docs/results/: use
 `## Rule failed` for the rule and why it missed this, and `## Changes` for
-what changes and how it will be checked. Name every incident ID covered. Add
+what changes and how it will be checked. Add `## Prevention` naming a prevention
+level per incident: deterministic first (architecture change, enforcement or
+automated test), with a named check or board item; end-to-end only with a written
+reason why no deterministic check can see the risk. Name every incident ID covered. Add
 its project-relative path as ruleReview in each repeated row. Do not use an
 unrelated report or promise a review later to lift the block. Rerun intake.
 4. **Make the lesson usable.** Carry each relevant incident into one brief line
 and a named executable check or an explicit rendered/reference review assertion.
-Use the lowest useful layer; prove the check detects the defect and then passes
+Each pending deterministic prevention becomes a board item whose acceptance
+is that test. Use the lowest useful layer; prove the check detects the defect and then passes
 when fixed. If the failure is in the method, edit the owning skill's single
 source and regenerate its support and pointers; follow the project's skill
 scenarios before merge. Keep project facts in project configuration. Report

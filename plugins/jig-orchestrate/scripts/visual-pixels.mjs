@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/visual-pixels.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // Dependency-free PNG comparison for Chrome's 8-bit RGB/RGBA screenshots.
 // Same-scale repeat is exact. Cross-scale comparison reports raster differences;
 // text antialiasing is evidence to inspect, never silently called a clean diff.

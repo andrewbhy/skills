@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/interaction-calibrate.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // Re-run the jig-interaction calibration: does layer (a) still flag the recorded rejection reasons?
 // Run after every checker or seat edit:  node scripts/interaction-calibrate.mjs
 // Exit 0 when the score meets the pass mark and no reason that was caught before is lost; 1 otherwise.

@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/telemetry-report.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from './command-line.mjs';
 import { createReadStream } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
@@ -254,7 +256,7 @@ if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.m
     if (!json) console.log(table(result));
     console.log(JSON.stringify(result, null, 2));
   } catch {
-    console.error('Cannot report telemetry. Check markers/configuration and arguments: node scripts/telemetry-report.mjs <project> [--json] [--codex-home <dir>] [--claude-home <dir>]');
+    console.error(`Cannot report telemetry. Check markers/configuration and arguments: ${commandFor(import.meta.url)} <project> [--json] [--codex-home <dir>] [--claude-home <dir>]`);
     process.exitCode = 1;
   }
 }

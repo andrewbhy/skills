@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node docs/design-toolbox/themes/gallery/palettes.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // Original gallery role mappings. Upstream colour attribution is in SOURCES.md.
 import { wadaPalettes } from './wada.mjs';
 import { mixedPalettes, neonPalettes } from './contrast-palettes.mjs';

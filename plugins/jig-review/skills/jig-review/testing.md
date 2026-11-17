@@ -1,5 +1,24 @@
 # Test budget helper
 
+Repository-maintenance commands require the full jig source checkout.
+or locking (missing dependencies exit 2 with `run npm ci`). Full suites share
+`~/.jig/suite.lock` across worktrees; `JIG_HOME` and `NODE_TEST_CONTEXT` never
+change that location. Only isolated lock tests should set `JIG_SUITE_LOCK_PATH`
+to a temporary file. Explicit test files take the lock when their source contains
+`[live:`, `acquireBrowserSlot`, `withBrowser` or `browser-slot`; other targeted
+files run without it. Unknown selections such as globs lock conservatively.
+Waiters print the holder once and re-read every five seconds, bounded by
+`JIG_SUITE_LOCK_WAIT_MS` (default 45 minutes, timeout exits 2). Dead owners are
+reclaimed; malformed locks are retained for manual diagnosis. Normal completion,
+test failure and handled SIGINT/SIGTERM release the lock after the child exits.
+Windows uses its built-in `taskkill` for the owned child tree (POSIX uses signals).
+Windows forced process termination cannot run JavaScript cleanup: the next suite
+reclaims that dead owner's lock; signal-handler tests use IPC on Windows.
+The holder exports `JIG_SUITE_LOCK_HELD=<pid>:<nonce>` to its test processes.
+Nested runners reuse the outer lock only when that token matches the lock file's
+PID and nonce and the PID is alive; they never release the outer lock. Missing,
+wrong or dead-owner tokens follow normal locking and stale recovery rules.
+
 Run from the project root, with Node.js 22 or newer, no dependencies:
 
 ```text

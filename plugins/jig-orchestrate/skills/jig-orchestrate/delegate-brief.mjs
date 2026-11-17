@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-orchestrate/delegate-brief.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 import { isAbsolute, win32 } from 'node:path';
 // Canonical delegate brief template. Import and render; no model calls.
 export function renderDelegateBrief({ goal, files, readOnly = true, browser = false, workspace, dataPath, plan, reservation, checks, writeLocations, serverOwnership,

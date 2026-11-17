@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-verify/visual-state-snapshot.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // Reuse the default pass's settled DOM states for font reflow. This avoids
 // replaying the product's timers, data loading and motion for every typeface.
 // Layout is measured again in Chrome with the new font; no pixel is reused.

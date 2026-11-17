@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node docs/design-toolbox/check-page-shell.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // Source contract only; rendered geometry and visibility require separate review.
 import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';

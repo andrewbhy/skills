@@ -1,6 +1,6 @@
 # jig skills
 
-Nine independent plugins for Claude Code and Codex. Requires Node.js 22 or later on PATH; Git is needed for repository commands. See [CHANGES.md](CHANGES.md) for 0.2.0.
+Ten independent plugins for Claude Code and Codex. Requires Node.js 22 or later on PATH; Git is needed for repository commands. See [CHANGES.md](CHANGES.md) for 0.3.0.
 
 | Plugin | Installed skills (Claude Code) | Purpose |
 |---|---|---|
@@ -12,7 +12,8 @@ Nine independent plugins for Claude Code and Codex. Requires Node.js 22 or later
 | [jig-learn](plugins/jig-learn/README.md) | `/jig-learn:jig-correct` | Record missed problems and improve checks. |
 | [jig-spike](plugins/jig-spike/README.md) | `/jig-spike:jig-spike` | Run timeboxed feasibility experiments. |
 | [jig-typescript](plugins/jig-typescript/README.md) | `/jig-typescript:jig-typescript` | Check strict types and module boundaries. |
-| [jig-orchestrate](plugins/jig-orchestrate/README.md) | `/jig-orchestrate:jig-orchestrate`, `/jig-orchestrate:jig-tower` | Coordinate jobs with an optional tower. |
+| [jig-orchestrate](plugins/jig-orchestrate/README.md) | `/jig-orchestrate:jig-orchestrate` | Coordinate jobs; uses the tower if jig-tower is installed. |
+| [jig-tower](plugins/jig-tower/README.md) | `/jig-tower:jig-tower` | Board, threads and Give with any orchestrator. |
 
 In Codex, ask for the full skill name, for example `use jig-plan` or `use jig-tower`. Restart your host after installing or updating.
 
@@ -24,7 +25,7 @@ Add the marketplace once:
 claude plugin marketplace add andrewbhy/skills
 ```
 
-From the chosen repository, install all nine for that repository only:
+From the chosen repository, install all ten for that repository only:
 
 ```text
 claude plugin install jig-plan@andrewbhy --scope local
@@ -36,6 +37,7 @@ claude plugin install jig-learn@andrewbhy --scope local
 claude plugin install jig-spike@andrewbhy --scope local
 claude plugin install jig-typescript@andrewbhy --scope local
 claude plugin install jig-orchestrate@andrewbhy --scope local
+claude plugin install jig-tower@andrewbhy --scope local
 ```
 
 For a chosen few, run only their lines, for example:
@@ -51,7 +53,7 @@ claude plugin install jig-verify@andrewbhy --scope local
 codex plugin marketplace add andrewbhy/skills
 ```
 
-Install all nine:
+Install all ten:
 
 ```text
 codex plugin add jig-plan@andrewbhy
@@ -63,6 +65,7 @@ codex plugin add jig-learn@andrewbhy
 codex plugin add jig-spike@andrewbhy
 codex plugin add jig-typescript@andrewbhy
 codex plugin add jig-orchestrate@andrewbhy
+codex plugin add jig-tower@andrewbhy
 ```
 
 For a chosen few, run only their lines:
@@ -78,32 +81,66 @@ codex plugin add jig-verify@andrewbhy
 2. Open `.git/info/exclude` and add the line `/.codex/config.toml`. A linked worktree uses the common Git directory's `info/exclude`.
 3. Keep this config untracked. Exclusions do not hide an already tracked file; that needs a separate repository decision.
 
-## Use orchestration and the tower
+## Tower
 
-Install `jig-orchestrate` using its line above. The easiest start is to ask the agent to use `jig-tower` for your project (Claude Code: `/jig-orchestrate:jig-tower`). The skill finds its own plugin folder and gives you the enable command if the tower is off.
-
-For scripts run by hand, first find the installed jig-orchestrate folder:
-
-- Claude Code: look up `jig-orchestrate@andrewbhy` in `~/.claude/plugins/installed_plugins.json` and use its `installPath` under the plugin cache. See [Claude Code's plugin loading reference](https://code.claude.com/docs/en/plugins/loading#find-plugins-on-disk).
-- Codex: the installed cache is `~/.codex/plugins/cache/<marketplace>/<plugin>/<version>/`; for this plugin use marketplace `andrewbhy` and plugin `jig-orchestrate`, then the installed version directory (`local` for local plugins). See [OpenAI's plugin packaging documentation](https://developers.openai.com/plugins/build/plugins#how-local-marketplaces-work). If your host does not expose a documented cache location, use the skill.
-
-Change to that plugin folder (or a jig source checkout). Both layers are off by default. Enable them for one project:
+Install only `jig-tower` for the board, threads and Give. In Claude Code:
 
 ```text
-node scripts/layers-enable.mjs --project <repo>
+claude plugin install jig-tower@andrewbhy --scope local
 ```
 
-The command prints the project's store config and layers, and creates the missing `review-roots.json` with your project as a review root. It keeps existing review roots. Running it again keeps an existing `layers` key; use `--force` to replace that key. To enable orchestration with the tower off:
+In Codex, run `codex plugin add jig-tower@andrewbhy`. Restart the host after installing.
+
+Find the installed plugin folder (`<jig-tower-plugin>` below):
+
+- Claude Code: look up `jig-tower@andrewbhy` in `~/.claude/plugins/installed_plugins.json` and use its `installPath`.
+- Codex: use `~/.codex/plugins/cache/andrewbhy/jig-tower/<version>/` (`local` for a local plugin). If the host does not expose its install location, ask the agent to use jig-tower. The skill finds its own plugin folder.
+
+Enable the tower for your project, replacing both placeholders with absolute paths:
 
 ```text
-node scripts/layers-enable.mjs --project <repo> --orchestration-only
+node "<jig-tower-plugin>/scripts/layers-enable.mjs" --project "<repo>" --tower-only
 ```
 
-Then ask the agent to use `jig-tower`, or change to the project directory and run `node "<plugin-folder>/scripts/tower.mjs" up`, replacing `<plugin-folder>` with the absolute installed path. The default port is 7788: open **http://127.0.0.1:7788**. To choose another port, run `tower.mjs up --port <n>`, for example `node "<plugin-folder>/scripts/tower.mjs" up --port 7790`. It listens on loopback only.
+This leaves orchestration off, creates missing review roots, keeps an existing `layers` key unless you choose `--force`, and installs no hooks. Ask the agent to use `jig-tower` (Claude Code: `/jig-tower:jig-tower`), or change to the project directory and run:
 
-Version 0.2.0 serves the classic home page. To try the new home page, use the tower's Settings or set `{"newHome": true}` in `~/.jig/<project>/tower.json` (under `JIG_HOME` when overridden). Save as UTF-8 without a BOM. Windows PowerShell's `Set-Content -Encoding utf8` adds a BOM and breaks JSON loading; use an editor's UTF-8 without BOM option. Preserve other settings in an existing file.
+```text
+node "<jig-tower-plugin>/scripts/tower.mjs" up
+```
 
-Hooks are optional, shipped in `hooks-optional/`, and never installed automatically. Installing the plugin or enabling layers installs no hooks.
+Open **http://127.0.0.1:7788** by default. For another port, use `tower.mjs up --port <n>`, for example `node "<jig-tower-plugin>/scripts/tower.mjs" up --port 7790`. It listens on loopback only. The tower serves one home page: the running rail, Needs you, Work and the side panel. The old `newHome` setting is gone; a `tower.json` that still holds it loads normally, and `doctor` notes the key as obsolete.
+
+Merge commands need jig-orchestrate; if installed, run them from its plugin folder. Any orchestration skill can report to the board with the tower's `tower.mjs` commands. Only those commands and the tower server enforce the plugin version-mismatch write guard; direct helper calls do not. The client contract will be documented in a later slice.
+
+### Give a thread to a session
+
+Open a thread from the board and choose **Give** in the thread panel. It shows start lines: open Claude or Codex in the project folder, then paste the matching line. The session discusses that thread only; discussion grants no build or merge authority. Use **Return** on the thread, or tell the session to give the thread back, to hand it back to the coordinator.
+
+### With jig-orchestrate
+
+Install `jig-orchestrate` if you want its coordination workflow; it uses the tower if jig-tower is installed. Use `claude plugin install jig-orchestrate@andrewbhy --scope local` or `codex plugin add jig-orchestrate@andrewbhy`. To enable both layers, run:
+
+```text
+node "<jig-tower-plugin>/scripts/layers-enable.mjs" --project "<repo>" --force
+```
+
+This replaces only the existing layer choice. For queue-only coordination, use `--orchestration-only` instead. Hooks are optional, shipped in `hooks-optional/`, and never installed automatically. Keep both plugins at the same active version; a mismatch refuses writes while reads work. If an active sibling cannot be determined, doctor and up print a note.
+
+## Repository rules
+
+Before pushing, check the repository's own rules in AGENTS.md, CLAUDE.md,
+CONTRIBUTING and project config, and the person's settings. Follow any push
+restriction they state. Otherwise push the task branch with
+`git push -u origin <branch>` without asking; pushing a branch needs no authorisation.
+Do not push protected branches (`main`, `master`, the remote's default branch)
+yourself unless a repository rule allows it; GitHub or GitLab branch protection
+enforces them. The person reviews and merges.
+Creating or editing a hosted pull request or merge request needs separate fresh
+authorisation naming the branch and body hash; this does not gate a branch push.
+In tower sessions the command guard also refuses these pushes, as a backstop.
+Its project config `protectedBranches` replaces the protected-name defaults;
+`[]` clears them, while an absent key keeps `main`, `master` and the remote
+default. Force, delete, mirror, all and prune pushes remain refused.
 
 ## Where state lives
 

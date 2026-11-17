@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node docs/design-toolbox/build-guides.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // Dependency-free documentation views. Markdown remains the source of rules.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
@@ -175,6 +176,6 @@ export function build(check=false) {
   return pages;
 }
 if (process.argv[1]&&pathToFileURL(path.resolve(process.argv[1])).href===import.meta.url) {
-  if (process.argv.slice(2).some(arg=>arg!=='--check')) throw new Error('Usage: node build-guides.mjs [--check]');
+  if (process.argv.slice(2).some(arg=>arg!=='--check')) throw new Error(`Usage: ${__jigCommandFor(import.meta.url)} [--check]`);
   console.log(`${process.argv.includes('--check')?'Checked':'Built'} ${build(process.argv.includes('--check')).size} readable agent guides.`);
 }

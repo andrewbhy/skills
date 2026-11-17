@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/tower-theme.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // Toolbox files are immutable inputs. Tower roles and admission policy live here.
 import { readFileSync, realpathSync } from 'node:fs';
 import { resolve } from 'node:path';

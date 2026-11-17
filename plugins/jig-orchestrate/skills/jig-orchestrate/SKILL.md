@@ -5,7 +5,13 @@ description: "Coordinate a queue of jobs: choose safe parallel work, track progr
 
 # jig-orchestrate
 
-Before coordinating, run `node "${CLAUDE_PLUGIN_ROOT}/scripts/layers.mjs" <project>` and read its result. If orchestration is false, report that coordination is off and stop this workflow; use the person's session workflow instead. If tower is false, use the job queue alone: skip dashboard, board-item registration, threads, ownership, session and watch steps below. Register work in queue.json and report progress through the queue commands without --thread; no tower files are needed.
+Before pushing, check the repository's own rules in AGENTS.md, the provider's project instruction files, CONTRIBUTING and project config, and the person's settings. Follow any push restriction they state.
+Otherwise push the task branch with `git push -u origin <branch>` without asking; pushing a branch needs no authorisation.
+Do not push protected branches (`main`, `master`, the remote's default branch) yourself unless a repository rule allows it; GitHub or GitLab branch protection enforces them.
+The person reviews and merges.
+In tower sessions the command guard also refuses these pushes, as a backstop.
+
+Before coordinating, run `node "${CLAUDE_PLUGIN_ROOT}/scripts/layers.mjs" <project>` and read its result. If orchestration is false, report that coordination is off and stop this workflow; use the person's session workflow instead. If jig-tower is not installed or tower is false, use the job queue alone: skip dashboard, board-item registration, threads, ownership, session and watch steps below. Register work in queue.json and report progress through the queue commands without --thread; no tower files are needed.
 
 Scenario status: fresh two-provider runs are pending; local tests prove helper
 contracts, not instruction following. Read [queue.md](queue.md) for formats,
@@ -48,9 +54,9 @@ declared locations, except required gate records (telemetry, claims and receipts
    Recheck gates at launch. Use the resource guard for provider memory
    and browser checks; hold a shared browser slot until the browser closes.
    A failed guard exits 2; do not retry around its limit or kill others' jobs.
-   When the tower is enabled, register every spike, build and merge job on its board before launching it:
-   `review.mjs queue-add <id> "<text>" --thread item-<n> --kind spike|build|merge --provider <p>`
-   (add `--browser` or `--gpu` when it needs them), report milestones with `review.mjs progress`,
+   When jig-tower is installed and the tower is enabled, register every spike, build and merge job on its board before launching it:
+   `tower.mjs queue-add <id> "<text>" --thread item-<n> --kind spike|build|merge --provider <p>`
+   (add `--browser` or `--gpu` when it needs them), report milestones with `tower.mjs progress`,
    and when it ends set it done or superseded with `queue-set`. Unregistered work is invisible to the person.
 4. **Watch and reconcile.** Run status --follow through a tracked task when
    useful; on request give one short X/N bar per job, elapsed/timebox, stale
@@ -173,7 +179,7 @@ Missing usage is an evidence gap, never a claim of remaining budget. If assistan
 agents are disabled or unavailable in budget mode, report the conflict and keep
 implementation pending for the person's override; do not quietly do it yourself.
 
-Register review material (mocks, images, plans, reports) with `review.mjs add <path> --title "..."` (node, from the jig scripts folder) and give the person the printed localhost URL, not a pasted path.
+If jig-tower is installed and enabled, register review material (mocks, images, plans, reports) with `tower.mjs add <path> --title "..."` (node, from the jig scripts folder) and give the person the printed localhost URL, not a pasted path.
 
 ### Shared GPU and ComfyUI
 

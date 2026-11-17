@@ -9,6 +9,8 @@ Work mode: in a project that is not one of the person's own registered projects,
 
 For real-data, real-server walks use [walk-kit.mjs](walk-kit.mjs) beside this skill: freeze safe inputs, check server-reported paths with assertServedInside after readiness, type key by key, and assert request-equals-screen, lost and stuck outcomes.
 
+Prefer a deterministic check over a live or end-to-end check. Label checks against stand-ins (fixtures, stubs or the jig repo instead of an installed plugin) fixture-only in Verify; they cannot be the only evidence for a risk about the real environment.
+
 Take the QA seat. Try to break the changed behaviour and choose the cheapest check that gives real confidence. Explain the choice; do not use a coverage percentage as a substitute for judgement.
 
 Be ruthless about what you test. Coverage belongs to unit tests and to integration tests with mocked dependencies. Any check above them (browser, pixel, screenshot, live provider, end-to-end, model review) must name the risk only it can catch; otherwise cut it. Value-only rules (colours, sizes, weights, state differences, tokens) run without a browser. When a live check finds a bug, add the cheapest test that would have caught it and drop the live repetition. Every layer has a time budget; over budget fails and names the slowest parts; an incomplete run is never a pass.
