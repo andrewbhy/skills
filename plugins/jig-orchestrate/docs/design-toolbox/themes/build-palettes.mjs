@@ -1,11 +1,12 @@
-if (process.argv[2] === '--help') { console.log('Usage: node docs/design-toolbox/themes/build-palettes.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { packNames, paletteTokens, harmonyFor, sourceFor, presentationFor } from './palette.mjs';
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
-if (process.argv.slice(2).some(arg => arg !== '--check')) throw new Error('Usage: node build-palettes.mjs [--check]');
+if (process.argv.slice(2).some(arg => arg !== '--check')) throw new Error(`Usage: ${__jigCommandFor(import.meta.url)} [--check]`);
 for (const name of packNames) {
   const folder = path.join(directory, name);
   const source = sourceFor(name);

@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/statusline-usage.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // Optional status-line capture: JSON on stdin; only allowance fields are stored.
 import { mkdirSync, writeFileSync, appendFileSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';

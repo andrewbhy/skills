@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/project-groups.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // Dashboard grouping of work and open questions by project: a personal setting in the store, never in the repo.
 // <store>/project-groups.json:
 //   { "groups": [ { "name": "label", "plan": "regex", "area": "regex", "text": "regex", "store": ["project folder", ...] } ],

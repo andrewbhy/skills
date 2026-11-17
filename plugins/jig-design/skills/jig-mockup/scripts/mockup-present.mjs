@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-mockup/scripts/mockup-present.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../../scripts/command-line.mjs";
 // Read-only pre-presentation gate. It validates evidence records, not visual taste.
 import { readFileSync, statSync } from 'node:fs';
 import { isAbsolute, relative, resolve } from 'node:path';
@@ -113,7 +115,7 @@ export function checkPresentation(folder) {
 
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try {
-    if (process.argv.length !== 3) throw Error('Usage: node mockup-present.mjs <round folder>');
+    if (process.argv.length !== 3) throw Error(`Usage: ${commandFor(import.meta.url)} <round folder>`);
     const report = checkPresentation(process.argv[2]);
     console.log(JSON.stringify(report, null, 2));
     process.exitCode = report.passed ? 0 : 1;

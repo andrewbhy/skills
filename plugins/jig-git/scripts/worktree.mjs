@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/worktree.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from './command-line.mjs';
 // Canonical source; sync-skills.mjs ships this unchanged beside both branch skills.
 import { execFileSync, spawnSync } from 'node:child_process';
 import { atomicWriteFile } from './jig-store.mjs';
@@ -8,7 +10,7 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'nod
 import { pathToFileURL } from 'node:url';
 import { statePath, waitingRecords } from './jig-store.mjs';
 // Installed branch helpers can find the canonical identity implementation in jig.
-const capabilitiesUrl = process.env.JIG_CAPABILITY_FILE ? [new URL('./review-capabilities.mjs', import.meta.url), new URL('../../../scripts/review-capabilities.mjs', import.meta.url), new URL('../../scripts/review-capabilities.mjs', import.meta.url)].find(url => existsSync(url)) : null;
+const capabilitiesUrl = process.env.JIG_CAPABILITY_FILE ? [new URL('./capabilities.mjs', import.meta.url), new URL('../../../scripts/capabilities.mjs', import.meta.url), new URL('../../scripts/capabilities.mjs', import.meta.url)].find(url => existsSync(url)) : null;
 const capabilities = capabilitiesUrl ? await import(capabilitiesUrl) : null;
 
 export function processIdentity(pid) {
@@ -35,7 +37,7 @@ export function claimAlive(holder, inspect = processIdentity, now = Date.now()) 
   return Boolean(actual && actual.startTime === holder.startTime && (!holder.command || actual.command === holder.command));
 }
 function callerIdentity() {
-  if (!capabilities) throw Error('Worktree claims require the canonical jig review-capabilities.mjs helper');
+  if (!capabilities) throw Error('Worktree claims require the canonical jig capabilities.mjs helper');
   const who = capabilities.identity(), ancestor = capabilities.agentAncestor();
   if (!who.id || !ancestor || who.kind?.startsWith('child-of-')) return null;
   const actual = processIdentity(ancestor.pid);
@@ -147,7 +149,7 @@ export function stopWorktreeBrokers(root, worktree, { inspect = processIdentity,
   return stopped;
 }
 
-const usage = 'Usage: worktree.mjs open <name> [--base <branch>] | claim <name> | heartbeat <name> | release <name> | brokers | stop-broker <name> | list | register <name> <folder> | adopt <name> <path> | consume <name> <file> | close <name> [--into <branch>] [--import <dir>] [--force --reason <text>] | doctor';
+const usage = `Usage: ${commandFor(import.meta.url)} open <name> [--base <branch>] | claim <name> | heartbeat <name> | release <name> | brokers | stop-broker <name> | list | register <name> <folder> | adopt <name> <path> | consume <name> <file> | close <name> [--into <branch>] [--import <dir>] [--force --reason <text>] | doctor`;
 const contains = (parent, child) => {
   const rel = relative(parent, child);
   return !rel || !isAbsolute(rel) && rel !== '..' && !rel.startsWith(`..${sep}`);

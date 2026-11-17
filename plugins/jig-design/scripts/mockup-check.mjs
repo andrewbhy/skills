@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/mockup-check.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from './command-line.mjs';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -193,7 +195,7 @@ function ancestor(node, predicate) {
 
 export function run(argv) {
   const [file, ...args] = argv;
-  if (!file || file.startsWith('--')) throw new Error('Usage: mockup-check.mjs mock.html --ledger purpose.md --tokens tokens.css [--tokens pack/theme.css] [--css extra.css] [--json]');
+  if (!file || file.startsWith('--')) throw new Error(`Usage: ${commandFor(import.meta.url)} mock.html --ledger purpose.md --tokens tokens.css [--tokens pack/theme.css] [--css extra.css] [--json]`);
   let ledger, json = false;
   const tokens = [], styles = [];
   const read = path => ({ name: resolve(path), text: readFileSync(resolve(path), 'utf8') });

@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-verify/visual-ink.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 import { createHash } from 'node:crypto';
 import { decodePNG } from './visual-pixels.mjs';
 import { cropRaster, measureInk, inkBounds } from './visual-visibility.mjs';

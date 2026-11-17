@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/plan-seats.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from './command-line.mjs';
 import { basename, dirname, resolve } from 'node:path';
 import { atomicWriteFile } from './jig-store.mjs';
 import { readFileSync, mkdirSync, writeFileSync, renameSync } from 'node:fs';
@@ -73,7 +75,7 @@ if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.m
   try {
     if (process.argv[2] === '--outcome' && process.argv.length === 4) console.log(JSON.stringify(recordPlanOutcome(JSON.parse(process.argv[3]))));
     else {
-      if (process.argv.length !== 3) throw Error('Usage: node plan-seats.mjs <JSON signal object> | --outcome <JSON outcome>');
+      if (process.argv.length !== 3) throw Error(`Usage: ${commandFor(import.meta.url)} <JSON signal object> | --outcome <JSON outcome>`);
       console.log(JSON.stringify(planSeats(JSON.parse(process.argv[2])), null, 2));
     }
   } catch (error) { console.error(error.message); process.exitCode = 1; }

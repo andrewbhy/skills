@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/gpu-share/gpu-share.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // gpu-share: one GPU and one ComfyUI shared by many programs. Plain Node, zero dependencies, imports nothing from any
 // project. Copy this file anywhere to use it (see tests/gpu-share-contract.test.mjs); keep CONTRACT_VERSION.
 //
@@ -24,7 +25,7 @@ import { execFile } from 'node:child_process';
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 
 export const CONTRACT_VERSION = 1;
 export const PRIVATE_WHO = 'private-owner (private)';
@@ -211,9 +212,15 @@ export async function main(argv) {
   if (cmd === 'release') { if (!rest[0]) throw new UsageError('Usage: release <who>'); const r = releaseLease(rest[0], { force }); console.log(r.released ? `released ${r.was.who}` : r.reason); return 0; }
   if (cmd === 'wait') return (await waitIdle({ maxMinutes: Number(flag('--max-minutes') ?? 30), who: flag('--who') })) ? 0 : 3;
   if (cmd === 'status') { const s = await gpuStatus(); console.log(argv.includes('--json') ? JSON.stringify(s, null, 2) : formatText(s)); return 0; }
-  throw new UsageError('Usage: gpu-share.mjs [--json] | lease <who> <task> <minutes> [--private] | release <who> | wait [--max-minutes N] [--who <who>]');
+  throw new UsageError(`Usage: ${standaloneCommand()} [--json] | lease <who> <task> <minutes> [--private] | release <who> | wait [--max-minutes N] [--who <who>]`);
 }
 export function runCli(argv = process.argv.slice(2)) {
   main(argv).then((c) => { process.exitCode = c; }, (e) => { console.error(e.message); process.exitCode = e instanceof UsageError ? 2 : 1; });
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) runCli();
+
+// Sibling builder: this module must remain copyable as one dependency-free file.
+function standaloneCommand() {
+  const quote = v => process.platform === 'win32' ? "'" + String(v).replace(/['\u2018-\u201b]/g, c => c + c) + "'" : "'" + String(v).replaceAll("'", "'\\''") + "'";
+  return (process.platform === 'win32' ? '& ' : '') + [process.execPath, fileURLToPath(import.meta.url)].map(quote).join(' ');
+}

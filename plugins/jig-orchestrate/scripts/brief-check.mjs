@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/brief-check.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from './command-line.mjs';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, isAbsolute, normalize, resolve, win32 } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -190,7 +192,7 @@ if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.m
       } else if (args[i].startsWith('--')) throw Error(`Unknown option: ${args[i]}`);
       else paths.push(args[i]);
     }
-    if (!paths.length) throw Error('Usage: node scripts/brief-check.mjs [--workspace <folder>] [--glossary <file>] [--project-glossary <file>] <brief-or-plan.md> [...]');
+    if (!paths.length) throw Error(`Usage: ${commandFor(import.meta.url)} [--workspace <folder>] [--glossary <file>] [--project-glossary <file>] <brief-or-plan.md> [...]`);
     const configPath = statePath(resolve(workspace ?? process.cwd()), 'config.json');
     const config = existsSync(configPath) ? JSON.parse(readFileSync(configPath, 'utf8')) : {};
     let failed = false, drafted = false;

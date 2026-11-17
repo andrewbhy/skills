@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/style-lint.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from './command-line.mjs';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve, join, relative, dirname } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
@@ -306,7 +308,7 @@ export function checkStyles(target = fileURLToPath(new URL('../docs/design-toolb
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try {
     const args = process.argv.slice(2);
-    if (args.length > 1) throw new Error('Usage: node style-lint.mjs [DIRECTORY|PAGE|CSS]');
+    if (args.length > 1) throw new Error(`Usage: ${commandFor(import.meta.url)} [DIRECTORY|PAGE|CSS]`);
     const report = checkStyles(args[0]);
     console.log(JSON.stringify(report, null, 2));
     process.exitCode = report.gaps.length ? 2 : report.findings.length ? 1 : 0;

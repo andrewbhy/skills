@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-mockup/scripts/image-round-check.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 import { readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { extname, isAbsolute, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -156,7 +157,7 @@ const isEntry = () => {
 if (process.argv[1] && isEntry()) {
   const args = process.argv.slice(2);
   if (args.length !== 1 || args[0].startsWith('-')) {
-    console.error('Usage: node image-round-check.mjs <round-folder>');
+    console.error(`Usage: ${__jigCommandFor(import.meta.url)} <round-folder>`);
     process.exitCode = 2;
   } else {
     const report = checkImageRound(args[0]);

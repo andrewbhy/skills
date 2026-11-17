@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-correct/goal-translate.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -134,7 +136,7 @@ if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.m
   try {
     const args = process.argv.slice(2), command = args[0]?.startsWith('--') ? 'translate' : args.shift(), options = {};
     const allowed = command === 'verdict' ? ['glossary', 'word', 'measures', 'verdict', 'date', 'evidence'] : command === 'retro' ? ['glossary', 'project-glossary'] : ['plan', 'glossary', 'project-glossary', 'catalogue'];
-    if (!['translate', 'retro', 'verdict'].includes(command)) throw Error('Usage: goal-translate.mjs [verdict|retro] --glossary <file> [options]');
+    if (!['translate', 'retro', 'verdict'].includes(command)) throw Error(`Usage: ${commandFor(import.meta.url)} [verdict|retro] --glossary <file> [options]`);
     for (let i = 0; i < args.length; i += 2) {
       const key = args[i].slice(2);
       if (!args[i].startsWith('--') || !allowed.includes(key) || options[key] || !args[i + 1] || args[i + 1].startsWith('--')) throw Error(`Invalid option: ${args[i]}`);

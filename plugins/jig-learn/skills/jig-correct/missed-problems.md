@@ -17,7 +17,13 @@ separate incidents. Repeats are derived from log order and the area/class pair.
 An explicit repeat flag is also honored. A rule review must name each incident
 ID it closes, explain `## Rule failed` and `## Changes`, and live in
 `docs/results/`. Record the link in `ruleReview`; a missing or unrelated file
-leaves the repeat open. Writing a review does not prove the resulting change.
+leaves the repeat open. For incidents dated 2026-11-16 or later, add a substantive
+`## Prevention` section with one table row or line per incident naming its level:
+deterministic first (architecture change, enforcement or automated test), with
+the named check or board item; end-to-end only with a written reason why no
+deterministic check can see the risk. Each pending deterministic prevention
+becomes a board item whose acceptance is that test. Earlier incidents keep the
+old review rule. Writing a review does not prove the resulting change.
 
 ## One round, one presented artifact
 

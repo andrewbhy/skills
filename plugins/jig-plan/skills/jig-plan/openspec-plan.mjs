@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-plan/openspec-plan.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 import { existsSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -29,7 +31,7 @@ export function writeOpenSpecPlan(root, id, capability, plan) {
 }
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try {
-    if (process.argv.length !== 6) throw Error('Usage: node openspec-plan.mjs <project-root> <change-id> <capability> <plan.md>');
+    if (process.argv.length !== 6) throw Error(`Usage: ${commandFor(import.meta.url)} <project-root> <change-id> <capability> <plan.md>`);
     console.log(writeOpenSpecPlan(process.argv[2], process.argv[3], process.argv[4], readFileSync(process.argv[5], 'utf8')));
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

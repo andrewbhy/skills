@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-verify/design-inspector.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 // Selected heuristics adapted from Impeccable, Copyright 2025 Paul Bakaus,
 // Apache-2.0, revision 924bbd194d02e5e15a227e75b5901fb0d7a4ecad.
 // Reimplemented for jig's measured snapshots; see docs/design-toolbox/IMPECCABLE-LICENSE.txt
@@ -291,7 +293,7 @@ export async function inspectGateDesign(page, options) {
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try {
     const [file, config, ...extra] = process.argv.slice(2);
-    if (!file || extra.length) throw new Error('Usage: node scripts/design-inspector.mjs SNAPSHOT.json [EXCEPTIONS.json]');
+    if (!file || extra.length) throw new Error(`Usage: ${commandFor(import.meta.url)} SNAPSHOT.json [EXCEPTIONS.json]`);
     const report = analyzeDesign(JSON.parse(readFileSync(file, 'utf8')), config ? JSON.parse(readFileSync(config, 'utf8')) : {});
     console.log(JSON.stringify(report, null, 2));
     process.exitCode = report.gaps.length ? 2 : 0; // Warnings never fail a gate.

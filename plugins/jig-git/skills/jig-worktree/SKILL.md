@@ -12,7 +12,7 @@ using the same holder identity, and run `release <name>` at handoff. Worktree cl
 record the identified session and agent ancestor. Another live holder blocks
 claim, open and close, naming the holder. A stale heartbeat or mismatched
 process start time is reclaimable. Claims require jig's canonical
-review-capabilities helper; standalone copies without it report the dependency.
+capabilities helper; standalone copies without it report the dependency.
 Run `brokers` to discover and record live app-server-broker.mjs serve processes
 whose --cwd exactly matches a registered worktree. After the job result is read,
 with no resume planned, run `stop-broker <name>`; it also discovers brokers and

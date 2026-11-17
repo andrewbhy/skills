@@ -1,6 +1,6 @@
 {
   "name": "jig-plan",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Plan a build and check its contract.",
   "author": {
     "name": "andrewbhy"

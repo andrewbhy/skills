@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-orchestrate/signals.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 import { appendFileSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import { atomicWriteFile } from './jig-store.mjs';
 import { homedir } from 'node:os';
@@ -27,7 +29,7 @@ export function validateSignal(row) {
   return row;
 }
 export function signalPaths({ root = process.env.JIG_SIGNALS_PROJECT || projectRootOf(), home = process.env.JIG_SIGNALS_HOME || storeRoot() || join(homedir(), '.jig') } = {}) {
-  if (process.env.NODE_TEST_CONTEXT && (!process.env.JIG_SIGNALS_PROJECT && root === projectRootOf() || !process.env.JIG_SIGNALS_HOME && home === join(homedir(), '.jig'))) throw Error('Tests require temporary signal paths; run scripts/run-tests.mjs');
+  if (process.env.NODE_TEST_CONTEXT && (!process.env.JIG_SIGNALS_PROJECT && root === projectRootOf() || !process.env.JIG_SIGNALS_HOME && home === join(homedir(), '.jig'))) throw Error('Tests require temporary signal paths; use the repository test runner with isolated stores');
   return { root: resolve(root), home: resolve(home), project: statePath(resolve(root), 'signals.jsonl'), jig: join(resolve(home), 'signals.jsonl') };
 }
 export function recordToolSignal(kind, item, { area, what, ...options } = {}) {
@@ -184,7 +186,7 @@ export function signalsCLI(argv) {
     if (command === 'consume' && positional.length >= 2) return JSON.stringify(consumeSignals(positional.slice(1), positional[0], options));
     if (command === 'prune' && !positional.length) return JSON.stringify(pruneSignals(options));
   }
-  throw Error('Usage: signals.mjs add <JSON> | set <id> <optional-field> <JSON-value> | list | report | consume <plan> <ids...> | prune [--level <level>] [--since <date>] [--out <path>]');
+  throw Error(`Usage: ${commandFor(import.meta.url)} add <JSON> | set <id> <optional-field> <JSON-value> | list | report | consume <plan> <ids...> | prune [--level <level>] [--since <date>] [--out <path>]`);
 }
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try { console.log(signalsCLI(process.argv.slice(2))); }

@@ -1,4 +1,5 @@
-if (process.argv[2] === '--help') { console.log('Usage: node docs/design-toolbox/themes/check-themes.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 import { readFileSync } from 'node:fs';
 import { readFile, writeFile, readdir } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -397,7 +398,7 @@ export async function inspectPack(folder) {
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.some(arg => arg.startsWith('-') && arg !== '--write')) throw new Error('Usage: node check-themes.mjs [--write | <pack-folder> ...]');
+  if (args.some(arg => arg.startsWith('-') && arg !== '--write')) throw new Error(`Usage: ${__jigCommandFor(import.meta.url)} [--write | <pack-folder> ...]`);
   const folders = args.filter(arg => arg !== '--write');
   if (folders.length && args.includes('--write')) throw new Error('--write updates bundled reports only; omit pack paths');
   const bundled = folders.length === 0;

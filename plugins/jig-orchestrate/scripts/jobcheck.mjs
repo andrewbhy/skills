@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/jobcheck.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from './command-line.mjs';
 import { closeSync, existsSync, openSync, readFileSync, readSync, renameSync, fstatSync, unlinkSync, writeFileSync } from 'node:fs';
 import { atomicWriteFile } from './jig-store.mjs';
 import { freemem } from 'node:os';
@@ -71,7 +73,7 @@ if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.m
   try {
     const args = process.argv.slice(2), options = {};
     for (let i = 0; i < args.length; i += 2) {
-      if (!['--root', '--progress', '--plan', '--log', '--read-kind'].includes(args[i]) || !args[i + 1]) throw Error('Usage: jobcheck.mjs [--root DIR] [--progress FILE] [--plan FILE] [--log FILE] [--read-kind scripted|delegated|manual]');
+      if (!['--root', '--progress', '--plan', '--log', '--read-kind'].includes(args[i]) || !args[i + 1]) throw Error(`Usage: ${commandFor(import.meta.url)} [--root DIR] [--progress FILE] [--plan FILE] [--log FILE] [--read-kind scripted|delegated|manual]`);
       options[args[i] === '--read-kind' ? 'readKind' : args[i].slice(2)] = args[i + 1];
     }
     console.log(jobcheck(options));

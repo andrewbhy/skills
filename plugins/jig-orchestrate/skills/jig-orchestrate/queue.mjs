@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-orchestrate/queue.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 import { closeSync, existsSync, mkdirSync, openSync, readFileSync, realpathSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { atomicWriteFile } from './jig-store.mjs';
 import { basename, delimiter, dirname, join, resolve } from 'node:path';
@@ -10,11 +12,11 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import { docsPath, statePath, resolveStateRef } from './jig-store.mjs';
 import { layers } from './layers.mjs';
 import { checkReceipt } from './verify-receipt.mjs';
+import { waitList, singleLine as nonempty, isJob, queueStates as states, validateQueue } from './queue-schema.mjs';
+export { validateQueue } from './queue-schema.mjs';
 
-const nonempty = v => typeof v === 'string' && v.trim().length > 0 && !/[\r\n\0]/.test(v);
 const positive = v => Number.isFinite(v) && v > 0;
-const completed = item => ['done', 'review'].includes(item?.state);
-const states = ['pending', 'starting', 'running', 'done', 'failed', 'stopped', 'review', 'parked'];
+const completed = item => item?.state === 'done' || isJob(item) && item.state === 'review';
 const timestamp = v => typeof v === 'string' && Number.isFinite(Date.parse(v));
 export function queuePath(root = process.env.JIG_QUEUE_ROOT || process.cwd()) { return statePath(resolve(root), 'queue.json'); }
 export function withQueueLock(path, action) {
@@ -30,29 +32,6 @@ export function validateProgress(p) {
     || !Array.isArray(p.steps) || !p.steps.length || p.steps.some(s => !s || !nonempty(s.label) || typeof s.done !== 'boolean')) throw Error('Invalid progress: require version, timestamps, timeboxMinutes and steps');
   if (p.result !== undefined && (!p.result || !['passed', 'failed', 'stopped', 'incomplete'].includes(p.result.outcome) || typeof p.result.complete !== 'boolean')) throw Error('Invalid progress result');
   return p;
-}
-export function validateQueue(q) {
-  if (!q || q.version !== 1 || !Array.isArray(q.items)) throw Error('Invalid queue version or items');
-  const ids = new Set();
-  for (const item of q.items) {
-    if (!item || !['id', 'item', 'plan', 'worktree', 'provider', 'area'].every(k => nonempty(item[k])) || ids.has(item.id)
-      || !states.includes(item.state) || !Array.isArray(item.dependsOn) || item.dependsOn.some(id => !nonempty(id))
-      || !Array.isArray(item.touches) || !item.touches.length || item.touches.some(p => !nonempty(p))) throw Error('Invalid queue item or duplicate id');
-    if (item.waitsFor !== undefined && (!Array.isArray(item.waitsFor) || item.waitsFor.some(v => !nonempty(v)))) throw Error('Invalid waitsFor');
-    if (item.progressFile !== undefined && !nonempty(item.progressFile)) throw Error('Invalid progressFile');
-    if (item.browser !== undefined && typeof item.browser !== 'boolean') throw Error('Invalid browser flag');
-    if (item.nextDecision !== undefined && typeof item.nextDecision !== 'boolean') throw Error('Invalid nextDecision flag');
-    if (item.state === 'starting' && (!nonempty(item.reservationId) || !nonempty(item.progressFile))) throw Error('Starting job needs reservation and progress file');
-    if (item.state === 'running' && (!nonempty(item.taskId) || !nonempty(item.progressFile))) throw Error('Running job needs tracked task and progress file');
-    ids.add(item.id);
-  }
-  for (const item of q.items) if (item.dependsOn.some(id => !ids.has(id) || id === item.id)) throw Error('Unknown or self dependency');
-  const visit = (id, stack = new Set()) => {
-    if (stack.has(id)) throw Error('Dependency cycle');
-    for (const dep of q.items.find(i => i.id === id).dependsOn) visit(dep, new Set([...stack, id]));
-  };
-  for (const id of ids) visit(id);
-  return q;
 }
 export function readQueue(root) {
   try { return validateQueue(JSON.parse(readFileSync(queuePath(root), 'utf8'))); }
@@ -74,7 +53,8 @@ export function addItem(root, input) {
     q.items.push(item); return item;
   });
 }
-export function readyItems(q) { return q.items.filter(i => i.state === 'pending' && i.dependsOn.every(id => completed(q.items.find(d => d.id === id)))); }
+// A job with no declared touches is a valid record but never scheduled: overlap safety needs them.
+export function readyItems(q) { return q.items.filter(i => isJob(i) && i.touches.length > 0 && i.state === 'pending' && i.dependsOn.every(id => completed(q.items.find(d => d.id === id)))); }
 export function readProgress(root, item) {
   if (!item.progressFile) throw Error('Missing progress file');
   return validateProgress(JSON.parse(readFileSync(resolveStateRef(root, item.progressFile), 'utf8')));
@@ -108,7 +88,8 @@ export function statusLines(root, { now = Date.now(), feedback = [] } = {}) {
   root = resolve(root || process.env.JIG_QUEUE_ROOT || process.cwd());
   const q = readQueue(root), context = schedulingContext(root);
   feedback = [...readFeedback(root), ...feedback];
-  return q.items.map(item => {
+  const jobs = q.items.filter(isJob), board = q.items.filter(item => !isJob(item));
+  const lines = jobs.map(item => {
     const flags = [], waits = [];
     let bar = '[----------] 0/?', elapsed = '?/?m';
     if (item.progressFile) {
@@ -122,13 +103,15 @@ export function statusLines(root, { now = Date.now(), feedback = [] } = {}) {
       } catch (error) { flags.push(`PROGRESS GAP: ${error.message}`); }
     } else if (['starting', 'running', 'done', 'review'].includes(item.state)) flags.push('PROGRESS GAP');
     for (const dep of item.dependsOn) if (!completed(q.items.find(i => i.id === dep))) waits.push(`dependency ${dep}`);
-    if (item.waitsFor && item.state !== 'pending') waits.push(...item.waitsFor);
+    if (item.state !== 'pending') waits.push(...(waitList(item.waitsFor) ?? []));
     if (item.state === 'pending') waits.push(...hardGates(q, item, [], context).filter(r => !r.startsWith('dependency ')));
     if (item.state === 'review') waits.push(...presentationReasons(item, feedback));
     if (item.state === 'stopped') waits.push('person decision / re-plan');
-    const dependents = q.items.filter(i => i.state === 'pending' && i.dependsOn.includes(item.id)).map(i => i.id);
+    const dependents = jobs.filter(i => i.state === 'pending' && i.dependsOn.includes(item.id)).map(i => i.id);
     return `${item.id} ${bar} ${elapsed} ${item.state}${flags.length ? ' ' + flags.join('; ') : ''}${waits.length ? ' waits: ' + waits.join(', ') : ''}${dependents.length ? ' unblocks: ' + dependents.join(', ') : ''}`;
   });
+  if (board.length) lines.push(`board items: ${board.length} (not schedulable; tower board) ${states.map(state => [state, board.filter(item => item.state === state).length]).filter(([, count]) => count).map(([state, count]) => `${state}: ${count}`).join(', ')}`);
+  return lines;
 }
 export function reserveJob(root, id, { progressFile, context } = {}) {
   if (!nonempty(progressFile)) throw Error('Progress file and timebox required before launch');
@@ -146,14 +129,14 @@ export function launchJob(root, id, { taskId, reservationId } = {}) {
   if (!nonempty(taskId) || !nonempty(reservationId)) throw Error('Tracked taskId and reservationId required; detached launch refused');
   return updateQueue(root, q => {
     const item = q.items.find(i => i.id === id);
-    if (!item || item.state !== 'starting' || item.reservationId !== reservationId) throw Error('Launch requires matching reservation');
+    if (!isJob(item) || item.state !== 'starting' || item.reservationId !== reservationId) throw Error('Launch requires matching reservation');
     Object.assign(item, { state: 'running', taskId }); delete item.reservationId; return item;
   });
 }
 export function finishJob(root, id) {
   return updateQueue(root, q => {
     const item = q.items.find(i => i.id === id);
-    if (!item || item.state !== 'running') throw Error('Job is not running');
+    if (!isJob(item) || item.state !== 'running') throw Error('Job is not running');
     const summary = progressSummary(readProgress(root, item));
     if (!summary.finished) throw Error('Result missing; incomplete is not done');
     item.state = summary.success ? 'done' : 'failed'; return item;
@@ -162,7 +145,7 @@ export function finishJob(root, id) {
 export function markReview(root, id, { evidence, revision, builder, coordinator, feedback = [] }) {
   return updateQueue(root, q => {
     const item = q.items.find(i => i.id === id);
-    if (!item || item.state !== 'done' || !progressSummary(readProgress(root, item)).success) throw Error('Only complete passed work can be presented');
+    if (!isJob(item) || item.state !== 'done' || !progressSummary(readProgress(root, item)).success) throw Error('Only complete passed work can be presented');
     if (!nonempty(builder) || !nonempty(coordinator)) throw Error('Builder and coordinator identities required');
     const candidate = { ...item, evidence, revision, builder, coordinator };
     const reasons = presentationReasons(candidate, [...readFeedback(root), ...feedback]);
@@ -210,6 +193,7 @@ function pathsOverlap(a, b) {
   return a === b || a.startsWith(b + '/') || b.startsWith(a + '/');
 }
 export function overlap(a, b) {
+  if (!isJob(a) || !isJob(b)) return undefined;
   if (pathsOverlap(a.worktree, b.worktree)) return 'worktree overlap';
   for (const p of a.touches) for (const r of b.touches) if (pathsOverlap(resolve(a.worktree, p), resolve(b.worktree, r))) return 'file overlap';
   return undefined;
@@ -219,11 +203,13 @@ function repeatBlock(item, context) {
   return area.some(i => area.filter(j => j.class === i.class).length > 1 && (!i.ruleReview || !existsSync(resolve(context.root, i.ruleReview)) || !readFileSync(resolve(context.root, i.ruleReview), 'utf8').includes(i.id)));
 }
 export function hardGates(q, item, reserved, context) {
-  const reasons = [...(item.waitsFor ?? [])];
+  if (!isJob(item)) return ['board item (not schedulable; tower board)'];
+  const reasons = [...(waitList(item.waitsFor) ?? [])];
   if (item.state !== 'pending') reasons.push(`state ${item.state}`);
+  if (!item.touches.length) reasons.push('no touches declared');
   for (const dep of item.dependsOn) if (!completed(q.items.find(i => i.id === dep))) reasons.push(`dependency ${dep}`);
   if (!context.providers.includes(item.provider)) reasons.push(`provider ${item.provider} unavailable`);
-  const active = [...q.items.filter(i => ['starting', 'running'].includes(i.state)), ...reserved];
+  const active = [...q.items.filter(i => isJob(i) && ['starting', 'running'].includes(i.state)), ...reserved.filter(isJob)];
   if (active.length >= context.concurrency) reasons.push('concurrency cap');
   for (const other of active) { const conflict = overlap({ ...item, worktree: resolve(context.root, item.worktree) }, { ...other, worktree: resolve(context.root, other.worktree) }); if (conflict) reasons.push(`${conflict}: ${other.id}`); }
   if (repeatBlock(item, context)) reasons.push('repeat missed problem: rule review required');
@@ -237,16 +223,17 @@ export function hardGates(q, item, reserved, context) {
   return reasons;
 }
 export function criticalPathOrder(q) {
+  const jobs = q.items.filter(isJob);
   const descendants = id => {
-    const children = q.items.filter(i => i.dependsOn.includes(id) && i.state === 'pending');
+    const children = jobs.filter(i => i.dependsOn.includes(id) && i.state === 'pending');
     return children.flatMap(i => [i, ...descendants(i.id)]);
   };
   const distance = id => {
-    const children = q.items.filter(i => i.dependsOn.includes(id) && i.state === 'pending');
+    const children = jobs.filter(i => i.dependsOn.includes(id) && i.state === 'pending');
     return children.length ? 1 + Math.max(...children.map(i => distance(i.id))) : 0;
   };
   const decisionIndex = item => Math.min(...[item, ...descendants(item.id)].filter(i => i.nextDecision).map(i => q.items.indexOf(i)), Infinity);
-  return q.items.filter(i => i.state === 'pending').sort((a, b) => {
+  return jobs.filter(i => i.state === 'pending').sort((a, b) => {
     const da = decisionIndex(a), db = decisionIndex(b);
     return (da === db ? 0 : da < db ? -1 : 1) || distance(b.id) - distance(a.id) || q.items.indexOf(a) - q.items.indexOf(b);
   });
@@ -287,7 +274,7 @@ export function recordFailure(root, id, kind, { caughtBy, ownErrorShare, home } 
   if (!['gate', 'review'].includes(kind) || !nonempty(caughtBy) || !['none', 'part', 'all'].includes(ownErrorShare)) throw Error('Failure needs gate/review, caughtBy and ownErrorShare');
   return updateQueue(root, q => {
     const item = q.items.find(i => i.id === id);
-    if (!item || item.state === 'stopped') throw Error('Unknown or stopped slice');
+    if (!isJob(item) || item.state === 'stopped') throw Error('Unknown or stopped slice');
     item.failures = (item.failures ?? 0) + 1;
     item.state = item.failures >= 2 ? 'stopped' : 'failed';
     if (item.failures >= 2) {
@@ -370,7 +357,7 @@ export async function queueCLI(argv) {
   if (command === 'reserve' && rest.length === 2) return { text: JSON.stringify(reserveJob(root, rest[0], JSON.parse(rest[1]))), code: 0 };
   if (command === 'launch' && rest.length === 2) return { text: JSON.stringify(launchJob(root, rest[0], JSON.parse(rest[1]))), code: 0 };
   if (command === 'finish' && rest.length === 1) return { text: JSON.stringify(finishJob(root, rest[0])), code: 0 };
-  throw Error('Usage: queue.mjs [--root DIR] add JSON | ready | suggest | status [--follow] | reserve ID JSON | launch ID JSON | finish ID');
+  throw Error(`Usage: ${commandFor(import.meta.url)} [--root DIR] add JSON | ready | suggest | status [--follow] | reserve ID JSON | launch ID JSON | finish ID`);
 }
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   try { const result = await queueCLI(process.argv.slice(2)); if (result.text) console.log(result.text); process.exitCode = result.code; }

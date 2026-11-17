@@ -1,10 +1,12 @@
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/tower-resume.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
 // Resume after the coordinating session died or the machine restarted: what was interrupted, what the person said meanwhile,
 // where the handoff note points. Everything here reads board state; nothing changes it (the suggested commands are only printed).
 import { spawnSync } from 'node:child_process';
 import { projectFile, readText } from './jig-store.mjs';
-import { readThread, reviewDir, threadIds } from './review-core.mjs';
-import { heartbeatOf } from './review-work.mjs';
+import { readThread, reviewDir, threadIds } from './tower-core.mjs';
+import { heartbeatOf } from './tower-work.mjs';
+import { towerCommand } from './orchestrate-sessions.mjs';
 
 export const defaultStaleMinutes = 20;
 const clip = (s, n) => { const t = String(s ?? '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
@@ -36,7 +38,7 @@ export function findInterrupted(items, { dir = reviewDir(), now = Date.now(), st
     out.push({
       id, item: clip(x.item, 100), worktree: x.worktree ?? null, heartbeat: hb,
       why: basis ? `no sign of life for ${stalledHours === undefined ? ageText(age) : age >= 3600000 ? `${Math.floor(age / 3600000)} hour${Math.floor(age / 3600000) === 1 ? '' : 's'}` : `${Math.max(0, Math.floor(age / 60000))} minutes`}` : 'no progress or message ever recorded, so the worker cannot be confirmed; time unknown',
-      git: git(x.worktree), suggest: `node scripts/review.mjs queue-set ${id} --state waiting-other --waits "interrupted: resume or relaunch"`
+      git: git(x.worktree), suggest: towerCommand(['queue-set', id, '--state', 'waiting-other', '--waits', 'interrupted: resume or relaunch'])
     });
   }
   return out;

@@ -1,6 +1,6 @@
 {
   "name": "jig-typescript",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Build and check strict TypeScript boundaries.",
   "author": {
     "name": "andrewbhy"

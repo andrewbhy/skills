@@ -1,4 +1,6 @@
-if (process.argv[2] === '--help') { console.log('Usage: node skills/jig-orchestrate/jig-store.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "../../scripts/command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from "../../scripts/command-line.mjs";
 // The personal jig store: every piece of personal jig state lives behind this module.
 // Default root ~/.jig (override with JIG_HOME), one folder per project, projects.json maps names to repo paths.
 // A dedicated store (a database, a sync service) can replace this file's functions without touching callers.
@@ -15,7 +17,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const insensitive = process.platform !== 'linux';
-const importCommand = repo => `node "${fileURLToPath(import.meta.url)}" import "${resolve(repo)}"`;
+const importCommand = repo => __jigCommandFor(import.meta.url, ['import', resolve(repo)]);
 const same = (a, b) => (insensitive ? resolve(a).toLowerCase() === resolve(b).toLowerCase() : resolve(a) === resolve(b));
 
 export const formatVersion = 1;
@@ -468,7 +470,7 @@ export function importRecords(repo, { home = storeRoot(), dryRun = false, out = 
 export function runStore(argv, options) {
   const [command, repo, ...flags] = argv;
   if (command !== 'import' || !repo || repo.startsWith('--') || flags.some(flag => flag !== '--dry-run') || flags.length > 1) {
-    throw Object.assign(new Error('Usage: node scripts/jig-store.mjs import <repo> [--dry-run]'), { exitCode: 2 });
+    throw Object.assign(new Error(`Usage: ${commandFor(import.meta.url)} import <repo> [--dry-run]`), { exitCode: 2 });
   }
   return importRecords(repo, { ...options, dryRun: flags.includes('--dry-run') }).exitCode;
 }

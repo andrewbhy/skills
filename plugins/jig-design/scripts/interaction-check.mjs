@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-if (process.argv[2] === '--help') { console.log('Usage: node scripts/interaction-check.mjs <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor as __jigCommandFor, isEntry as __jigIsEntry } from "./command-line.mjs";
+if (process.argv[2] === '--help' && __jigIsEntry(import.meta.url)) { console.log('Usage: ' + __jigCommandFor(import.meta.url) + ' <arguments>; see the owning skill for commands.'); process.exit(0); }
+import { commandFor } from './command-line.mjs';
 // Layer (a) of jig-interaction: reads one interaction.json and checks it with no model.
 // Exit 0 clean (warnings allowed), 1 findings, 2 invalid or incomplete spec. Dependency-free.
 import { existsSync, readFileSync } from 'node:fs';
@@ -582,7 +584,7 @@ function main(argv) {
   const json = args.includes('--json');
   const files = args.filter((a) => !['--json', '--slice', '--light'].includes(a));
   try {
-    if (files.length !== 1 && !(files.length === 0 && patternsPath)) throw new SpecError('Usage: node interaction-check.mjs <interaction.json> [--patterns patterns.md] [--registry registry.json] [--json]');
+    if (files.length !== 1 && !(files.length === 0 && patternsPath)) throw new SpecError(`Usage: ${commandFor(import.meta.url)} <interaction.json> [--patterns patterns.md] [--registry registry.json] [--json]`);
     if ((slice || light) && !registryPath) throw new SpecError('slice review and the light path need --registry <export.json>; the built UI is part of the check');
     if (light && !againstPath) throw new SpecError('--light needs --against <previous-spec.json> to prove the change adds no verb, input, screen or popup');
     let findings = [];

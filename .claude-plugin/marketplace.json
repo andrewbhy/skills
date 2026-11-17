@@ -7,65 +7,72 @@
     {
       "name": "jig-plan",
       "description": "Plan a build and check its contract.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "license": "MIT",
       "source": "./plugins/jig-plan"
     },
     {
       "name": "jig-verify",
       "description": "Verify changed behaviour and record evidence.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "license": "MIT",
       "source": "./plugins/jig-verify"
     },
     {
       "name": "jig-review",
       "description": "Review changes with proportionate seats.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "license": "MIT",
       "source": "./plugins/jig-review"
     },
     {
       "name": "jig-design",
       "description": "Design interactions and explore interface mockups.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "license": "MIT",
       "source": "./plugins/jig-design"
     },
     {
       "name": "jig-git",
       "description": "Manage task worktrees and authorized merges.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "license": "MIT",
       "source": "./plugins/jig-git"
     },
     {
       "name": "jig-learn",
       "description": "Record missed problems and improve checks.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "license": "MIT",
       "source": "./plugins/jig-learn"
     },
     {
       "name": "jig-spike",
       "description": "Run a timeboxed feasibility experiment.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "license": "MIT",
       "source": "./plugins/jig-spike"
     },
     {
       "name": "jig-typescript",
       "description": "Build and check strict TypeScript boundaries.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "license": "MIT",
       "source": "./plugins/jig-typescript"
     },
     {
       "name": "jig-orchestrate",
       "description": "Coordinate jobs with an optional dashboard.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "license": "MIT",
       "source": "./plugins/jig-orchestrate"
+    },
+    {
+      "name": "jig-tower",
+      "description": "Run the board, threads and Give independently.",
+      "version": "0.3.0",
+      "license": "MIT",
+      "source": "./plugins/jig-tower"
     }
   ]
 }
